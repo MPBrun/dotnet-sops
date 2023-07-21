@@ -1,11 +1,11 @@
 using System.CommandLine;
-using System.CommandLine.Invocation;
 using System.Text;
 using System.Text.Json;
 using DotSops.CommandLine.Commands;
 using DotSops.CommandLine.Services.FileBom;
 using DotSops.CommandLine.Services.Sops;
 using DotSops.CommandLine.Services.UserSecrets;
+using DotSops.CommandLine.Tests.Services;
 using DotSops.CommandLine.Tests.Services.UserSecrets;
 
 namespace DotSops.CommandLine.Tests.Commands;
@@ -20,7 +20,14 @@ public class EncryptCommandTests
         var userSecretsService = new UserSecretsServiceStub(dir.FullName);
         var fileBomService = new FileBomService();
 
-        var command = new EncryptCommand();
+        var serviceProvider = new MockServiceProvider()
+        {
+            SopsService = new Lazy<ISopsService>(sopsService),
+            UserSecretsService = new Lazy<IUserSecretsService>(userSecretsService),
+            FileBomService = new Lazy<IFileBomService>(fileBomService),
+        };
+
+        var command = new EncryptCommand(serviceProvider);
         var id = $"unittest-{Guid.NewGuid()}";
 
         // user secret
@@ -37,14 +44,10 @@ public class EncryptCommandTests
 
         var outputPath = Path.Combine(dir.FullName, "secrets.json");
 
-        var parseResult = command.Parse($"--id {id} --file {outputPath}");
-        using var invocationContext = new InvocationContext(parseResult);
-        invocationContext.BindingContext.AddService(typeof(ISopsService), sp => sopsService);
-        invocationContext.BindingContext.AddService(typeof(IUserSecretsService), sp => userSecretsService);
-        invocationContext.BindingContext.AddService(typeof(IFileBomService), sp => fileBomService);
+        var config = new CliConfiguration(command);
 
         // Act
-        var exitCode = await command.Handler!.InvokeAsync(invocationContext);
+        var exitCode = await config.InvokeAsync($"--id {id} --file {outputPath}");
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -55,21 +58,21 @@ public class EncryptCommandTests
     public void EncryptCommand_Id_Required()
     {
         // Arrange
-        var command = new EncryptCommand();
+        var command = new EncryptCommand(new MockServiceProvider());
 
         // Act / Assert
-        var option = command.Options.First(o => o.Name == "id");
-        Assert.True(option.IsRequired);
+        var option = command.Options.First(o => o.Name == "--id");
+        Assert.True(option.Required);
     }
 
     [Fact]
     public void EncryptCommand_File_NotRequired()
     {
         // Arrange
-        var command = new EncryptCommand();
+        var command = new EncryptCommand(new MockServiceProvider());
 
         // Act / Assert
-        var option = command.Options.First(o => o.Name == "file");
-        Assert.False(option.IsRequired);
+        var option = command.Options.First(o => o.Name == "--file");
+        Assert.False(option.Required);
     }
 }

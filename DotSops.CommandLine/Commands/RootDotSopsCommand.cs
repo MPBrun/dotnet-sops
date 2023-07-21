@@ -1,9 +1,9 @@
 using System.CommandLine;
 
 namespace DotSops.CommandLine.Commands;
-internal class RootDotSopsCommand : RootCommand
+internal class RootDotSopsCommand : CliRootCommand
 {
-    //private readonly Option<bool> _verboseOption = new("--verbose", "Tasdad.");
+    private readonly CliOption<string> _verboseOption = new("--verbose");
     /*
      *  https://learn.microsoft.com/en-us/dotnet/standard/commandline/syntax#the---verbosity-option
      * 
@@ -12,11 +12,13 @@ internal class RootDotSopsCommand : RootCommand
      *  Diagnostic
      */
 
-    public RootDotSopsCommand()
+    public RootDotSopsCommand(Services.IServiceProvider serviceProvider)
         : base(Properties.Resources.RootCommandDescription)
     {
-        AddCommand(new EncryptCommand());
-        AddCommand(new DecryptCommand());
-        AddCommand(new DownloadSopsCommand());
+        _verboseOption.AcceptOnlyFromAmong("quiet", "normal", "diagnostic");
+        Add(_verboseOption);
+        Add(new EncryptCommand(serviceProvider));
+        Add(new DecryptCommand(serviceProvider));
+        Add(new DownloadSopsCommand(serviceProvider));
     }
 }

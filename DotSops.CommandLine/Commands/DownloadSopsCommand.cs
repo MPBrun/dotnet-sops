@@ -1,25 +1,33 @@
 using System.CommandLine;
-using System.CommandLine.Invocation;
-using DotSops.CommandLine.Binding;
 using DotSops.CommandLine.Services.Sops;
 using Spectre.Console;
 
 namespace DotSops.CommandLine.Commands;
-internal class DownloadSopsCommand : Command
+internal class DownloadSopsCommand : CliCommand
 {
     public const string CommandName = "download-sops";
 
-    public DownloadSopsCommand()
+    private readonly Services.IServiceProvider _serviceProvider;
+
+    public DownloadSopsCommand(Services.IServiceProvider serviceProvider)
         : base(CommandName, Properties.Resources.DownloadSopsCommandDescription)
     {
-        this.SetHandler(ExecuteAsync, new InjectableBinder<InvocationContext>(), new InjectableBinder<IAnsiConsole>(), new InjectableBinder<ISopsDownloadService>());
+        _serviceProvider = serviceProvider;
+
+        SetAction((parseResult, cancellationToken) =>
+        {
+            return ExecuteAsync(
+              _serviceProvider.AnsiConsole.Value,
+              _serviceProvider.SopsDownloadService.Value,
+              cancellationToken);
+        });
     }
 
-    private static async Task ExecuteAsync(InvocationContext invocationContext, IAnsiConsole console, ISopsDownloadService sopsDownloadService)
+    private static async Task ExecuteAsync(IAnsiConsole console, ISopsDownloadService sopsDownloadService, CancellationToken cancellationToken)
     {
         await console.Status().StartAsync(Properties.Resources.DownloadSopsLoader, async (ctx) =>
         {
-            await sopsDownloadService.DownloadAsync(invocationContext.GetCancellationToken());
+            await sopsDownloadService.DownloadAsync(cancellationToken);
         });
     }
 }

@@ -28,7 +28,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
     <PackageReference Include="Spectre.Console" Version="0.47.0" />
-    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22613.1" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.23326.1" />
   </ItemGroup>
 
   <ItemGroup>

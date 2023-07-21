@@ -1,7 +1,7 @@
 using System.CommandLine;
-using System.CommandLine.Invocation;
 using DotSops.CommandLine.Commands;
 using DotSops.CommandLine.Services.Sops;
+using DotSops.CommandLine.Tests.Services;
 using Moq;
 using Spectre.Console;
 
@@ -13,15 +13,19 @@ public class DownloadSopsCommandTests
     {
         // Arrange
         var mockSopsDownloadService = new Mock<ISopsDownloadService>();
-        var command = new DownloadSopsCommand();
 
-        var parseResult = command.Parse($"");
-        using var invocationContext = new InvocationContext(parseResult);
-        invocationContext.BindingContext.AddService(typeof(IAnsiConsole), sp => AnsiConsole.Console);
-        invocationContext.BindingContext.AddService(typeof(ISopsDownloadService), sp => mockSopsDownloadService.Object);
+        var serviceProvider = new MockServiceProvider()
+        {
+            SopsDownloadService = new Lazy<ISopsDownloadService>(mockSopsDownloadService.Object),
+            AnsiConsole = new Lazy<IAnsiConsole>(AnsiConsole.Console),
+        };
+
+        var command = new DownloadSopsCommand(serviceProvider);
+
+        var config = new CliConfiguration(command);
 
         // Act
-        var exitCode = await command.Handler!.InvokeAsync(invocationContext);
+        var exitCode = await config.InvokeAsync("");
 
         // Assert
         Assert.Equal(0, exitCode);

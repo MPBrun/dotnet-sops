@@ -1,40 +1,57 @@
 using System.CommandLine;
-using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
-using DotSops.CommandLine.Binding;
 using DotSops.CommandLine.Services.Sops;
 using DotSops.CommandLine.Services.UserSecrets;
 
 namespace DotSops.CommandLine.Commands;
 
-internal class DecryptCommand : Command
+internal class DecryptCommand : CliCommand
 {
     public const string CommandName = "decrypt";
 
-    private readonly Option<string> _userSecretsIdOption = new("--id", Properties.Resources.DecryptCommandSecretsIdOptionDescription) { IsRequired = true };
-    private readonly Option<FileInfo> _inputFileOption = new("--file", () => new FileInfo("secrets.json"), Properties.Resources.DecryptCommandFileOptionDescription);
+    private readonly Services.IServiceProvider _serviceProvider;
 
-    public DecryptCommand()
+    private readonly CliOption<string> _userSecretsIdOption = new("--id")
+    {
+        Description = Properties.Resources.DecryptCommandSecretsIdOptionDescription,
+        Required = true
+    };
+    private readonly CliOption<FileInfo> _inputFileOption = new("--file")
+    {
+        Description = Properties.Resources.DecryptCommandFileOptionDescription,
+        DefaultValueFactory = _ => new FileInfo("secrets.json")
+    };
+
+    public DecryptCommand(Services.IServiceProvider serviceProvider)
         : base(CommandName, Properties.Resources.DecryptCommandDescription)
     {
-        AddOption(_userSecretsIdOption);
-        AddOption(_inputFileOption);
+        Add(_userSecretsIdOption);
+        Add(_inputFileOption);
 
-        _inputFileOption.AddValidator(ValidateInputFile);
+        _inputFileOption.Validators.Add(ValidateInputFile);
+        _serviceProvider = serviceProvider;
 
-        this.SetHandler(ExecuteAsync, _userSecretsIdOption, _inputFileOption, new InjectableBinder<InvocationContext>(), new InjectableBinder<ISopsService>(), new InjectableBinder<IUserSecretsService>());
+        SetAction((parseResult, cancellationToken) =>
+        {
+            return ExecuteAsync(
+              parseResult.GetValue(_userSecretsIdOption)!,
+              parseResult.GetValue(_inputFileOption)!,
+              _serviceProvider.SopsService.Value,
+              _serviceProvider.UserSecretsService.Value,
+              cancellationToken);
+        });
     }
 
     private void ValidateInputFile(OptionResult optionResult)
     {
-        var inputFile = optionResult.GetValueOrDefault<FileInfo>()!;
+        var inputFile = optionResult.GetValue(_inputFileOption)!;
         if (!inputFile.Exists)
         {
-            optionResult.ErrorMessage = LocalizationResources.FileDoesNotExist(inputFile.FullName);
+            optionResult.AddError(LocalizationResources.FileDoesNotExist(inputFile.FullName));
         }
     }
 
-    private static async Task ExecuteAsync(string userSecretId, FileInfo inputFile, InvocationContext invocationContext, ISopsService sopsService, IUserSecretsService userSecretsService)
+    private static async Task ExecuteAsync(string userSecretId, FileInfo inputFile, ISopsService sopsService, IUserSecretsService userSecretsService, CancellationToken cancellationToken)
     {
         var outputFile = userSecretsService.GetSecretsPathFromSecretsId(userSecretId);
 
@@ -43,6 +60,6 @@ internal class DecryptCommand : Command
             Directory.CreateDirectory(outputFile.Directory.FullName);
         }
 
-        await sopsService.DecryptAsync(inputFile, outputFile, invocationContext.GetCancellationToken());
+        await sopsService.DecryptAsync(inputFile, outputFile, cancellationToken);
     }
 }

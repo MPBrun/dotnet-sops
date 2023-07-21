@@ -1,43 +1,62 @@
 using System.CommandLine;
-using System.CommandLine.Invocation;
-using DotSops.CommandLine.Binding;
+using System.CommandLine.Parsing;
 using DotSops.CommandLine.Services.FileBom;
 using DotSops.CommandLine.Services.Sops;
 using DotSops.CommandLine.Services.UserSecrets;
 
 namespace DotSops.CommandLine.Commands;
 
-internal class EncryptCommand : Command
+internal partial class EncryptCommand : CliCommand
 {
     public const string CommandName = "encrypt";
 
-    private readonly Option<string> _userSecretsIdOption = new("--id", Properties.Resources.EncryptCommandSecretsIdOptionDescription) { IsRequired = true };
-    private readonly Option<FileInfo> _outputFileOption = new("--file", () => new FileInfo("secrets.json"), Properties.Resources.EncryptCommandFileOptionDescription);
+    private readonly Services.IServiceProvider _serviceProvider;
 
-    public EncryptCommand()
+    private readonly CliOption<string> _userSecretsIdOption = new("--id")
+    {
+        Description = Properties.Resources.EncryptCommandSecretsIdOptionDescription,
+        Required = true,
+    };
+    private readonly CliOption<FileInfo> _outputFileOption = new("--file")
+    {
+        Description = Properties.Resources.EncryptCommandFileOptionDescription,
+        DefaultValueFactory = (_) => new FileInfo("secrets.json"),
+    };
+
+    public EncryptCommand(Services.IServiceProvider serviceProvider)
         : base(CommandName, Properties.Resources.EncryptCommandDescription)
     {
-        AddOption(_userSecretsIdOption);
-        AddOption(_outputFileOption);
+        _serviceProvider = serviceProvider;
 
-        // _userSecretsIdOption.AddValidator(ValidateUserSecretId);
+        Add(_userSecretsIdOption);
+        Add(_outputFileOption);
 
-        this.SetHandler(ExecuteAsync, _userSecretsIdOption, _outputFileOption, new InjectableBinder<InvocationContext>(), new InjectableBinder<ISopsService>(), new InjectableBinder<IUserSecretsService>(), new InjectableBinder<IFileBomService>());
+        _outputFileOption.Validators.Add(ValidateUserSecretId);
+
+        SetAction((parseResult, cancellationToken) =>
+        {
+            return ExecuteAsync(
+              parseResult.GetValue(_userSecretsIdOption)!,
+              parseResult.GetValue(_outputFileOption)!,
+              _serviceProvider.SopsService.Value,
+              _serviceProvider.UserSecretsService.Value,
+              _serviceProvider.FileBomService.Value,
+              cancellationToken);
+        });
     }
 
-    //private void ValidateUserSecretId(OptionResult optionResult)
-    //{
-    //    var userSecretId = optionResult.GetValueOrDefault<string>()!;
-    //    var inputFile = _userSecretsService.GetSecretsPathFromSecretsId(userSecretId);
-    //    if (!inputFile.Exists)
-    //    {
-    //        optionResult.ErrorMessage = LocalizationResources.UserSecretsFileDoesNotExist(inputFile.FullName);
-    //    }
-    //}
-
-    private static async Task ExecuteAsync(string userSecretId, FileInfo outputFile, InvocationContext invocationContext, ISopsService sopsService, IUserSecretsService userSecretsService, IFileBomService fileBomService)
+    private void ValidateUserSecretId(OptionResult optionResult)
     {
-        var cancellationToken = invocationContext.GetCancellationToken();
+        var userSecretId = optionResult.GetValue(_userSecretsIdOption)!;
+        var inputFile = _serviceProvider.UserSecretsService.Value.GetSecretsPathFromSecretsId(userSecretId);
+        if (!inputFile.Exists)
+        {
+            optionResult.AddError(LocalizationResources.UserSecretsFileDoesNotExist(inputFile.FullName));
+        }
+    }
+
+    private static async Task ExecuteAsync(string userSecretId, FileInfo outputFile, ISopsService sopsService, IUserSecretsService userSecretsService, IFileBomService fileBomService, CancellationToken cancellationToken)
+    {
         var inputFile = userSecretsService.GetSecretsPathFromSecretsId(userSecretId);
         if (!inputFile.Exists)
         {

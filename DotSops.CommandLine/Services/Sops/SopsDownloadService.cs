@@ -21,7 +21,7 @@ internal class SopsDownloadService : ISopsDownloadService
 
         // Download sops
         var platformFile = release.ReleaseFileName;
-        var url = new Uri($"https://github.com/mozilla/sops/releases/download/v{Version}/{platformFile}");
+        var url = new Uri($"https://github.com/getsops/sops/releases/download/v{Version}/{platformFile}");
         var response = await _httpClient.GetAsync(url, cancellationToken);
         if (response.StatusCode != System.Net.HttpStatusCode.OK)
         {

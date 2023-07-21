@@ -43,11 +43,7 @@ internal class SopsService : ISopsService
 
         try
         {
-            using var process = Process.Start(processStartInfo);
-            if (process == null)
-            {
-                throw new DotSopsException(Properties.Resources.SopsRunFailed);
-            }
+            using var process = Process.Start(processStartInfo) ?? throw new DotSopsException(Properties.Resources.SopsRunFailed);
             await process.WaitForExitAsync(cancellationToken);
             if (process.ExitCode != 0)
             {

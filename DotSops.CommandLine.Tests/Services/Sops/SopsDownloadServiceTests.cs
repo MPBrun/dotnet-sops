@@ -106,7 +106,7 @@ public class SopsDownloadServiceTests
             """
             Failed to download SOPS.
             HTTP status code: 404
-            URL: https://github.com/mozilla/sops/releases/download/v3.7.3/sops-v3.7.3.exe
+            URL: https://github.com/getsops/sops/releases/download/v3.7.3/sops-v3.7.3.exe
             """, exception.Message);
     }
 }
