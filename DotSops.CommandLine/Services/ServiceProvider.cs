@@ -19,13 +19,25 @@ internal class ServiceProvider : IServiceProvider
 
     public Lazy<HttpClient> HttpClient => new(() => new HttpClient());
 
-    public Lazy<IAnsiConsole> AnsiConsole => new(() =>
+    public Lazy<IAnsiConsole> AnsiConsoleError => new(() =>
     {
-        return Spectre.Console.AnsiConsole.Create(new AnsiConsoleSettings()
+        return AnsiConsole.Create(new AnsiConsoleSettings()
         {
             Ansi = AnsiSupport.Detect,
             ColorSystem = ColorSystemSupport.Detect,
             Out = new AnsiConsoleOutput(Console.Error),
         });
     });
+
+    public Lazy<IAnsiConsole> AnsiConsoleOut => new(() =>
+    {
+        return AnsiConsole.Create(new AnsiConsoleSettings()
+        {
+            Ansi = AnsiSupport.Detect,
+            ColorSystem = ColorSystemSupport.Detect,
+            Out = new AnsiConsoleOutput(Console.Out),
+        });
+    });
+
+    public bool Verbose { get; set; }
 }

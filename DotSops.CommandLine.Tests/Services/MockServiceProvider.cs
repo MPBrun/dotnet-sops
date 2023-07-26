@@ -20,5 +20,9 @@ internal sealed class MockServiceProvider : CommandLine.Services.IServiceProvide
 
     public Lazy<HttpClient> HttpClient { get; set; } = default!;
 
-    public Lazy<IAnsiConsole> AnsiConsole { get; set; } = default!;
+    public Lazy<IAnsiConsole> AnsiConsoleError { get; set; } = default!;
+
+    public Lazy<IAnsiConsole> AnsiConsoleOut { get; set; } = default!;
+
+    public bool Verbose { get; set; }
 }

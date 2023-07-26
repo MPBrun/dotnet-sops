@@ -1,25 +1,28 @@
-# dotSOPS: SOPS for dotnet
+# dotnet-sops: SOPS for dotnet
 Store and share [dotnet user-secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets) secure. Uses [SOPS](https://github.com/mozilla/sops) to encrypt and decrypt secrets.
 
 "No more plain secrets in Git"
 
-"Share secrets securely with all team members"
+"Share development secrets securely with all team members"
 
-Supports all keys supported by SOPS: AWS KMS, GCP KMS, Azure Key Vault, age and PGP
+Supports all encryption types supported by SOPS: AWS KMS, GCP KMS, Azure Key Vault, Hashicorp Vault, age and PGP
 
+# Warning
+When secrets are decrypted they are stored in plain, unencrypted text, that can be loaded by [user-secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-7.0&tabs=windows#secret-manager) tool.
+Only store development secrets that cannot access production like environment.
 
 # Install
 Run the following commands to install tool:
 ```
-dotnet tool install dotsops
+dotnet tool install dotnet-sops
 ```
 
 # Usage
 
-## Init dotsops
-Initialize dotsops
+## Init dotnet-sops
+Initialize dotnet-sops
 ```
-dotnet dotsops init
+dotnet sops init
 ```
 
 Creates .sops.yaml file
@@ -27,7 +30,7 @@ Creates .sops.yaml file
 ## Download SOPS
 Download SOPS from https://github.com/getsops/sops
 ```
-dotnet dotsops download-sops
+dotnet sops download-sops
 ```
 
 The executable will be used hereafter. The SOPS executable is file SHA-512 checksum checked.
@@ -35,19 +38,19 @@ The executable will be used hereafter. The SOPS executable is file SHA-512 check
 ## Encrypt
 Encrypt existing dotnet user secrets.
 ```
-dotnet dotsops encrypt --id <user-secret-id>
+dotnet sops encrypt --id <user-secret-id>
 ```
 
 ## Decrypt
 Decrypt secrets into dotnet user secrets.
 ```
-dotnet dotsops decrypt --id <user-secret-id>
+dotnet sops decrypt --id <user-secret-id>
 ```
 
 ## Help
 Show help and usage information
 ```
-dotnet dotsops --help
+dotnet sops --help
 ```
 
 # Configure SOPS
@@ -60,16 +63,16 @@ Usage with [age](https://github.com/FiloSottile/age) key
 ``` yaml
 creation_rules:
   - path_regex: secrets.json
-    age: 'age1...'
+    age: age1
 ```
 
 Only decryption is possible for user with the private key. If more should have access, then mulitple public age keys can be specified:
 ``` yaml
 creation_rules:
   - path_regex: secrets.json
-    age:
-      - 'age1...'
-      - 'age2...'
+    age: >-
+      age1,
+      age2
 ```
 
 # Configure SOPS with key groups
@@ -81,11 +84,11 @@ creation_rules:
       - pgp:
           - fingerprint1
         age:
-          - 'age1'
+          - age1
       - pgp:
           - fingerprint2
       - age:
-          - 'age2...'
+          - age2
 ```
 
 This requires access to fingerprint1 or age1. Require access to fingerprint2 and age2.

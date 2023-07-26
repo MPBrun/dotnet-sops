@@ -9,12 +9,12 @@ internal class SopsService : ISopsService
 
     public async Task EncryptAsync(FileInfo inputFilePath, FileInfo outoutFilePath, CancellationToken cancellationToken = default)
     {
-        await ExecuteAsync(new string[] { "--output", outoutFilePath.FullName, "--encrypt", inputFilePath.FullName }, cancellationToken);
+        await ExecuteAsync(new string[] { "--output", outoutFilePath.FullName, "--encrypt", inputFilePath.FullName, "--verbose" }, cancellationToken);
     }
 
     public async Task DecryptAsync(FileInfo inputFilePath, FileInfo outoutFilePath, CancellationToken cancellationToken = default)
     {
-        await ExecuteAsync(new string[] { "--output", outoutFilePath.FullName, "--decrypt", inputFilePath.FullName }, cancellationToken);
+        await ExecuteAsync(new string[] { "--output", outoutFilePath.FullName, "--decrypt", inputFilePath.FullName, "--verbose" }, cancellationToken);
     }
 
     public SopsService()
@@ -43,17 +43,20 @@ internal class SopsService : ISopsService
 
         try
         {
-            using var process = Process.Start(processStartInfo) ?? throw new DotSopsException(Properties.Resources.SopsRunFailed);
+            using var process = Process.Start(processStartInfo) ?? throw new SopsMissingException(Properties.Resources.SopsRunFailed);
             await process.WaitForExitAsync(cancellationToken);
             if (process.ExitCode != 0)
             {
                 var output = await process.StandardError.ReadToEndAsync(cancellationToken);
-                throw new DotSopsException(LocalizationResources.SopsRunFailed(output));
+                throw new SopsExecutionException(LocalizationResources.SopsRunFailedWithError(output.ReplaceLineEndings().Trim()))
+                {
+                    ExitCode = process.ExitCode
+                };
             }
         }
         catch (Win32Exception ex) when (ex.NativeErrorCode == 2)
         {
-            throw new DotSopsException(Properties.Resources.SopsIsMissing);
+            throw new SopsMissingException(Properties.Resources.SopsIsMissing);
         }
     }
 }

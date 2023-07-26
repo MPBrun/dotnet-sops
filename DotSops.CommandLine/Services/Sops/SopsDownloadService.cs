@@ -25,7 +25,7 @@ internal class SopsDownloadService : ISopsDownloadService
         var response = await _httpClient.GetAsync(url, cancellationToken);
         if (response.StatusCode != System.Net.HttpStatusCode.OK)
         {
-            throw new DotSopsException(LocalizationResources.SopsDownloadHttpFailed((int)response.StatusCode, url));
+            throw new SopsDownloadException(LocalizationResources.SopsDownloadHttpFailed((int)response.StatusCode, url));
         }
 
         // Get content
@@ -35,7 +35,7 @@ internal class SopsDownloadService : ISopsDownloadService
         var hash = BitConverter.ToString(SHA512.HashData(content)).Replace("-", "", StringComparison.OrdinalIgnoreCase); // Same as cli "certutil -hashfile sops.exe SHA512"
         if (!hash.Equals(release.Sha512Checksum, StringComparison.OrdinalIgnoreCase))
         {
-            throw new DotSopsException(LocalizationResources.SopsDownloadSha512Failed(release.Sha512Checksum.ToUpperInvariant(), hash.ToUpperInvariant()));
+            throw new SopsDownloadException(LocalizationResources.SopsDownloadSha512Failed(release.Sha512Checksum.ToUpperInvariant(), hash.ToUpperInvariant()));
         }
 
         // Save content to disk

@@ -4,6 +4,7 @@ using DotSops.CommandLine.Services.Sops;
 using DotSops.CommandLine.Tests.Services;
 using Moq;
 using Spectre.Console;
+using Spectre.Console.Testing;
 
 namespace DotSops.CommandLine.Tests.Commands;
 public class DownloadSopsCommandTests
@@ -13,11 +14,12 @@ public class DownloadSopsCommandTests
     {
         // Arrange
         var mockSopsDownloadService = new Mock<ISopsDownloadService>();
+        using var ansiConsole = new TestConsole();
 
         var serviceProvider = new MockServiceProvider()
         {
             SopsDownloadService = new Lazy<ISopsDownloadService>(mockSopsDownloadService.Object),
-            AnsiConsole = new Lazy<IAnsiConsole>(AnsiConsole.Console),
+            AnsiConsoleError = new Lazy<IAnsiConsole>(ansiConsole),
         };
 
         var command = new DownloadSopsCommand(serviceProvider);

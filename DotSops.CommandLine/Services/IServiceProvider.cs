@@ -19,5 +19,9 @@ internal interface IServiceProvider
 
     Lazy<HttpClient> HttpClient { get; }
 
-    Lazy<IAnsiConsole> AnsiConsole { get; }
+    Lazy<IAnsiConsole> AnsiConsoleError { get; }
+
+    Lazy<IAnsiConsole> AnsiConsoleOut { get; }
+
+    bool Verbose { get; set; }
 }

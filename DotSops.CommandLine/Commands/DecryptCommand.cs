@@ -1,7 +1,7 @@
 using System.CommandLine;
-using System.CommandLine.Parsing;
 using DotSops.CommandLine.Services.Sops;
 using DotSops.CommandLine.Services.UserSecrets;
+using Spectre.Console;
 
 namespace DotSops.CommandLine.Commands;
 
@@ -10,7 +10,6 @@ internal class DecryptCommand : CliCommand
     public const string CommandName = "decrypt";
 
     private readonly Services.IServiceProvider _serviceProvider;
-
     private readonly CliOption<string> _userSecretsIdOption = new("--id")
     {
         Description = Properties.Resources.DecryptCommandSecretsIdOptionDescription,
@@ -28,31 +27,28 @@ internal class DecryptCommand : CliCommand
         Add(_userSecretsIdOption);
         Add(_inputFileOption);
 
-        _inputFileOption.Validators.Add(ValidateInputFile);
         _serviceProvider = serviceProvider;
 
         SetAction((parseResult, cancellationToken) =>
         {
             return ExecuteAsync(
-              parseResult.GetValue(_userSecretsIdOption)!,
-              parseResult.GetValue(_inputFileOption)!,
-              _serviceProvider.SopsService.Value,
-              _serviceProvider.UserSecretsService.Value,
-              cancellationToken);
+                parseResult.GetValue(_userSecretsIdOption)!,
+                parseResult.GetValue(_inputFileOption)!,
+                _serviceProvider.AnsiConsoleError.Value,
+                _serviceProvider.SopsService.Value,
+                _serviceProvider.UserSecretsService.Value,
+                cancellationToken);
         });
     }
 
-    private void ValidateInputFile(OptionResult optionResult)
+    private static async Task<int> ExecuteAsync(string userSecretId, FileInfo inputFile, IAnsiConsole consoleError, ISopsService sopsService, IUserSecretsService userSecretsService, CancellationToken cancellationToken)
     {
-        var inputFile = optionResult.GetValue(_inputFileOption)!;
         if (!inputFile.Exists)
         {
-            optionResult.AddError(LocalizationResources.FileDoesNotExist(inputFile.FullName));
+            consoleError.MarkupLine(LocalizationResources.FileDoesNotExist(inputFile.FullName));
+            return 1;
         }
-    }
 
-    private static async Task ExecuteAsync(string userSecretId, FileInfo inputFile, ISopsService sopsService, IUserSecretsService userSecretsService, CancellationToken cancellationToken)
-    {
         var outputFile = userSecretsService.GetSecretsPathFromSecretsId(userSecretId);
 
         if (outputFile.Directory != null)
@@ -60,6 +56,23 @@ internal class DecryptCommand : CliCommand
             Directory.CreateDirectory(outputFile.Directory.FullName);
         }
 
-        await sopsService.DecryptAsync(inputFile, outputFile, cancellationToken);
+        try
+        {
+            await sopsService.DecryptAsync(inputFile, outputFile, cancellationToken);
+
+            consoleError.MarkupLineInterpolated($"[green]{inputFile.Name} successfully decrypted to user secret with id \"{userSecretId}\".[/]");
+
+            return 0;
+        }
+        catch (SopsMissingException ex)
+        {
+            consoleError.MarkupLine(ex.Message);
+            return 1;
+        }
+        catch (SopsExecutionException ex)
+        {
+            consoleError.MarkupLine(ex.Message);
+            return ex.ExitCode;
+        }
     }
 }

@@ -61,7 +61,7 @@ namespace DotSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Decrypt secrets into dotnet user secrets..
+        ///   Looks up a localized string similar to Decrypt secrets into dotnet user secrets.
         /// </summary>
         internal static string DecryptCommandDescription {
             get {
@@ -70,7 +70,7 @@ namespace DotSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File of the encrypted secrets..
+        ///   Looks up a localized string similar to File of the encrypted secrets.
         /// </summary>
         internal static string DecryptCommandFileOptionDescription {
             get {
@@ -79,7 +79,8 @@ namespace DotSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The user secret id to load secrets to..
+        ///   Looks up a localized string similar to The user secret id to load secrets to. 
+        ///Can be found in your project file (.csproj) in the &quot;UserSecretsId&quot; element..
         /// </summary>
         internal static string DecryptCommandSecretsIdOptionDescription {
             get {
@@ -88,7 +89,7 @@ namespace DotSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Download SOPS from https://github.com/mozilla/sops.
+        ///   Looks up a localized string similar to Download SOPS from https://github.com/getsops/sops.
         /// </summary>
         internal static string DownloadSopsCommandDescription {
             get {
@@ -106,7 +107,7 @@ namespace DotSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Encrypt existing dotnet user secrets..
+        ///   Looks up a localized string similar to Encrypt existing dotnet user secrets.
         /// </summary>
         internal static string EncryptCommandDescription {
             get {
@@ -115,7 +116,7 @@ namespace DotSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File of the encrypted secrets..
+        ///   Looks up a localized string similar to File of the encrypted secrets.
         /// </summary>
         internal static string EncryptCommandFileOptionDescription {
             get {
@@ -124,7 +125,8 @@ namespace DotSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The user secret id to load secrets from..
+        ///   Looks up a localized string similar to The user secret id to load secrets from.
+        ///Can be found in your project file (.csproj) in the &quot;UserSecretsId&quot; element..
         /// </summary>
         internal static string EncryptCommandSecretsIdOptionDescription {
             get {
@@ -133,8 +135,9 @@ namespace DotSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File does not exist.
-        ///Path: {0}.
+        ///   Looks up a localized string similar to [red]File does not exist.[/]
+        ///
+        ///[yellow]Path: {0}[/].
         /// </summary>
         internal static string FileDoesNotExist {
             get {
@@ -143,7 +146,24 @@ namespace DotSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Operating system is not supported..
+        ///   Looks up a localized string similar to Create .sops.yaml configuration file.
+        ///
+        ///Documentation on how to create encryptions keys:
+        ///Azure Key Vault - https://learn.microsoft.com/en-us/azure/key-vault
+        ///GCP KMS - https://cloud.google.com/security-key-management
+        ///AWS KMS - https://aws.amazon.com/kms
+        ///Hashicorp Vault - https://www.vaultproject.io
+        ///age - https://github.com/FiloSottile/age
+        ///PGP - https://www.openpgp.org.
+        /// </summary>
+        internal static string InitializeCommandDescription {
+            get {
+                return ResourceManager.GetString("InitializeCommandDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [red]Operating system is not supported.[/].
         /// </summary>
         internal static string OperatingSystemNotSupported {
             get {
@@ -152,8 +172,14 @@ namespace DotSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Store secrets with SOPS.
-        ///Loaded into dotnet environment with dotnet user-secrets..
+        ///   Looks up a localized string similar to Store and share encrypted secrets, created using user-secrets tool.
+        ///Secrets are encrypted and decrypted using SOPS.
+        ///Encrypted secrets can shared with other team members than can decrypt it, if they have access.
+        ///
+        ///Encryption types is configured using .sops.yaml file. Run &quot;dotnet sops init&quot; for help wizard to create .sops.yaml.
+        ///
+        ///Warning: When secrets are decrypted they are stored in plain, unencrypted text, that can be loaded by user-secrets tool.
+        ///Recomendation: Only store development secrets that canno [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string RootCommandDescription {
             get {
@@ -162,9 +188,19 @@ namespace DotSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to download SOPS.
-        ///HTTP status code: {0}
-        ///URL: {1}.
+        ///   Looks up a localized string similar to Enable verbose logging output.
+        /// </summary>
+        internal static string RootDotSopsCommandVerboseOptionDescription {
+            get {
+                return ResourceManager.GetString("RootDotSopsCommandVerboseOptionDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [red]Failed to download SOPS.[/]
+        ///
+        ///[yellow]HTTP status code: {0}[/]
+        ///[yellow]URL: {1}[/].
         /// </summary>
         internal static string SopsDownloadHttpFailed {
             get {
@@ -173,9 +209,10 @@ namespace DotSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SHA512 of SOPS did not match.
-        ///Expected: {0}
-        ///Actual:   {1}.
+        ///   Looks up a localized string similar to [red]SHA512 of SOPS executable did not match.[/]
+        ///
+        ///[yellow]Expected: {0}[/]
+        ///[yellow]Actual:   {1}[/].
         /// </summary>
         internal static string SopsDownloadSha512Failed {
             get {
@@ -184,7 +221,10 @@ namespace DotSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SOPS executable is missing..
+        ///   Looks up a localized string similar to [red]SOPS executable is missing from path environment.[/]
+        ///
+        ///You can download it by executing the following command:
+        ///[yellow]dotnet sops download-sops[/].
         /// </summary>
         internal static string SopsIsMissing {
             get {
@@ -193,7 +233,7 @@ namespace DotSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to run SOPS..
+        ///   Looks up a localized string similar to [red]Failed to run sops.[/].
         /// </summary>
         internal static string SopsRunFailed {
             get {
@@ -202,7 +242,8 @@ namespace DotSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SOPS failed with error.
+        ///   Looks up a localized string similar to [red]SOPS failed with error.[/]
+        ///
         ///{0}.
         /// </summary>
         internal static string SopsRunFailedWithError {
@@ -212,8 +253,9 @@ namespace DotSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User secrets file does not exist.
-        ///Path: {0}.
+        ///   Looks up a localized string similar to [red]User secrets file does not exist.[/]
+        ///
+        ///[yellow]Path: {0}[/].
         /// </summary>
         internal static string UserSecretsFileDoesNotExist {
             get {

@@ -1,17 +1,18 @@
-namespace DotSops.CommandLine;
+namespace DotSops.CommandLine.Services.Sops;
+
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1064:Exceptions should be public", Justification = "Used internal only.")]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Critical Code Smell", "S3871:Exception types should be \"public\"", Justification = "Used internal only.")]
-internal class DotSopsException : Exception
+internal class SopsDownloadException : Exception
 {
-    public DotSopsException()
+    public SopsDownloadException()
     {
     }
 
-    public DotSopsException(string message) : base(message)
+    public SopsDownloadException(string message) : base(message)
     {
     }
 
-    public DotSopsException(string message, Exception innerException) : base(message, innerException)
+    public SopsDownloadException(string message, Exception innerException) : base(message, innerException)
     {
     }
 }

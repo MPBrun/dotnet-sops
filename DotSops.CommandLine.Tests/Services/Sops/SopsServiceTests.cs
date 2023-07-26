@@ -1,7 +1,10 @@
 using System.Text.Json;
 using DotSops.CommandLine.Services.Sops;
+using DotSops.CommandLine.Tests.Fixtures;
 
 namespace DotSops.CommandLine.Tests.Services.Sops;
+
+[Collection(CollectionNames.Sops)]
 public class SopsServiceTests
 {
     [Fact]
@@ -81,6 +84,9 @@ public class SopsServiceTests
         };
         var content = JsonSerializer.Serialize(jsonContent);
         await File.WriteAllTextAsync(fileName.FullName, content);
+
+        // Provide age secret key for unit test purpose
+        Environment.SetEnvironmentVariable("SOPS_AGE_KEY", "AGE-SECRET-KEY-10HA9FMZENQKN8DXGZPRWZ7YK5R83AYK4FQVZ8Y5LPAV3430HXW7QZAFV9Z");
 
         // Sops config
         var sopsConfigPath = Path.Combine(dir.FullName, ".sops.yaml");

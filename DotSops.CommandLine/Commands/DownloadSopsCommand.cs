@@ -17,17 +17,30 @@ internal class DownloadSopsCommand : CliCommand
         SetAction((parseResult, cancellationToken) =>
         {
             return ExecuteAsync(
-              _serviceProvider.AnsiConsole.Value,
-              _serviceProvider.SopsDownloadService.Value,
-              cancellationToken);
+                _serviceProvider.AnsiConsoleError.Value,
+                _serviceProvider.SopsDownloadService.Value,
+                cancellationToken);
         });
     }
 
-    private static async Task ExecuteAsync(IAnsiConsole console, ISopsDownloadService sopsDownloadService, CancellationToken cancellationToken)
+    private static async Task<int> ExecuteAsync(IAnsiConsole consoleError, ISopsDownloadService sopsDownloadService, CancellationToken cancellationToken)
     {
-        await console.Status().StartAsync(Properties.Resources.DownloadSopsLoader, async (ctx) =>
+        try
         {
-            await sopsDownloadService.DownloadAsync(cancellationToken);
-        });
+            consoleError.MarkupLine("Downloading [green]SOPS[/] from [link]https://github.com/getsops/sops[/]");
+
+            await consoleError.Status().StartAsync(Properties.Resources.DownloadSopsLoader, async (ctx) =>
+            {
+                await sopsDownloadService.DownloadAsync(cancellationToken);
+            });
+
+            consoleError.MarkupLine("[green]SOPS has been successfully downloaded.[/]");
+            return 0;
+        }
+        catch (SopsExecutionException ex)
+        {
+            consoleError.WriteLine(ex.Message);
+            return ex.ExitCode;
+        }
     }
 }
