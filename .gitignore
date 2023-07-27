@@ -259,5 +259,5 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
-src/DotSops.CommandLine/Properties/PublishProfiles/
+src/DotnetSops.CommandLine/Properties/PublishProfiles/
 ToolInstallTest/

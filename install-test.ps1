@@ -24,7 +24,7 @@ New-Item $FolderName -ItemType "directory"
 Push-Location $FolderName
 
 dotnet new tool-manifest
-dotnet tool install --add-source ..\src\DotSops.CommandLine\bin\nupkg dotnet-sops
+dotnet tool install --add-source ..\src\DotnetSops.CommandLine\bin\nupkg dotnet-sops
 
 dotnet tool run dotnet-sops -- --version
 
