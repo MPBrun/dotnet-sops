@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using DotnetSops.CommandLine.Commands;
 using DotnetSops.CommandLine.Services.FileBom;
+using DotnetSops.CommandLine.Services.ProjectInfo;
 using DotnetSops.CommandLine.Services.Sops;
 using DotnetSops.CommandLine.Services.UserSecrets;
 using DotnetSops.CommandLine.Tests.Fixtures;
@@ -22,6 +23,7 @@ public class EncryptCommandTests
     {
         // Arrange
         var dir = Directory.CreateDirectory(Guid.NewGuid().ToString());
+        var projectInfoService = new ProjectInfoService();
         var sopsService = new SopsService(dir.FullName);
         var userSecretsService = new UserSecretsServiceStub(dir.FullName);
         var fileBomService = new FileBomService();
@@ -29,6 +31,7 @@ public class EncryptCommandTests
 
         var serviceProvider = new MockServiceProvider()
         {
+            ProjectInfoService = new Lazy<IProjectInfoService>(projectInfoService),
             SopsService = new Lazy<ISopsService>(sopsService),
             UserSecretsService = new Lazy<IUserSecretsService>(userSecretsService),
             FileBomService = new Lazy<IFileBomService>(fileBomService),
@@ -75,6 +78,7 @@ public class EncryptCommandTests
     {
         // Arrange
         var dir = Directory.CreateDirectory(Guid.NewGuid().ToString());
+        var projectInfoService = new ProjectInfoService();
         var sopsService = new SopsService(dir.FullName);
         var userSecretsService = new UserSecretsServiceStub(dir.FullName);
         var fileBomService = new FileBomService();
@@ -82,6 +86,7 @@ public class EncryptCommandTests
 
         var serviceProvider = new MockServiceProvider()
         {
+            ProjectInfoService = new Lazy<IProjectInfoService>(projectInfoService),
             SopsService = new Lazy<ISopsService>(sopsService),
             UserSecretsService = new Lazy<IUserSecretsService>(userSecretsService),
             FileBomService = new Lazy<IFileBomService>(fileBomService),
@@ -130,6 +135,7 @@ public class EncryptCommandTests
     {
         // Arrange
         var dir = Directory.CreateDirectory(Guid.NewGuid().ToString());
+        var projectInfoService = new ProjectInfoService();
         var sopsService = new SopsService(dir.FullName);
         var userSecretsService = new UserSecretsServiceStub(dir.FullName);
         var fileBomService = new FileBomService();
@@ -137,6 +143,7 @@ public class EncryptCommandTests
 
         var serviceProvider = new MockServiceProvider()
         {
+            ProjectInfoService = new Lazy<IProjectInfoService>(projectInfoService),
             SopsService = new Lazy<ISopsService>(sopsService),
             UserSecretsService = new Lazy<IUserSecretsService>(userSecretsService),
             FileBomService = new Lazy<IFileBomService>(fileBomService),
@@ -195,6 +202,7 @@ public class EncryptCommandTests
     {
         // Arrange
         var dir = Directory.CreateDirectory(Guid.NewGuid().ToString());
+        var projectInfoService = new ProjectInfoService();
         var sopsService = new SopsService(dir.FullName);
         var userSecretsService = new UserSecretsServiceStub(dir.FullName);
         var fileBomService = new FileBomService();
@@ -202,6 +210,7 @@ public class EncryptCommandTests
 
         var serviceProvider = new MockServiceProvider()
         {
+            ProjectInfoService = new Lazy<IProjectInfoService>(projectInfoService),
             SopsService = new Lazy<ISopsService>(sopsService),
             UserSecretsService = new Lazy<IUserSecretsService>(userSecretsService),
             FileBomService = new Lazy<IFileBomService>(fileBomService),

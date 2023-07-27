@@ -1,7 +1,11 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-dotnet pack --configuration Release
+$DateTime = (Get-Date).ToUniversalTime()
+$UnixTimeStamp = [System.Math]::Truncate((Get-Date -Date $DateTime -UFormat %s))
+$VersionSuffix = "alpha-${UnixTimeStamp}"
+
+dotnet pack --version-suffix $VersionSuffix --configuration Release
 
 # Delete local cache. https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-install#local-tools
 
@@ -24,7 +28,7 @@ New-Item $FolderName -ItemType "directory"
 Push-Location $FolderName
 
 dotnet new tool-manifest
-dotnet tool install --add-source ..\src\DotnetSops.CommandLine\bin\nupkg dotnet-sops
+dotnet tool install --add-source ..\src\DotnetSops.CommandLine\bin\nupkg dotnet-sops --prerelease
 
 dotnet tool run dotnet-sops -- --version
 

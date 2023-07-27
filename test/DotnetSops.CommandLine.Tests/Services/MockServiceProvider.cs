@@ -1,5 +1,6 @@
 using DotnetSops.CommandLine.Services.FileBom;
 using DotnetSops.CommandLine.Services.PlatformInformation;
+using DotnetSops.CommandLine.Services.ProjectInfo;
 using DotnetSops.CommandLine.Services.Sops;
 using DotnetSops.CommandLine.Services.UserSecrets;
 using Spectre.Console;
@@ -17,6 +18,8 @@ internal sealed class MockServiceProvider : CommandLine.Services.IServiceProvide
     public Lazy<ISopsDownloadService> SopsDownloadService { get; set; } = default!;
 
     public Lazy<IPlatformInformationService> PlatformInformationService { get; set; } = default!;
+
+    public Lazy<IProjectInfoService> ProjectInfoService { get; set; } = default!;
 
     public Lazy<HttpClient> HttpClient { get; set; } = default!;
 

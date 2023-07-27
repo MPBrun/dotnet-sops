@@ -7,6 +7,11 @@ namespace DotnetSops.CommandLine.Tests.Services.Sops;
 [Collection(CollectionNames.Sops)]
 public class SopsServiceTests
 {
+    public SopsServiceTests()
+    {
+        Environment.SetEnvironmentVariable("SOPS_AGE_KEY", null);
+    }
+
     [Fact]
     public void DefaultConsturctor_WorkingDirectory_IsCurrentDirectory()
     {

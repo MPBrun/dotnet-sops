@@ -1,5 +1,6 @@
 using DotnetSops.CommandLine.Services.FileBom;
 using DotnetSops.CommandLine.Services.PlatformInformation;
+using DotnetSops.CommandLine.Services.ProjectInfo;
 using DotnetSops.CommandLine.Services.Sops;
 using DotnetSops.CommandLine.Services.UserSecrets;
 using Spectre.Console;
@@ -16,6 +17,8 @@ internal class ServiceProvider : IServiceProvider
     public Lazy<ISopsDownloadService> SopsDownloadService => new(() => new SopsDownloadService(PlatformInformationService.Value, HttpClient.Value));
 
     public Lazy<IPlatformInformationService> PlatformInformationService => new(() => new PlatformInformationService());
+
+    public Lazy<IProjectInfoService> ProjectInfoService => new(() => new ProjectInfoService());
 
     public Lazy<HttpClient> HttpClient => new(() => new HttpClient());
 

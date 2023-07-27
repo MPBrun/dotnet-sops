@@ -2,6 +2,7 @@ using System.CommandLine;
 using System.Text.Json;
 using DotnetSops.CommandLine.Commands;
 using DotnetSops.CommandLine.Services.FileBom;
+using DotnetSops.CommandLine.Services.ProjectInfo;
 using DotnetSops.CommandLine.Services.Sops;
 using DotnetSops.CommandLine.Services.UserSecrets;
 using DotnetSops.CommandLine.Tests.Fixtures;
@@ -16,11 +17,17 @@ namespace DotnetSops.CommandLine.Tests.Commands;
 [Collection(CollectionNames.Sops)]
 public class DecryptCommandTests
 {
+    public DecryptCommandTests()
+    {
+        Environment.SetEnvironmentVariable("SOPS_AGE_KEY", null);
+    }
+
     [Fact]
     public async Task DecryptCommand_ValidOptions_CreateFile()
     {
         // Arrange
         var dir = Directory.CreateDirectory(Guid.NewGuid().ToString());
+        var projectInfoService = new ProjectInfoService();
         var sopsService = new SopsService(dir.FullName);
         var userSecretsService = new UserSecretsServiceStub(dir.FullName);
         var fileBomService = new FileBomService();
@@ -28,6 +35,7 @@ public class DecryptCommandTests
 
         var serviceProvider = new MockServiceProvider()
         {
+            ProjectInfoService = new Lazy<IProjectInfoService>(projectInfoService),
             SopsService = new Lazy<ISopsService>(sopsService),
             UserSecretsService = new Lazy<IUserSecretsService>(userSecretsService),
             FileBomService = new Lazy<IFileBomService>(fileBomService),
@@ -95,6 +103,7 @@ public class DecryptCommandTests
     {
         // Arrange
         var dir = Directory.CreateDirectory(Guid.NewGuid().ToString());
+        var projectInfoService = new ProjectInfoService();
         var sopsService = new SopsService(dir.FullName);
         var userSecretsService = new UserSecretsServiceStub(dir.FullName);
         var fileBomService = new FileBomService();
@@ -102,6 +111,7 @@ public class DecryptCommandTests
 
         var serviceProvider = new MockServiceProvider()
         {
+            ProjectInfoService = new Lazy<IProjectInfoService>(projectInfoService),
             SopsService = new Lazy<ISopsService>(sopsService),
             UserSecretsService = new Lazy<IUserSecretsService>(userSecretsService),
             FileBomService = new Lazy<IFileBomService>(fileBomService),

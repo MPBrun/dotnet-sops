@@ -1,8 +1,7 @@
 using System.CommandLine;
+using DotnetSops.CommandLine.Services.ProjectInfo;
 using DotnetSops.CommandLine.Services.Sops;
 using DotnetSops.CommandLine.Services.UserSecrets;
-using Microsoft.Build.Construction;
-using Microsoft.Build.Exceptions;
 using Spectre.Console;
 
 namespace DotnetSops.CommandLine.Commands;
@@ -45,68 +44,24 @@ internal class DecryptCommand : CliCommand
                 parseResult.GetValue(_userSecretsIdOption),
                 parseResult.GetValue(_inputFileOption)!,
                 _serviceProvider.AnsiConsoleError.Value,
+                _serviceProvider.ProjectInfoService.Value,
                 _serviceProvider.SopsService.Value,
                 _serviceProvider.UserSecretsService.Value,
                 cancellationToken);
         });
     }
 
-    private static async Task<int> ExecuteAsync(FileInfo? projectFile, string? userSecretId, FileInfo inputFile, IAnsiConsole consoleError, ISopsService sopsService, IUserSecretsService userSecretsService, CancellationToken cancellationToken)
+    private static async Task<int> ExecuteAsync(FileInfo? projectFile, string? userSecretId, FileInfo inputFile, IAnsiConsole consoleError, IProjectInfoService projectInfoService, ISopsService sopsService, IUserSecretsService userSecretsService, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(userSecretId))
         {
-            if (projectFile == null)
-            {
-                var projectFiles = Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.*proj", SearchOption.TopDirectoryOnly)
-                    .Where(f => !".xproj".Equals(Path.GetExtension(f), StringComparison.OrdinalIgnoreCase))
-                    .Select(file => new FileInfo(file))
-                    .ToList();
-                if (projectFiles.Count > 1)
-                {
-                    consoleError.MarkupLineInterpolated($"""
-                        [red]Multiple MSBuild project files found in '{Directory.GetCurrentDirectory()}'.
-                        Specify which to use with the --project option[/]
-                        """);
-                    return 1;
-                }
-                else if (projectFiles.Count == 0)
-                {
-                    consoleError.MarkupLineInterpolated($"""
-                        [red]Could not find a MSBuild project file in '{Directory.GetCurrentDirectory()}'.
-                        Specify which project to use with the --project option or use the '--id' option.[/]
-                        """);
-                    return 1;
-                }
-                else
-                {
-                    projectFile = projectFiles[0];
-                }
-            }
-
-            if (!projectFile.Exists)
-            {
-                consoleError.MarkupLine(LocalizationResources.FileDoesNotExist(projectFile.FullName));
-                return 1;
-            }
             try
             {
-                var project = ProjectRootElement.Open(projectFile.FullName);
-                userSecretId = project.Properties.FirstOrDefault(p => p.Name == "UserSecretsId")?.Value;
-
-                if (string.IsNullOrWhiteSpace(userSecretId))
-                {
-                    consoleError.MarkupLineInterpolated($"""
-                        [red]Could not find the global property 'UserSecretsId' in MSBuild project '{projectFile.FullName}'
-                        Ensure this property is set in the project or use the '--id' command line option.[/]
-                        """);
-                    return 1;
-                }
+                userSecretId = projectInfoService.FindUserSecretId(projectFile);
             }
-            catch (InvalidProjectFileException)
+            catch (ProjectInfoSearchException ex)
             {
-                consoleError.MarkupLineInterpolated($"""
-                        [red]Could not load the MSBuild project '{projectFile.FullName}'.[/]
-                        """);
+                consoleError.MarkupLineInterpolated($"[red]{ex.Message}[/]");
                 return 1;
             }
         }
