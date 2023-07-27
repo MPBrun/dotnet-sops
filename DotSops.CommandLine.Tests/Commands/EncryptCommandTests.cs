@@ -246,14 +246,14 @@ public class EncryptCommandTests
     }
 
     [Fact]
-    public void EncryptCommand_Id_Required()
+    public void EncryptCommand_Id_NotRequired()
     {
         // Arrange
         var command = new EncryptCommand(new MockServiceProvider());
 
         // Act / Assert
         var option = command.Options.First(o => o.Name == "--id");
-        Assert.True(option.Required);
+        Assert.False(option.Required);
     }
 
     [Fact]

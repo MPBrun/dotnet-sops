@@ -1,4 +1,5 @@
 using System.CommandLine;
+using DotSops.CommandLine.Commands.Prompts;
 using DotSops.CommandLine.Services.Sops;
 using Spectre.Console;
 using YamlDotNet.Serialization;
@@ -29,29 +30,32 @@ internal class InitializeCommand : CliCommand
         var alreadyExist = File.Exists(".sops.yaml");
         if (alreadyExist)
         {
-            var generate = consoleError.Confirm("[green]?[/] Are you sure to overwrite existing [yellow].sops.yaml[/]?", false);
+            var generate = await new Prompts.ConfirmationPrompt("[green]?[/] Are you sure to overwrite existing [yellow].sops.yaml[/]?")
+                .ShowAsync(consoleError, cancellationToken);
             if (!generate)
             {
                 return 0;
             }
         }
 
-        var encryptionType = consoleError.Prompt(
-            new SelectionPrompt<SopsEncryptionType>()
-            .Title("[green]?[/] Which encryption whould you like to use?")
-            .UseConverter(encryptionType =>
+        var encryptionTypeConverter = (SopsEncryptionType encryptionType) =>
+        {
+            return encryptionType switch
             {
-                return encryptionType switch
-                {
-                    SopsEncryptionType.AzureKeyVault => "Azure Key Vault",
-                    SopsEncryptionType.AwsKms => "AWS KMS",
-                    SopsEncryptionType.GcpKms => "GCP KMS",
-                    SopsEncryptionType.HashicorpVault => "Hashicorp Vault",
-                    SopsEncryptionType.Age => "age",
-                    SopsEncryptionType.Pgp => "PGP",
-                    _ => throw new NotSupportedException(),
-                };
-            })
+                SopsEncryptionType.AzureKeyVault => "Azure Key Vault",
+                SopsEncryptionType.AwsKms => "AWS KMS",
+                SopsEncryptionType.GcpKms => "GCP KMS",
+                SopsEncryptionType.HashicorpVault => "Hashicorp Vault",
+                SopsEncryptionType.Age => "age",
+                SopsEncryptionType.Pgp => "PGP",
+                _ => throw new NotSupportedException(),
+            };
+        };
+
+        var encryptionType = await new SelectionPrompt<SopsEncryptionType>()
+            .Title("[green]?[/] Which encryption whould you like to use?")
+            .UseConverter(encryptionTypeConverter)
+            .WrapAround(true)
             .AddChoices(
                 SopsEncryptionType.AzureKeyVault,
                 SopsEncryptionType.AwsKms,
@@ -59,9 +63,9 @@ internal class InitializeCommand : CliCommand
                 SopsEncryptionType.HashicorpVault,
                 SopsEncryptionType.Age,
                 SopsEncryptionType.Pgp)
-            );
+            .ShowAsync(consoleError, cancellationToken);
 
-        consoleError.MarkupLine($"[green]?[/] Which encryption whould you like to use? {encryptionType}");
+        consoleError.MarkupLineInterpolated($"[green]?[/] Which encryption whould you like to use? [blue]{encryptionTypeConverter(encryptionType)}[/]");
 
         var sopsCreationRule = new SopsCreationRule()
         {
@@ -79,9 +83,12 @@ internal class InitializeCommand : CliCommand
         {
             case SopsEncryptionType.AzureKeyVault:
                 {
-                    var keyVaultName = consoleError.Ask<string>("[green]?[/] What is the name of the key vault?");
-                    var keyName = consoleError.Ask<string>("[green]?[/] What is object name of the key?");
-                    var keyVersion = consoleError.Ask<string>("[green]?[/] What is object version of the key?");
+                    var keyVaultName = await new AskPrompt("[green]?[/] What is the name of the key vault?")
+                        .ShowAsync(consoleError, cancellationToken);
+                    var keyName = await new AskPrompt("[green]?[/] What is object name of the key?")
+                        .ShowAsync(consoleError, cancellationToken);
+                    var keyVersion = await new AskPrompt("[green]?[/] What is object version of the key?")
+                        .ShowAsync(consoleError, cancellationToken);
 
                     var key = $"https://{keyVaultName.Trim()}.vault.azure.net/keys/{keyName.Trim()}/{keyVersion.Trim()}";
                     sopsCreationRule.AzureKeyvault = key;
@@ -95,14 +102,16 @@ internal class InitializeCommand : CliCommand
                 throw new NotImplementedException();
             case SopsEncryptionType.Age:
                 {
-                    var publicKey = consoleError.Ask<string>("[green]?[/] What is public key of age?");
+                    var publicKey = await new AskPrompt("[green]?[/] What is public key of age?")
+                        .ShowAsync(consoleError, cancellationToken);
                     sopsCreationRule.Age = publicKey.Trim();
                     break;
                 }
 
             case SopsEncryptionType.Pgp:
                 {
-                    var publicKey = consoleError.Ask<string>("[green]?[/] What is public key of PGP?");
+                    var publicKey = await new AskPrompt("[green]?[/] What is public key of PGP?")
+                        .ShowAsync(consoleError, cancellationToken);
                     sopsCreationRule.Pgp = publicKey.Trim();
                     break;
                 }
@@ -121,7 +130,7 @@ internal class InitializeCommand : CliCommand
 
         consoleError.WriteLine();
         consoleError.MarkupLine("[green]Generated .sops.yaml with the following content:[/]");
-        consoleError.MarkupLine($"[yellow]{content}[/]");
+        consoleError.MarkupLineInterpolated($"[yellow]{content}[/]");
 
         return 0;
     }

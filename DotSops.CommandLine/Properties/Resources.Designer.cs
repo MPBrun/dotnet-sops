@@ -79,8 +79,16 @@ namespace DotSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The user secret id to load secrets to. 
-        ///Can be found in your project file (.csproj) in the &quot;UserSecretsId&quot; element..
+        ///   Looks up a localized string similar to Path to project. Defaults to searching the current directory.
+        /// </summary>
+        internal static string DecryptCommandProjectOptionDescription {
+            get {
+                return ResourceManager.GetString("DecryptCommandProjectOptionDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The user secret ID to use..
         /// </summary>
         internal static string DecryptCommandSecretsIdOptionDescription {
             get {
@@ -125,8 +133,16 @@ namespace DotSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The user secret id to load secrets from.
-        ///Can be found in your project file (.csproj) in the &quot;UserSecretsId&quot; element..
+        ///   Looks up a localized string similar to Path to project. Defaults to searching the current directory.
+        /// </summary>
+        internal static string EncryptCommandProjectOptionDescription {
+            get {
+                return ResourceManager.GetString("EncryptCommandProjectOptionDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The user secret ID to use..
         /// </summary>
         internal static string EncryptCommandSecretsIdOptionDescription {
             get {

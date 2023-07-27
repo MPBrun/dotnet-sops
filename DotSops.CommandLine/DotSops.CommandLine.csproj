@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <UserSecretsId>f9428084-91de-4bb1-af29-da8d220a7b4b</UserSecretsId>
     <PackageOutputPath>./bin/nupkg</PackageOutputPath>
+    <AssemblyName>dotnet-sops</AssemblyName>
 
     <PackAsTool>true</PackAsTool>
     <PackageId>dotnet-sops</PackageId>
@@ -27,6 +28,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Build" Version="17.6.3" />
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

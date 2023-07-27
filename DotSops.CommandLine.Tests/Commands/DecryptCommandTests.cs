@@ -169,14 +169,14 @@ public class DecryptCommandTests
     }
 
     [Fact]
-    public void DecryptCommand_Id_Required()
+    public void DecryptCommand_Id_NotRequired()
     {
         // Arrange
         var command = new DecryptCommand(new MockServiceProvider());
 
         // Act / Assert
         var option = command.Options.First(o => o.Name == "--id");
-        Assert.True(option.Required);
+        Assert.False(option.Required);
     }
 
     [Fact]

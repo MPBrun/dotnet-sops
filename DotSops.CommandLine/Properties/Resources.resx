@@ -123,9 +123,11 @@
   <data name="DecryptCommandFileOptionDescription" xml:space="preserve">
     <value>File of the encrypted secrets</value>
   </data>
+  <data name="DecryptCommandProjectOptionDescription" xml:space="preserve">
+    <value>Path to project. Defaults to searching the current directory</value>
+  </data>
   <data name="DecryptCommandSecretsIdOptionDescription" xml:space="preserve">
-    <value>The user secret id to load secrets to. 
-Can be found in your project file (.csproj) in the "UserSecretsId" element.</value>
+    <value>The user secret ID to use.</value>
   </data>
   <data name="DownloadSopsCommandDescription" xml:space="preserve">
     <value>Download SOPS from https://github.com/getsops/sops</value>
@@ -139,9 +141,11 @@ Can be found in your project file (.csproj) in the "UserSecretsId" element.</val
   <data name="EncryptCommandFileOptionDescription" xml:space="preserve">
     <value>File of the encrypted secrets</value>
   </data>
+  <data name="EncryptCommandProjectOptionDescription" xml:space="preserve">
+    <value>Path to project. Defaults to searching the current directory</value>
+  </data>
   <data name="EncryptCommandSecretsIdOptionDescription" xml:space="preserve">
-    <value>The user secret id to load secrets from.
-Can be found in your project file (.csproj) in the "UserSecretsId" element.</value>
+    <value>The user secret ID to use.</value>
   </data>
   <data name="FileDoesNotExist" xml:space="preserve">
     <value>[red]File does not exist.[/]
