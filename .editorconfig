@@ -314,7 +314,7 @@ csharp_style_prefer_pattern_matching = true:warning
 csharp_style_prefer_not_pattern = true:warning
 
 # Test classes
-[*Tests/**/*.{cs,vb}]
+[test/**/*.{cs,vb}]
 
 # CA1707: Identifiers should not contain underscores
 dotnet_diagnostic.CA1707.severity = none

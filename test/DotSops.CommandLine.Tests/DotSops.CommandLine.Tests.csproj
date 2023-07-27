@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DotSops.CommandLine\DotSops.CommandLine.csproj" />
+    <ProjectReference Include="..\..\src\DotSops.CommandLine\DotSops.CommandLine.csproj" />
   </ItemGroup>
 
   <ItemGroup>
