@@ -1,6 +1,6 @@
 using System.CommandLine;
+using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.Sops;
-using Spectre.Console;
 
 namespace DotnetSops.CommandLine.Commands;
 internal class DownloadSopsCommand : CliCommand
@@ -17,29 +17,29 @@ internal class DownloadSopsCommand : CliCommand
         SetAction((parseResult, cancellationToken) =>
         {
             return ExecuteAsync(
-                _serviceProvider.AnsiConsoleError.Value,
+                _serviceProvider.Logger.Value,
                 _serviceProvider.SopsDownloadService.Value,
                 cancellationToken);
         });
     }
 
-    private static async Task<int> ExecuteAsync(IAnsiConsole consoleError, ISopsDownloadService sopsDownloadService, CancellationToken cancellationToken)
+    private static async Task<int> ExecuteAsync(ILogger logger, ISopsDownloadService sopsDownloadService, CancellationToken cancellationToken)
     {
         try
         {
-            consoleError.MarkupLine("Downloading [green]SOPS[/] from [link]https://github.com/getsops/sops[/]");
+            logger.LogInformation("Downloading [green]SOPS[/] from [link]https://github.com/getsops/sops[/]");
 
-            await consoleError.Status().StartAsync(Properties.Resources.DownloadSopsLoader, async (ctx) =>
+            await logger.Status().StartAsync(Properties.Resources.DownloadSopsLoader, async (ctx) =>
             {
                 await sopsDownloadService.DownloadAsync(cancellationToken);
             });
 
-            consoleError.MarkupLine("[green]SOPS has been successfully downloaded.[/]");
+            logger.LogSuccess("SOPS has been successfully downloaded.");
             return 0;
         }
         catch (SopsExecutionException ex)
         {
-            consoleError.WriteLine(ex.Message);
+            logger.LogError(ex.Message);
             return ex.ExitCode;
         }
     }

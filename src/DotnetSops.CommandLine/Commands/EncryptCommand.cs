@@ -1,13 +1,13 @@
 using System.CommandLine;
+using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.FileBom;
 using DotnetSops.CommandLine.Services.ProjectInfo;
 using DotnetSops.CommandLine.Services.Sops;
 using DotnetSops.CommandLine.Services.UserSecrets;
-using Spectre.Console;
 
 namespace DotnetSops.CommandLine.Commands;
 
-internal partial class EncryptCommand : CliCommand
+internal class EncryptCommand : CliCommand
 {
     public const string CommandName = "encrypt";
 
@@ -44,7 +44,7 @@ internal partial class EncryptCommand : CliCommand
                 parseResult.GetValue(_projectFileOption),
                 parseResult.GetValue(_userSecretsIdOption),
                 parseResult.GetValue(_outputFileOption)!,
-                _serviceProvider.AnsiConsoleError.Value,
+                _serviceProvider.Logger.Value,
                 _serviceProvider.ProjectInfoService.Value,
                 _serviceProvider.SopsService.Value,
                 _serviceProvider.UserSecretsService.Value,
@@ -53,7 +53,7 @@ internal partial class EncryptCommand : CliCommand
         });
     }
 
-    private static async Task<int> ExecuteAsync(FileInfo? projectFile, string? userSecretId, FileInfo outputFile, IAnsiConsole consoleError, IProjectInfoService projectInfoService, ISopsService sopsService, IUserSecretsService userSecretsService, IFileBomService fileBomService, CancellationToken cancellationToken)
+    private static async Task<int> ExecuteAsync(FileInfo? projectFile, string? userSecretId, FileInfo outputFile, ILogger logger, IProjectInfoService projectInfoService, ISopsService sopsService, IUserSecretsService userSecretsService, IFileBomService fileBomService, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(userSecretId))
         {
@@ -63,7 +63,7 @@ internal partial class EncryptCommand : CliCommand
             }
             catch (ProjectInfoSearchException ex)
             {
-                consoleError.MarkupLineInterpolated($"[red]{ex.Message}[/]");
+                logger.LogError(ex.Message);
                 return 1;
             }
         }
@@ -71,7 +71,7 @@ internal partial class EncryptCommand : CliCommand
         var inputFile = userSecretsService.GetSecretsPathFromSecretsId(userSecretId);
         if (!inputFile.Exists)
         {
-            consoleError.MarkupLine(LocalizationResources.UserSecretsFileDoesNotExist(inputFile.FullName));
+            logger.LogError(LocalizationResources.UserSecretsFileDoesNotExist(inputFile.FullName));
             return 1;
         }
 
@@ -81,18 +81,20 @@ internal partial class EncryptCommand : CliCommand
         {
             await sopsService.EncryptAsync(inputFile, outputFile, cancellationToken);
 
-            consoleError.MarkupLineInterpolated($"[green]User secret with id \"{userSecretId}\" successfully encrypted to \"{outputFile.FullName}\".[/]");
+            logger.LogSuccess($"User secret with id \"{userSecretId}\" successfully encrypted to \"{outputFile.FullName}\".");
 
             return 0;
         }
         catch (SopsMissingException ex)
         {
-            consoleError.MarkupLine(ex.Message);
+            logger.LogError(ex.Message);
+            logger.LogInformation(string.Empty);
+            logger.LogInformation(Properties.Resources.SopsIsMissingTry);
             return 1;
         }
         catch (SopsExecutionException ex)
         {
-            consoleError.MarkupLine(ex.Message);
+            logger.LogError(ex.Message);
             return ex.ExitCode;
         }
     }

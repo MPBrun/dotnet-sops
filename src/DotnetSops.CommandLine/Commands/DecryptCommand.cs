@@ -1,8 +1,8 @@
 using System.CommandLine;
+using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.ProjectInfo;
 using DotnetSops.CommandLine.Services.Sops;
 using DotnetSops.CommandLine.Services.UserSecrets;
-using Spectre.Console;
 
 namespace DotnetSops.CommandLine.Commands;
 
@@ -43,7 +43,7 @@ internal class DecryptCommand : CliCommand
                 parseResult.GetValue(_projectFileOption),
                 parseResult.GetValue(_userSecretsIdOption),
                 parseResult.GetValue(_inputFileOption)!,
-                _serviceProvider.AnsiConsoleError.Value,
+                _serviceProvider.Logger.Value,
                 _serviceProvider.ProjectInfoService.Value,
                 _serviceProvider.SopsService.Value,
                 _serviceProvider.UserSecretsService.Value,
@@ -51,7 +51,7 @@ internal class DecryptCommand : CliCommand
         });
     }
 
-    private static async Task<int> ExecuteAsync(FileInfo? projectFile, string? userSecretId, FileInfo inputFile, IAnsiConsole consoleError, IProjectInfoService projectInfoService, ISopsService sopsService, IUserSecretsService userSecretsService, CancellationToken cancellationToken)
+    private static async Task<int> ExecuteAsync(FileInfo? projectFile, string? userSecretId, FileInfo inputFile, ILogger logger, IProjectInfoService projectInfoService, ISopsService sopsService, IUserSecretsService userSecretsService, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(userSecretId))
         {
@@ -61,14 +61,14 @@ internal class DecryptCommand : CliCommand
             }
             catch (ProjectInfoSearchException ex)
             {
-                consoleError.MarkupLineInterpolated($"[red]{ex.Message}[/]");
+                logger.LogError(ex.Message);
                 return 1;
             }
         }
 
         if (!inputFile.Exists)
         {
-            consoleError.MarkupLine(LocalizationResources.FileDoesNotExist(inputFile.FullName));
+            logger.LogError(LocalizationResources.FileDoesNotExist(inputFile.FullName));
             return 1;
         }
 
@@ -83,18 +83,20 @@ internal class DecryptCommand : CliCommand
         {
             await sopsService.DecryptAsync(inputFile, outputFile, cancellationToken);
 
-            consoleError.MarkupLineInterpolated($"[green]{inputFile.Name} successfully decrypted to user secret with id \"{userSecretId}\".[/]");
+            logger.LogSuccess($"{inputFile.Name} successfully decrypted to user secret with id \"{userSecretId}\".");
 
             return 0;
         }
         catch (SopsMissingException ex)
         {
-            consoleError.MarkupLine(ex.Message);
+            logger.LogError(ex.Message);
+            logger.LogInformation(string.Empty);
+            logger.LogInformation(Properties.Resources.SopsIsMissingTry);
             return 1;
         }
         catch (SopsExecutionException ex)
         {
-            consoleError.MarkupLine(ex.Message);
+            logger.LogError(ex.Message);
             return ex.ExitCode;
         }
     }

@@ -46,7 +46,7 @@ public class SopsDownloadServiceTests
 
         // Act / Assert
         var exception = await Assert.ThrowsAsync<NotSupportedException>(() => service.DownloadAsync());
-        Assert.Equal("[red]Operating system is not supported.[/]", exception.Message);
+        Assert.Equal("Operating system is not supported.", exception.Message);
     }
 
     [Fact]
@@ -74,10 +74,10 @@ public class SopsDownloadServiceTests
         var exception = await Assert.ThrowsAsync<SopsDownloadException>(() => service.DownloadAsync());
         Assert.Equal(
             """
-            [red]SHA512 of SOPS executable did not match.[/]
+            SHA512 of SOPS executable did not match.
 
-            [yellow]Expected: 0B6F768D388A9316838EFC58BEBE16F0598B84F45643249996BDC6D2E237B5B01C65069809CFC153A3E97402691F4C1879D3EA4920B7DE03B38EEFD17C717C2D[/]
-            [yellow]Actual:   A3E03514F3629913BCAF0B2119004854335101BDD70AEAEA3BDAB24F49C71DA8FD425BBAC89B0CE097579E8A80232116F9823D624B5A7490BC3EFF3320DBE105[/]
+            Expected: 0B6F768D388A9316838EFC58BEBE16F0598B84F45643249996BDC6D2E237B5B01C65069809CFC153A3E97402691F4C1879D3EA4920B7DE03B38EEFD17C717C2D
+            Actual:   A3E03514F3629913BCAF0B2119004854335101BDD70AEAEA3BDAB24F49C71DA8FD425BBAC89B0CE097579E8A80232116F9823D624B5A7490BC3EFF3320DBE105
             """, exception.Message);
     }
 
@@ -105,10 +105,10 @@ public class SopsDownloadServiceTests
         var exception = await Assert.ThrowsAsync<SopsDownloadException>(() => service.DownloadAsync());
         Assert.Equal(
             """
-            [red]Failed to download SOPS.[/]
+            Failed to download SOPS.
 
-            [yellow]HTTP status code: 404[/]
-            [yellow]URL: https://github.com/getsops/sops/releases/download/v3.7.3/sops-v3.7.3.exe[/]
+            HTTP status code: 404
+            URL: https://github.com/getsops/sops/releases/download/v3.7.3/sops-v3.7.3.exe
             """, exception.Message);
     }
 }

@@ -11,6 +11,10 @@ public class SopsFixture : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
+        if (File.Exists("sops.exe") || File.Exists("sops"))
+        {
+            return;
+        }
         using var httpClient = new HttpClient();
         var platformInformation = new PlatformInformationService();
 

@@ -14,12 +14,14 @@ public class DownloadSopsCommandTests
     {
         // Arrange
         var mockSopsDownloadService = new Mock<ISopsDownloadService>();
-        using var ansiConsole = new TestConsole();
+        using var ansiConsoleError = new TestConsole();
+        using var ansiConsoleOut = new TestConsole();
 
         var serviceProvider = new MockServiceProvider()
         {
             SopsDownloadService = new Lazy<ISopsDownloadService>(mockSopsDownloadService.Object),
-            AnsiConsoleError = new Lazy<IAnsiConsole>(ansiConsole),
+            AnsiConsoleError = new Lazy<IAnsiConsole>(ansiConsoleError),
+            AnsiConsoleOut = new Lazy<IAnsiConsole>(ansiConsoleOut),
         };
 
         var command = new DownloadSopsCommand(serviceProvider);

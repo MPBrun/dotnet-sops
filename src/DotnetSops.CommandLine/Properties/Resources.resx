@@ -148,9 +148,7 @@
     <value>The user secret ID to use.</value>
   </data>
   <data name="FileDoesNotExist" xml:space="preserve">
-    <value>[red]File does not exist.[/]
-
-[yellow]Path: {0}[/]</value>
+    <value>File '{0}' does not exist.</value>
     <comment>{0} is file path</comment>
   </data>
   <data name="InitializeCommandDescription" xml:space="preserve">
@@ -165,7 +163,7 @@ age - https://github.com/FiloSottile/age
 PGP - https://www.openpgp.org</value>
   </data>
   <data name="OperatingSystemNotSupported" xml:space="preserve">
-    <value>[red]Operating system is not supported.[/]</value>
+    <value>Operating system is not supported.</value>
   </data>
   <data name="RootCommandDescription" xml:space="preserve">
     <value>Store and share encrypted secrets, created using user-secrets tool.
@@ -181,40 +179,39 @@ Recomendation: Only store development secrets that cannot access production like
     <value>Enable verbose logging output</value>
   </data>
   <data name="SopsDownloadHttpFailed" xml:space="preserve">
-    <value>[red]Failed to download SOPS.[/]
+    <value>Failed to download SOPS.
 
-[yellow]HTTP status code: {0}[/]
-[yellow]URL: {1}[/]</value>
+HTTP status code: {0}
+URL: {1}</value>
     <comment>{0} is status code
 {1} is url</comment>
   </data>
   <data name="SopsDownloadSha512Failed" xml:space="preserve">
-    <value>[red]SHA512 of SOPS executable did not match.[/]
+    <value>SHA512 of SOPS executable did not match.
 
-[yellow]Expected: {0}[/]
-[yellow]Actual:   {1}[/]</value>
+Expected: {0}
+Actual:   {1}</value>
     <comment>{0} is expected
 {1} is actual</comment>
   </data>
   <data name="SopsIsMissing" xml:space="preserve">
-    <value>[red]SOPS executable is missing from path environment.[/]
-
-You can download it by executing the following command:
-[yellow]dotnet sops download-sops[/]</value>
+    <value>SOPS executable is missing from path environment.</value>
+  </data>
+  <data name="SopsIsMissingTry" xml:space="preserve">
+    <value>You can download it by executing the following command:
+dotnet sops download-sops</value>
   </data>
   <data name="SopsRunFailed" xml:space="preserve">
-    <value>[red]Failed to run sops.[/]</value>
+    <value>Failed to run sops.</value>
   </data>
   <data name="SopsRunFailedWithError" xml:space="preserve">
-    <value>[red]SOPS failed with error.[/]
+    <value>SOPS failed with error.
 
 {0}</value>
     <comment>{0} is error output</comment>
   </data>
   <data name="UserSecretsFileDoesNotExist" xml:space="preserve">
-    <value>[red]User secrets file does not exist.[/]
-
-[yellow]Path: {0}[/]</value>
+    <value>User secrets file '{0}' does not exist.</value>
     <comment>{0} is file path</comment>
   </data>
 </root>

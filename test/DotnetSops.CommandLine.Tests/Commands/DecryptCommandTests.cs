@@ -31,7 +31,8 @@ public class DecryptCommandTests
         var sopsService = new SopsService(dir.FullName);
         var userSecretsService = new UserSecretsServiceStub(dir.FullName);
         var fileBomService = new FileBomService();
-        using var ansiConsole = new TestConsole();
+        using var ansiConsoleError = new TestConsole();
+        using var ansiConsoleOut = new TestConsole();
 
         var serviceProvider = new MockServiceProvider()
         {
@@ -39,7 +40,8 @@ public class DecryptCommandTests
             SopsService = new Lazy<ISopsService>(sopsService),
             UserSecretsService = new Lazy<IUserSecretsService>(userSecretsService),
             FileBomService = new Lazy<IFileBomService>(fileBomService),
-            AnsiConsoleError = new Lazy<IAnsiConsole>(ansiConsole),
+            AnsiConsoleError = new Lazy<IAnsiConsole>(ansiConsoleError),
+            AnsiConsoleOut = new Lazy<IAnsiConsole>(ansiConsoleOut),
         };
 
         var command = new DecryptCommand(serviceProvider);
@@ -107,7 +109,8 @@ public class DecryptCommandTests
         var sopsService = new SopsService(dir.FullName);
         var userSecretsService = new UserSecretsServiceStub(dir.FullName);
         var fileBomService = new FileBomService();
-        using var ansiConsole = new TestConsole();
+        using var ansiConsoleError = new TestConsole();
+        using var ansiConsoleOut = new TestConsole();
 
         var serviceProvider = new MockServiceProvider()
         {
@@ -115,7 +118,8 @@ public class DecryptCommandTests
             SopsService = new Lazy<ISopsService>(sopsService),
             UserSecretsService = new Lazy<IUserSecretsService>(userSecretsService),
             FileBomService = new Lazy<IFileBomService>(fileBomService),
-            AnsiConsoleError = new Lazy<IAnsiConsole>(ansiConsole),
+            AnsiConsoleError = new Lazy<IAnsiConsole>(ansiConsoleError),
+            AnsiConsoleOut = new Lazy<IAnsiConsole>(ansiConsoleOut),
         };
 
         var command = new DecryptCommand(serviceProvider);
@@ -175,7 +179,7 @@ public class DecryptCommandTests
             order for SOPS to recover the file, at least one key has to be successful,
             but none were.
 
-            """, ansiConsole.Output, ignoreLineEndingDifferences: true);
+            """, ansiConsoleError.Output, ignoreLineEndingDifferences: true);
     }
 
     [Fact]

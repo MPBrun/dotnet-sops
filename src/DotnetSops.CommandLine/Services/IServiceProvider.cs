@@ -26,5 +26,7 @@ internal interface IServiceProvider
 
     Lazy<IAnsiConsole> AnsiConsoleOut { get; }
 
+    Lazy<ILogger> Logger { get; }
+
     bool Verbose { get; set; }
 }

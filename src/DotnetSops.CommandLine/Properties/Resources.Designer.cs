@@ -151,9 +151,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [red]File does not exist.[/]
-        ///
-        ///[yellow]Path: {0}[/].
+        ///   Looks up a localized string similar to File &apos;{0}&apos; does not exist..
         /// </summary>
         internal static string FileDoesNotExist {
             get {
@@ -179,7 +177,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [red]Operating system is not supported.[/].
+        ///   Looks up a localized string similar to Operating system is not supported..
         /// </summary>
         internal static string OperatingSystemNotSupported {
             get {
@@ -213,10 +211,10 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [red]Failed to download SOPS.[/]
+        ///   Looks up a localized string similar to Failed to download SOPS.
         ///
-        ///[yellow]HTTP status code: {0}[/]
-        ///[yellow]URL: {1}[/].
+        ///HTTP status code: {0}
+        ///URL: {1}.
         /// </summary>
         internal static string SopsDownloadHttpFailed {
             get {
@@ -225,10 +223,10 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [red]SHA512 of SOPS executable did not match.[/]
+        ///   Looks up a localized string similar to SHA512 of SOPS executable did not match.
         ///
-        ///[yellow]Expected: {0}[/]
-        ///[yellow]Actual:   {1}[/].
+        ///Expected: {0}
+        ///Actual:   {1}.
         /// </summary>
         internal static string SopsDownloadSha512Failed {
             get {
@@ -237,10 +235,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [red]SOPS executable is missing from path environment.[/]
-        ///
-        ///You can download it by executing the following command:
-        ///[yellow]dotnet sops download-sops[/].
+        ///   Looks up a localized string similar to SOPS executable is missing from path environment..
         /// </summary>
         internal static string SopsIsMissing {
             get {
@@ -249,7 +244,17 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [red]Failed to run sops.[/].
+        ///   Looks up a localized string similar to You can download it by executing the following command:
+        ///dotnet sops download-sops.
+        /// </summary>
+        internal static string SopsIsMissingTry {
+            get {
+                return ResourceManager.GetString("SopsIsMissingTry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to run sops..
         /// </summary>
         internal static string SopsRunFailed {
             get {
@@ -258,7 +263,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [red]SOPS failed with error.[/]
+        ///   Looks up a localized string similar to SOPS failed with error.
         ///
         ///{0}.
         /// </summary>
@@ -269,9 +274,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [red]User secrets file does not exist.[/]
-        ///
-        ///[yellow]Path: {0}[/].
+        ///   Looks up a localized string similar to User secrets file &apos;{0}&apos; does not exist..
         /// </summary>
         internal static string UserSecretsFileDoesNotExist {
             get {

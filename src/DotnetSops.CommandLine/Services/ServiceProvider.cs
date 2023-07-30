@@ -42,5 +42,7 @@ internal class ServiceProvider : IServiceProvider
         });
     });
 
+    public Lazy<ILogger> Logger => new(() => new Logger(AnsiConsoleOut.Value, AnsiConsoleError.Value, Verbose));
+
     public bool Verbose { get; set; }
 }

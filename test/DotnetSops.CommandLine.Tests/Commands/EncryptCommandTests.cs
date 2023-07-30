@@ -27,7 +27,8 @@ public class EncryptCommandTests
         var sopsService = new SopsService(dir.FullName);
         var userSecretsService = new UserSecretsServiceStub(dir.FullName);
         var fileBomService = new FileBomService();
-        using var ansiConsole = new TestConsole();
+        using var ansiConsoleError = new TestConsole();
+        using var ansiConsoleOut = new TestConsole();
 
         var serviceProvider = new MockServiceProvider()
         {
@@ -35,7 +36,8 @@ public class EncryptCommandTests
             SopsService = new Lazy<ISopsService>(sopsService),
             UserSecretsService = new Lazy<IUserSecretsService>(userSecretsService),
             FileBomService = new Lazy<IFileBomService>(fileBomService),
-            AnsiConsoleError = new Lazy<IAnsiConsole>(ansiConsole),
+            AnsiConsoleError = new Lazy<IAnsiConsole>(ansiConsoleError),
+            AnsiConsoleOut = new Lazy<IAnsiConsole>(ansiConsoleOut),
         };
 
         var command = new EncryptCommand(serviceProvider);
@@ -82,7 +84,8 @@ public class EncryptCommandTests
         var sopsService = new SopsService(dir.FullName);
         var userSecretsService = new UserSecretsServiceStub(dir.FullName);
         var fileBomService = new FileBomService();
-        using var ansiConsole = new TestConsole();
+        using var ansiConsoleError = new TestConsole();
+        using var ansiConsoleOut = new TestConsole();
 
         var serviceProvider = new MockServiceProvider()
         {
@@ -90,7 +93,8 @@ public class EncryptCommandTests
             SopsService = new Lazy<ISopsService>(sopsService),
             UserSecretsService = new Lazy<IUserSecretsService>(userSecretsService),
             FileBomService = new Lazy<IFileBomService>(fileBomService),
-            AnsiConsoleError = new Lazy<IAnsiConsole>(ansiConsole),
+            AnsiConsoleError = new Lazy<IAnsiConsole>(ansiConsoleError),
+            AnsiConsoleOut = new Lazy<IAnsiConsole>(ansiConsoleOut),
         };
 
         var command = new EncryptCommand(serviceProvider);
@@ -139,7 +143,8 @@ public class EncryptCommandTests
         var sopsService = new SopsService(dir.FullName);
         var userSecretsService = new UserSecretsServiceStub(dir.FullName);
         var fileBomService = new FileBomService();
-        using var ansiConsole = new TestConsole();
+        using var ansiConsoleError = new TestConsole();
+        using var ansiConsoleOut = new TestConsole();
 
         var serviceProvider = new MockServiceProvider()
         {
@@ -147,7 +152,8 @@ public class EncryptCommandTests
             SopsService = new Lazy<ISopsService>(sopsService),
             UserSecretsService = new Lazy<IUserSecretsService>(userSecretsService),
             FileBomService = new Lazy<IFileBomService>(fileBomService),
-            AnsiConsoleError = new Lazy<IAnsiConsole>(ansiConsole),
+            AnsiConsoleError = new Lazy<IAnsiConsole>(ansiConsoleError),
+            AnsiConsoleOut = new Lazy<IAnsiConsole>(ansiConsoleOut),
         };
 
         var command = new EncryptCommand(serviceProvider);
@@ -206,7 +212,8 @@ public class EncryptCommandTests
         var sopsService = new SopsService(dir.FullName);
         var userSecretsService = new UserSecretsServiceStub(dir.FullName);
         var fileBomService = new FileBomService();
-        using var ansiConsole = new TestConsole();
+        using var ansiConsoleError = new TestConsole();
+        using var ansiConsoleOut = new TestConsole();
 
         var serviceProvider = new MockServiceProvider()
         {
@@ -214,7 +221,8 @@ public class EncryptCommandTests
             SopsService = new Lazy<ISopsService>(sopsService),
             UserSecretsService = new Lazy<IUserSecretsService>(userSecretsService),
             FileBomService = new Lazy<IFileBomService>(fileBomService),
-            AnsiConsoleError = new Lazy<IAnsiConsole>(ansiConsole),
+            AnsiConsoleError = new Lazy<IAnsiConsole>(ansiConsoleError),
+            AnsiConsoleOut = new Lazy<IAnsiConsole>(ansiConsoleOut),
         };
 
         var command = new EncryptCommand(serviceProvider);
@@ -251,7 +259,7 @@ public class EncryptCommandTests
             failed to parse input as Bech32-encoded age public key: malformed recipient 
             "invalid": separator '1' at invalid position: pos=-1, len=7
 
-            """, ansiConsole.Output, ignoreLineEndingDifferences: true);
+            """, ansiConsoleError.Output, ignoreLineEndingDifferences: true);
     }
 
     [Fact]
