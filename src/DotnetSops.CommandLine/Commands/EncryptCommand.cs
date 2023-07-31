@@ -4,6 +4,7 @@ using DotnetSops.CommandLine.Services.FileBom;
 using DotnetSops.CommandLine.Services.ProjectInfo;
 using DotnetSops.CommandLine.Services.Sops;
 using DotnetSops.CommandLine.Services.UserSecrets;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DotnetSops.CommandLine.Commands;
 
@@ -11,7 +12,7 @@ internal class EncryptCommand : CliCommand
 {
     public const string CommandName = "encrypt";
 
-    private readonly Services.IServiceProvider _serviceProvider;
+    private readonly IServiceProvider _serviceProvider;
 
     private readonly CliOption<FileInfo?> _projectFileOption = new("--project", "-p")
     {
@@ -29,7 +30,7 @@ internal class EncryptCommand : CliCommand
         DefaultValueFactory = (_) => new FileInfo("secrets.json"),
     };
 
-    public EncryptCommand(Services.IServiceProvider serviceProvider)
+    public EncryptCommand(IServiceProvider serviceProvider)
         : base(CommandName, Properties.Resources.EncryptCommandDescription)
     {
         _serviceProvider = serviceProvider;
@@ -44,11 +45,11 @@ internal class EncryptCommand : CliCommand
                 parseResult.GetValue(_projectFileOption),
                 parseResult.GetValue(_userSecretsIdOption),
                 parseResult.GetValue(_outputFileOption)!,
-                _serviceProvider.Logger.Value,
-                _serviceProvider.ProjectInfoService.Value,
-                _serviceProvider.SopsService.Value,
-                _serviceProvider.UserSecretsService.Value,
-                _serviceProvider.FileBomService.Value,
+                _serviceProvider.GetRequiredService<ILogger>(),
+                _serviceProvider.GetRequiredService<IProjectInfoService>(),
+                _serviceProvider.GetRequiredService<ISopsService>(),
+                _serviceProvider.GetRequiredService<IUserSecretsService>(),
+                _serviceProvider.GetRequiredService<IFileBomService>(),
                 cancellationToken);
         });
     }
@@ -70,7 +71,7 @@ internal class EncryptCommand : CliCommand
                 logger.LogError(ex.Message);
                 if (ex.Suggestion != null)
                 {
-                    logger.LogInformation(string.Empty);
+                    logger.LogInformation();
                     logger.LogInformation(ex.Suggestion);
                 }
 
@@ -84,7 +85,7 @@ internal class EncryptCommand : CliCommand
         if (!inputFile.Exists)
         {
             logger.LogError(LocalizationResources.UserSecretsFileDoesNotExist(inputFile.FullName));
-            logger.LogInformation(string.Empty);
+            logger.LogInformation();
             logger.LogInformation($"""
                                 You have no secrets created. You can add secrets by running this command:
                                   [yellow]dotnet user-secrets set [[name]] [[value]][/]
@@ -105,7 +106,7 @@ internal class EncryptCommand : CliCommand
         catch (SopsMissingException ex)
         {
             logger.LogError(ex.Message);
-            logger.LogInformation(string.Empty);
+            logger.LogInformation();
             logger.LogInformation(Properties.Resources.SopsIsMissingTry);
             return 1;
         }

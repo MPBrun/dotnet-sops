@@ -1,9 +1,10 @@
 using System.CommandLine;
 using DotnetSops.CommandLine.Commands;
+using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.Sops;
 using DotnetSops.CommandLine.Tests.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using Spectre.Console;
 using Spectre.Console.Testing;
 
 namespace DotnetSops.CommandLine.Tests.Commands;
@@ -14,15 +15,12 @@ public class DownloadSopsCommandTests
     {
         // Arrange
         var mockSopsDownloadService = new Mock<ISopsDownloadService>();
-        using var ansiConsoleError = new TestConsole();
-        using var ansiConsoleOut = new TestConsole();
+        var logger = new LoggerMock(new TestConsole(), new TestConsole());
 
-        var serviceProvider = new MockServiceProvider()
-        {
-            SopsDownloadService = new Lazy<ISopsDownloadService>(mockSopsDownloadService.Object),
-            AnsiConsoleError = new Lazy<IAnsiConsole>(ansiConsoleError),
-            AnsiConsoleOut = new Lazy<IAnsiConsole>(ansiConsoleOut),
-        };
+        var serviceProvider = new ServiceCollection()
+                .AddSingleton(mockSopsDownloadService.Object)
+                .AddSingleton<ILogger>(logger)
+                .BuildServiceProvider();
 
         var command = new DownloadSopsCommand(serviceProvider);
 

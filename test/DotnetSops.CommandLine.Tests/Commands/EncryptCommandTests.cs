@@ -4,6 +4,7 @@ using System.Text.Json;
 using DotnetSops.CommandLine.Commands;
 using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.FileBom;
+using DotnetSops.CommandLine.Services.PlatformInformation;
 using DotnetSops.CommandLine.Services.ProjectInfo;
 using DotnetSops.CommandLine.Services.Sops;
 using DotnetSops.CommandLine.Services.UserSecrets;
@@ -11,8 +12,7 @@ using DotnetSops.CommandLine.Tests.Fixtures;
 using DotnetSops.CommandLine.Tests.Models;
 using DotnetSops.CommandLine.Tests.Services;
 using DotnetSops.CommandLine.Tests.Services.UserSecrets;
-using Moq;
-using Spectre.Console;
+using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Testing;
 
 namespace DotnetSops.CommandLine.Tests.Commands;
@@ -20,34 +20,35 @@ namespace DotnetSops.CommandLine.Tests.Commands;
 [Collection(CollectionNames.Sops)]
 public class EncryptCommandTests
 {
+    private readonly DirectoryInfo _directory = Directory.CreateDirectory(Guid.NewGuid().ToString());
+    private readonly LoggerMock _logger = new(new TestConsole(), new TestConsole());
+    private readonly IServiceProvider _serviceProvider;
+    private readonly IUserSecretsService _userSecretsService;
+
+    public EncryptCommandTests()
+    {
+        _serviceProvider = new ServiceCollection()
+            .AddSingleton<ISopsService>(sp => new SopsService(_directory.FullName, sp.GetRequiredService<ILogger>()))
+            .AddSingleton<IUserSecretsService>(sp => new UserSecretsServiceStub(_directory.FullName))
+            .AddSingleton<IFileBomService, FileBomService>()
+            .AddSingleton<ISopsDownloadService, SopsDownloadService>()
+            .AddSingleton<IPlatformInformationService, PlatformInformationService>()
+            .AddSingleton<IProjectInfoService, ProjectInfoService>()
+            .AddSingleton<ILogger>(_logger)
+            .BuildServiceProvider();
+
+        _userSecretsService = _serviceProvider.GetRequiredService<IUserSecretsService>();
+    }
+
     [Fact]
     public async Task EncryptCommand_ValidOptions_CreateFile()
     {
         // Arrange
-        var dir = Directory.CreateDirectory(Guid.NewGuid().ToString());
-        var projectInfoService = new ProjectInfoService();
-        var logger = new Mock<ILogger>();
-        var sopsService = new SopsService(dir.FullName, logger.Object);
-        var userSecretsService = new UserSecretsServiceStub(dir.FullName);
-        var fileBomService = new FileBomService();
-        using var ansiConsoleError = new TestConsole();
-        using var ansiConsoleOut = new TestConsole();
-
-        var serviceProvider = new MockServiceProvider()
-        {
-            ProjectInfoService = new Lazy<IProjectInfoService>(projectInfoService),
-            SopsService = new Lazy<ISopsService>(sopsService),
-            UserSecretsService = new Lazy<IUserSecretsService>(userSecretsService),
-            FileBomService = new Lazy<IFileBomService>(fileBomService),
-            AnsiConsoleError = new Lazy<IAnsiConsole>(ansiConsoleError),
-            AnsiConsoleOut = new Lazy<IAnsiConsole>(ansiConsoleOut),
-        };
-
-        var command = new EncryptCommand(serviceProvider);
+        var command = new EncryptCommand(_serviceProvider);
         var id = $"unittest-{Guid.NewGuid()}";
 
         // user secret
-        var filePath = userSecretsService.GetSecretsPathFromSecretsId(id);
+        var filePath = _userSecretsService.GetSecretsPathFromSecretsId(id);
         var secrets = new TestSecretCotent
         {
             TestKey = "test value"
@@ -55,14 +56,14 @@ public class EncryptCommandTests
         await File.AppendAllTextAsync(filePath.FullName, JsonSerializer.Serialize(secrets), new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)); //dotnet user secrets save files with bom
 
         // Sops config
-        var sopsConfigPath = Path.Combine(dir.FullName, ".sops.yaml");
+        var sopsConfigPath = Path.Combine(_directory.FullName, ".sops.yaml");
         await File.WriteAllTextAsync(sopsConfigPath, """
             creation_rules:
                 - path_regex: secrets.json
                   age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
             """);
 
-        var outputPath = Path.Combine(dir.FullName, "secrets.json");
+        var outputPath = Path.Combine(_directory.FullName, "secrets.json");
 
         var config = new CliConfiguration(command);
 
@@ -82,30 +83,11 @@ public class EncryptCommandTests
     public async Task EncryptCommand_ValidOptionsMultiple_CreateFile()
     {
         // Arrange
-        var dir = Directory.CreateDirectory(Guid.NewGuid().ToString());
-        var projectInfoService = new ProjectInfoService();
-        var logger = new Mock<ILogger>();
-        var sopsService = new SopsService(dir.FullName, logger.Object);
-        var userSecretsService = new UserSecretsServiceStub(dir.FullName);
-        var fileBomService = new FileBomService();
-        using var ansiConsoleError = new TestConsole();
-        using var ansiConsoleOut = new TestConsole();
-
-        var serviceProvider = new MockServiceProvider()
-        {
-            ProjectInfoService = new Lazy<IProjectInfoService>(projectInfoService),
-            SopsService = new Lazy<ISopsService>(sopsService),
-            UserSecretsService = new Lazy<IUserSecretsService>(userSecretsService),
-            FileBomService = new Lazy<IFileBomService>(fileBomService),
-            AnsiConsoleError = new Lazy<IAnsiConsole>(ansiConsoleError),
-            AnsiConsoleOut = new Lazy<IAnsiConsole>(ansiConsoleOut),
-        };
-
-        var command = new EncryptCommand(serviceProvider);
+        var command = new EncryptCommand(_serviceProvider);
         var id = $"unittest-{Guid.NewGuid()}";
 
         // user secret
-        var filePath = userSecretsService.GetSecretsPathFromSecretsId(id);
+        var filePath = _userSecretsService.GetSecretsPathFromSecretsId(id);
         var secrets = new TestSecretCotent
         {
             TestKey = "test value"
@@ -113,7 +95,7 @@ public class EncryptCommandTests
         await File.AppendAllTextAsync(filePath.FullName, JsonSerializer.Serialize(secrets), new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)); //dotnet user secrets save files with bom
 
         // Sops config
-        var sopsConfigPath = Path.Combine(dir.FullName, ".sops.yaml");
+        var sopsConfigPath = Path.Combine(_directory.FullName, ".sops.yaml");
         await File.WriteAllTextAsync(sopsConfigPath, """
             creation_rules:
                 - path_regex: secrets.json
@@ -122,7 +104,7 @@ public class EncryptCommandTests
                     age1y8lprkvcf2m0s2pnh866gjj4dtrazqz84kna7y3ndej0pku6ms6s84yf04
             """);
 
-        var outputPath = Path.Combine(dir.FullName, "secrets.json");
+        var outputPath = Path.Combine(_directory.FullName, "secrets.json");
 
         var config = new CliConfiguration(command);
 
@@ -142,30 +124,11 @@ public class EncryptCommandTests
     public async Task EncryptCommand_ValidOptionsKeyGroups_CreateFile()
     {
         // Arrange
-        var dir = Directory.CreateDirectory(Guid.NewGuid().ToString());
-        var projectInfoService = new ProjectInfoService();
-        var logger = new Mock<ILogger>();
-        var sopsService = new SopsService(dir.FullName, logger.Object);
-        var userSecretsService = new UserSecretsServiceStub(dir.FullName);
-        var fileBomService = new FileBomService();
-        using var ansiConsoleError = new TestConsole();
-        using var ansiConsoleOut = new TestConsole();
-
-        var serviceProvider = new MockServiceProvider()
-        {
-            ProjectInfoService = new Lazy<IProjectInfoService>(projectInfoService),
-            SopsService = new Lazy<ISopsService>(sopsService),
-            UserSecretsService = new Lazy<IUserSecretsService>(userSecretsService),
-            FileBomService = new Lazy<IFileBomService>(fileBomService),
-            AnsiConsoleError = new Lazy<IAnsiConsole>(ansiConsoleError),
-            AnsiConsoleOut = new Lazy<IAnsiConsole>(ansiConsoleOut),
-        };
-
-        var command = new EncryptCommand(serviceProvider);
+        var command = new EncryptCommand(_serviceProvider);
         var id = $"unittest-{Guid.NewGuid()}";
 
         // user secret
-        var filePath = userSecretsService.GetSecretsPathFromSecretsId(id);
+        var filePath = _userSecretsService.GetSecretsPathFromSecretsId(id);
         var secrets = new TestSecretCotent
         {
             TestKey = "test value"
@@ -173,7 +136,7 @@ public class EncryptCommandTests
         await File.AppendAllTextAsync(filePath.FullName, JsonSerializer.Serialize(secrets), new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)); //dotnet user secrets save files with bom
 
         // Sops config
-        var sopsConfigPath = Path.Combine(dir.FullName, ".sops.yaml");
+        var sopsConfigPath = Path.Combine(_directory.FullName, ".sops.yaml");
         await File.WriteAllTextAsync(sopsConfigPath, """
             creation_rules:
                 - path_regex: secrets.json
@@ -188,7 +151,7 @@ public class EncryptCommandTests
                         - age1kg6yjfq8ce9k7u4yjnd3jsp5hkkghxmc65raafrkxlcrtlmz8u7qv57ehh
             """);
 
-        var outputPath = Path.Combine(dir.FullName, "secrets.json");
+        var outputPath = Path.Combine(_directory.FullName, "secrets.json");
 
         var config = new CliConfiguration(command);
 
@@ -212,30 +175,11 @@ public class EncryptCommandTests
     public async Task EncryptCommand_InvalidAgeKey_OutputSopsError()
     {
         // Arrange
-        var dir = Directory.CreateDirectory(Guid.NewGuid().ToString());
-        var projectInfoService = new ProjectInfoService();
-        var logger = new Mock<ILogger>();
-        var sopsService = new SopsService(dir.FullName, logger.Object);
-        var userSecretsService = new UserSecretsServiceStub(dir.FullName);
-        var fileBomService = new FileBomService();
-        using var ansiConsoleError = new TestConsole();
-        using var ansiConsoleOut = new TestConsole();
-
-        var serviceProvider = new MockServiceProvider()
-        {
-            ProjectInfoService = new Lazy<IProjectInfoService>(projectInfoService),
-            SopsService = new Lazy<ISopsService>(sopsService),
-            UserSecretsService = new Lazy<IUserSecretsService>(userSecretsService),
-            FileBomService = new Lazy<IFileBomService>(fileBomService),
-            AnsiConsoleError = new Lazy<IAnsiConsole>(ansiConsoleError),
-            AnsiConsoleOut = new Lazy<IAnsiConsole>(ansiConsoleOut),
-        };
-
-        var command = new EncryptCommand(serviceProvider);
+        var command = new EncryptCommand(_serviceProvider);
         var id = $"unittest-{Guid.NewGuid()}";
 
         // user secret
-        var filePath = userSecretsService.GetSecretsPathFromSecretsId(id);
+        var filePath = _userSecretsService.GetSecretsPathFromSecretsId(id);
         var secrets = new TestSecretCotent
         {
             TestKey = "test value"
@@ -243,14 +187,14 @@ public class EncryptCommandTests
         await File.AppendAllTextAsync(filePath.FullName, JsonSerializer.Serialize(secrets), new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)); //dotnet user secrets save files with bom
 
         // Sops config
-        var sopsConfigPath = Path.Combine(dir.FullName, ".sops.yaml");
+        var sopsConfigPath = Path.Combine(_directory.FullName, ".sops.yaml");
         await File.WriteAllTextAsync(sopsConfigPath, """
             creation_rules:
                 - path_regex: secrets.json
                   age: invalid
             """);
 
-        var outputPath = Path.Combine(dir.FullName, "secrets.json");
+        var outputPath = Path.Combine(_directory.FullName, "secrets.json");
 
         var config = new CliConfiguration(command);
 
@@ -265,14 +209,14 @@ public class EncryptCommandTests
             failed to parse input as Bech32-encoded age public key: malformed recipient 
             "invalid": separator '1' at invalid position: pos=-1, len=7
 
-            """, ansiConsoleError.Output, ignoreLineEndingDifferences: true);
+            """, _logger.Error.Output, ignoreLineEndingDifferences: true);
     }
 
     [Fact]
     public void EncryptCommand_Id_NotRequired()
     {
         // Arrange
-        var command = new EncryptCommand(new MockServiceProvider());
+        var command = new EncryptCommand(_serviceProvider);
 
         // Act / Assert
         var option = command.Options.First(o => o.Name == "--id");
@@ -283,7 +227,7 @@ public class EncryptCommandTests
     public void EncryptCommand_File_NotRequired()
     {
         // Arrange
-        var command = new EncryptCommand(new MockServiceProvider());
+        var command = new EncryptCommand(_serviceProvider);
 
         // Act / Assert
         var option = command.Options.First(o => o.Name == "--file");

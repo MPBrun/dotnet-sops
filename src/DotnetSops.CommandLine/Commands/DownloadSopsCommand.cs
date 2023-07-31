@@ -1,15 +1,16 @@
 using System.CommandLine;
 using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.Sops;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DotnetSops.CommandLine.Commands;
 internal class DownloadSopsCommand : CliCommand
 {
     public const string CommandName = "download-sops";
 
-    private readonly Services.IServiceProvider _serviceProvider;
+    private readonly IServiceProvider _serviceProvider;
 
-    public DownloadSopsCommand(Services.IServiceProvider serviceProvider)
+    public DownloadSopsCommand(IServiceProvider serviceProvider)
         : base(CommandName, Properties.Resources.DownloadSopsCommandDescription)
     {
         _serviceProvider = serviceProvider;
@@ -17,8 +18,8 @@ internal class DownloadSopsCommand : CliCommand
         SetAction((parseResult, cancellationToken) =>
         {
             return ExecuteAsync(
-                _serviceProvider.Logger.Value,
-                _serviceProvider.SopsDownloadService.Value,
+                _serviceProvider.GetRequiredService<ILogger>(),
+                _serviceProvider.GetRequiredService<ISopsDownloadService>(),
                 cancellationToken);
         });
     }

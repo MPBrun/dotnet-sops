@@ -1,4 +1,6 @@
 using System.CommandLine;
+using DotnetSops.CommandLine.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DotnetSops.CommandLine.Commands;
 internal class RootDotnetSopsCommand : CliRootCommand
@@ -9,7 +11,7 @@ internal class RootDotnetSopsCommand : CliRootCommand
         Description = Properties.Resources.RootDotnetSopsCommandVerboseOptionDescription,
     };
 
-    public RootDotnetSopsCommand(Services.IServiceProvider serviceProvider)
+    public RootDotnetSopsCommand(IServiceProvider serviceProvider)
         : base(Properties.Resources.RootCommandDescription)
     {
         Add(_verboseOption);
@@ -22,7 +24,8 @@ internal class RootDotnetSopsCommand : CliRootCommand
         _verboseOption.Validators.Add(optionResult =>
         {
             var value = optionResult.GetValue(_verboseOption);
-            serviceProvider.Verbose = value;
+            var logger = serviceProvider.GetRequiredService<ILogger>();
+            logger.Verbose = value;
         });
     }
 }

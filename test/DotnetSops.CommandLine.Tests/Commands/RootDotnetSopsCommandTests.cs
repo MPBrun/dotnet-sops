@@ -1,14 +1,22 @@
 using DotnetSops.CommandLine.Commands;
-using DotnetSops.CommandLine.Tests.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DotnetSops.CommandLine.Tests.Commands;
 public class RootDotnetSopsCommandTests
 {
+    private readonly IServiceProvider _serviceProvider;
+
+    public RootDotnetSopsCommandTests()
+    {
+        _serviceProvider = new ServiceCollection()
+            .BuildServiceProvider();
+    }
+
     [Fact]
     public void Constructor_AddsSubCommands()
     {
         // Arrange / act
-        var command = new RootDotnetSopsCommand(new MockServiceProvider());
+        var command = new RootDotnetSopsCommand(_serviceProvider);
 
         // Assert
         var subComamnds = command.Subcommands.ToList();

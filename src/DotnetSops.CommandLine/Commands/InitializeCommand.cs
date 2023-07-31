@@ -1,7 +1,7 @@
 using System.CommandLine;
-using DotnetSops.CommandLine.Commands.Prompts;
+using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.Sops;
-using Spectre.Console;
+using Microsoft.Extensions.DependencyInjection;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -10,9 +10,9 @@ internal class InitializeCommand : CliCommand
 {
     public const string CommandName = "init";
 
-    private readonly Services.IServiceProvider _serviceProvider;
+    private readonly IServiceProvider _serviceProvider;
 
-    public InitializeCommand(Services.IServiceProvider serviceProvider)
+    public InitializeCommand(IServiceProvider serviceProvider)
         : base(CommandName, Properties.Resources.InitializeCommandDescription)
     {
         _serviceProvider = serviceProvider;
@@ -20,18 +20,17 @@ internal class InitializeCommand : CliCommand
         SetAction((parseResult, cancellationToken) =>
         {
             return ExecuteAsync(
-                _serviceProvider.AnsiConsoleError.Value,
+                _serviceProvider.GetRequiredService<ILogger>(),
                 cancellationToken);
         });
     }
 
-    private static async Task<int> ExecuteAsync(IAnsiConsole consoleError, CancellationToken cancellationToken)
+    private static async Task<int> ExecuteAsync(ILogger logger, CancellationToken cancellationToken)
     {
         var alreadyExist = File.Exists(".sops.yaml");
         if (alreadyExist)
         {
-            var generate = await new Prompts.ConfirmationPrompt("[green]?[/] Are you sure to overwrite existing [yellow].sops.yaml[/]?")
-                .ShowAsync(consoleError, cancellationToken);
+            var generate = await logger.ConfirmAsync("Are you sure to overwrite existing [yellow].sops.yaml[/]?", cancellationToken);
             if (!generate)
             {
                 return 0;
@@ -52,20 +51,17 @@ internal class InitializeCommand : CliCommand
             };
         };
 
-        var encryptionType = await new SelectionPrompt<SopsEncryptionType>()
-            .Title("[green]?[/] Which encryption whould you like to use?")
-            .UseConverter(encryptionTypeConverter)
-            .WrapAround(true)
-            .AddChoices(
-                SopsEncryptionType.AzureKeyVault,
-                SopsEncryptionType.AwsKms,
-                SopsEncryptionType.GcpKms,
-                SopsEncryptionType.HashicorpVault,
-                SopsEncryptionType.Age,
-                SopsEncryptionType.Pgp)
-            .ShowAsync(consoleError, cancellationToken);
+        var choices = new SopsEncryptionType[]
+        {
+            SopsEncryptionType.AzureKeyVault,
+            SopsEncryptionType.AwsKms,
+            SopsEncryptionType.GcpKms,
+            SopsEncryptionType.HashicorpVault,
+            SopsEncryptionType.Age,
+            SopsEncryptionType.Pgp
+        };
 
-        consoleError.MarkupLineInterpolated($"[green]?[/] Which encryption whould you like to use? [blue]{encryptionTypeConverter(encryptionType)}[/]");
+        var encryptionType = await logger.SelectAsync("Which encryption whould you like to use?", choices, encryptionTypeConverter, cancellationToken);
 
         var sopsCreationRule = new SopsCreationRule()
         {
@@ -83,12 +79,9 @@ internal class InitializeCommand : CliCommand
         {
             case SopsEncryptionType.AzureKeyVault:
                 {
-                    var keyVaultName = await new AskPrompt("[green]?[/] What is the name of the key vault?")
-                        .ShowAsync(consoleError, cancellationToken);
-                    var keyName = await new AskPrompt("[green]?[/] What is object name of the key?")
-                        .ShowAsync(consoleError, cancellationToken);
-                    var keyVersion = await new AskPrompt("[green]?[/] What is object version of the key?")
-                        .ShowAsync(consoleError, cancellationToken);
+                    var keyVaultName = await logger.AskAsync("What is the name of the key vault?", cancellationToken);
+                    var keyName = await logger.AskAsync("What is object name of the key?", cancellationToken);
+                    var keyVersion = await logger.AskAsync("What is object version of the key?", cancellationToken);
 
                     var key = $"https://{keyVaultName.Trim()}.vault.azure.net/keys/{keyName.Trim()}/{keyVersion.Trim()}";
                     sopsCreationRule.AzureKeyvault = key;
@@ -102,16 +95,14 @@ internal class InitializeCommand : CliCommand
                 throw new NotImplementedException();
             case SopsEncryptionType.Age:
                 {
-                    var publicKey = await new AskPrompt("[green]?[/] What is public key of age?")
-                        .ShowAsync(consoleError, cancellationToken);
+                    var publicKey = await logger.AskAsync("What is public key of age?", cancellationToken);
                     sopsCreationRule.Age = publicKey.Trim();
                     break;
                 }
 
             case SopsEncryptionType.Pgp:
                 {
-                    var publicKey = await new AskPrompt("[green]?[/] What is public key of PGP?")
-                        .ShowAsync(consoleError, cancellationToken);
+                    var publicKey = await logger.AskAsync("What is public key of PGP?", cancellationToken);
                     sopsCreationRule.Pgp = publicKey.Trim();
                     break;
                 }
@@ -128,12 +119,12 @@ internal class InitializeCommand : CliCommand
 
         await File.WriteAllTextAsync(".sops.yaml", content, cancellationToken);
 
-        consoleError.WriteLine();
-        consoleError.MarkupLine("[green]Generated .sops.yaml with the following content:[/]");
-        consoleError.MarkupLineInterpolated($"[gray]{content}[/]");
+        logger.LogInformation();
+        logger.LogInformation("[green]Generated .sops.yaml with the following content:[/]");
+        logger.LogInformationInterpolated($"[gray]{content}[/]");
 
-        consoleError.MarkupLine("You can now encrypt your dotnet user secrets by running:");
-        consoleError.MarkupLineInterpolated($"  [yellow]dotnet sops encrypt[/]");
+        logger.LogInformation("You can now encrypt your dotnet user secrets by running:");
+        logger.LogInformation($"  [yellow]dotnet sops encrypt[/]");
 
         return 0;
     }

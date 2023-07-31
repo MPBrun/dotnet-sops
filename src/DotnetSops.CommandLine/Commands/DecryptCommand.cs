@@ -3,6 +3,7 @@ using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.ProjectInfo;
 using DotnetSops.CommandLine.Services.Sops;
 using DotnetSops.CommandLine.Services.UserSecrets;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DotnetSops.CommandLine.Commands;
 
@@ -10,7 +11,7 @@ internal class DecryptCommand : CliCommand
 {
     public const string CommandName = "decrypt";
 
-    private readonly Services.IServiceProvider _serviceProvider;
+    private readonly IServiceProvider _serviceProvider;
 
     private readonly CliOption<FileInfo?> _projectFileOption = new("--project", "-p")
     {
@@ -28,7 +29,7 @@ internal class DecryptCommand : CliCommand
         DefaultValueFactory = _ => new FileInfo("secrets.json")
     };
 
-    public DecryptCommand(Services.IServiceProvider serviceProvider)
+    public DecryptCommand(IServiceProvider serviceProvider)
         : base(CommandName, Properties.Resources.DecryptCommandDescription)
     {
         Add(_projectFileOption);
@@ -43,10 +44,10 @@ internal class DecryptCommand : CliCommand
                 parseResult.GetValue(_projectFileOption),
                 parseResult.GetValue(_userSecretsIdOption),
                 parseResult.GetValue(_inputFileOption)!,
-                _serviceProvider.Logger.Value,
-                _serviceProvider.ProjectInfoService.Value,
-                _serviceProvider.SopsService.Value,
-                _serviceProvider.UserSecretsService.Value,
+                _serviceProvider.GetRequiredService<ILogger>(),
+                _serviceProvider.GetRequiredService<IProjectInfoService>(),
+                _serviceProvider.GetRequiredService<ISopsService>(),
+                _serviceProvider.GetRequiredService<IUserSecretsService>(),
                 cancellationToken);
         });
     }
@@ -68,7 +69,7 @@ internal class DecryptCommand : CliCommand
                 logger.LogError(ex.Message);
                 if (ex.Suggestion != null)
                 {
-                    logger.LogInformation(string.Empty);
+                    logger.LogInformation();
                     logger.LogInformation(ex.Suggestion);
                 }
                 return 1;
@@ -100,7 +101,7 @@ internal class DecryptCommand : CliCommand
         catch (SopsMissingException ex)
         {
             logger.LogError(ex.Message);
-            logger.LogInformation(string.Empty);
+            logger.LogInformation();
             logger.LogInformation(Properties.Resources.SopsIsMissingTry);
             return 1;
         }

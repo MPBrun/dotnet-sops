@@ -5,18 +5,25 @@ internal class Logger : ILogger
 {
     private readonly IAnsiConsole _outConsole;
     private readonly IAnsiConsole _errorConsole;
-    private readonly bool _verbose;
 
-    public Logger(IAnsiConsole outConsole, IAnsiConsole errorConsole, bool verbose)
+    public bool Verbose { get; set; }
+
+    public Logger(IAnsiConsole outConsole, IAnsiConsole errorConsole)
     {
         _outConsole = outConsole;
         _errorConsole = errorConsole;
-        _verbose = verbose;
     }
 
-    public void LogInformation(string message)
+    public void LogInformation(string? message = default)
     {
-        _errorConsole.MarkupLine(message);
+        if (message == null)
+        {
+            _errorConsole.WriteLine();
+        }
+        else
+        {
+            _errorConsole.MarkupLine(message);
+        }
     }
 
     public void LogInformationInterpolated(FormattableString message)
@@ -26,7 +33,7 @@ internal class Logger : ILogger
 
     public void LogDebug(string message)
     {
-        if (_verbose)
+        if (Verbose)
         {
             _errorConsole.MarkupLineInterpolated($"[gray]{message}[/]");
         }
@@ -50,5 +57,31 @@ internal class Logger : ILogger
     public Status Status()
     {
         return _errorConsole.Status();
+    }
+
+    public async Task<string> AskAsync(string question, CancellationToken cancellationToken)
+    {
+        return await new Commands.Prompts.AskPrompt($"[green]?[/] {question}")
+            .ShowAsync(_errorConsole, cancellationToken);
+    }
+
+    public async Task<bool> ConfirmAsync(string question, CancellationToken cancellationToken)
+    {
+        return await new Commands.Prompts.ConfirmationPrompt($"[green]?[/] {question}")
+            .ShowAsync(_errorConsole, cancellationToken);
+    }
+
+    public async Task<T> SelectAsync<T>(string question, T[] choices, Func<T, string> converter, CancellationToken cancellationToken) where T : notnull
+    {
+        var selected = await new SelectionPrompt<T>()
+            .Title($"[green]?[/] {question}")
+            .UseConverter(converter)
+            .WrapAround(true)
+            .AddChoices(choices)
+            .ShowAsync(_errorConsole, cancellationToken);
+
+        _errorConsole.MarkupLineInterpolated($"[green]?[/] {question} [blue]{converter(selected)}[/]");
+
+        return selected;
     }
 }
