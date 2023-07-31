@@ -49,7 +49,7 @@ public class DownloadSopsCommandTests
         var output = new StringWriter();
         var config = new CliConfiguration(command)
         {
-            Output = output
+            Output = new ReplaceUsageHelpTextWriter(output, "testhost")
         };
 
         // Act
@@ -62,7 +62,7 @@ public class DownloadSopsCommandTests
               Download SOPS from https://github.com/getsops/sops
 
             Usage:
-              testhost download-sops [options]
+              dotnet sops download-sops [options]
 
             Options:
               -?, -h, --help  Show help and usage information

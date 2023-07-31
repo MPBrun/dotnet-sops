@@ -1,4 +1,5 @@
 using System.CommandLine;
+using DotnetSops.CommandLine;
 using DotnetSops.CommandLine.Commands;
 using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.FileBom;
@@ -39,6 +40,9 @@ var serviceProvider = new ServiceCollection()
 
 var rootCommand = new RootDotnetSopsCommand(serviceProvider);
 
-var config = new CliConfiguration(rootCommand);
+var config = new CliConfiguration(rootCommand)
+{
+    Output = new ReplaceUsageHelpTextWriter(Console.Out)
+};
 
 return await config.InvokeAsync(args);

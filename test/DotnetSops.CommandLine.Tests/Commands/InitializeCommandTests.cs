@@ -68,7 +68,7 @@ public class InitializeCommandTests
         var output = new StringWriter();
         var config = new CliConfiguration(command)
         {
-            Output = output
+            Output = new ReplaceUsageHelpTextWriter(output, "testhost")
         };
 
         // Act
@@ -81,7 +81,7 @@ public class InitializeCommandTests
               Create .sops.yaml configuration file.
 
             Usage:
-              testhost init [options]
+              dotnet sops init [options]
 
             Options:
               -?, -h, --help  Show help and usage information

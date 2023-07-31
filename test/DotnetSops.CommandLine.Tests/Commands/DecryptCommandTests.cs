@@ -197,7 +197,7 @@ public class DecryptCommandTests
         var output = new StringWriter();
         var config = new CliConfiguration(command)
         {
-            Output = output
+            Output = new ReplaceUsageHelpTextWriter(output, "testhost")
         };
 
         // Act
@@ -210,7 +210,7 @@ public class DecryptCommandTests
               Decrypt secrets into dotnet user secrets
 
             Usage:
-              testhost decrypt [options]
+              dotnet sops decrypt [options]
 
             Options:
               -p, --project   Path to project. Defaults to searching the current directory

@@ -15,7 +15,7 @@ Only store development secrets that cannot access production like environment.
 
 # Install
 Run the following commands to install tool:
-```
+```bash
 dotnet tool install dotnet-sops
 ```
 
@@ -23,13 +23,13 @@ dotnet tool install dotnet-sops
 
 ## Create .sops.yaml configuration
 Create .sops.yaml configuration file.
-```
+```bash
 dotnet sops init
 ```
 
 ## Download SOPS
 Download SOPS from https://github.com/getsops/sops
-```
+```bash
 dotnet sops download-sops
 ```
 
@@ -37,19 +37,19 @@ The executable will be used hereafter. The SOPS executable is file SHA-512 check
 
 ## Encrypt
 Encrypt existing dotnet user secrets.
-```
+```bash
 dotnet sops encrypt --id <user-secret-id>
 ```
 
 ## Decrypt
 Decrypt secrets into dotnet user secrets.
-```
+```bash
 dotnet sops decrypt --id <user-secret-id>
 ```
 
 ## Help
 Show help and usage information
-```
+```bash
 dotnet sops --help
 ```
 
@@ -78,6 +78,7 @@ creation_rules:
 # Configure SOPS with key groups
 SOPS can also be configured to requred access to more than one key. This can be configured by using key groups in the configuration.
 Example using 3 key groups:
+```yaml
 creation_rules:
   - path_regex: secrets.json
     key_groups:
@@ -97,7 +98,7 @@ This requires access to fingerprint1 or age1. Require access to fingerprint2 and
 
 ## Init user secrets
 Initialize dotnet user-secrets using the following command:
-```
+```bash
 dotnet user-secrets init
 ```
 
@@ -107,7 +108,7 @@ For more information on see [Safe storage of app secrets in development in ASP.N
 
 ## Set secret
 To set a secret execute the following command:
-```
+```bash
 dotnet user-secrets set --id <user-secret-id> [key] [value]
 ```
 
@@ -119,21 +120,21 @@ rotation? - decrypt + encrypt
 
 # Development
 ## Build
-```
+```bash
 dotnet build
 ```
 
 ## Lint
-```
+```bash
 dotnet format --verify-no-changes
 ```
 
 ## Test
-```
+```bash
 dotnet test
 ```
 
 ## Package
-```
+```bash
 dotnet pack
 ```

@@ -56,7 +56,6 @@ public partial class RootDotnetSopsCommandTests
         Assert.Matches(VersionRegeex(), output.ToString());
     }
 
-
     [Fact]
     public async Task NoVerboseFlag_NotSetAsDefault()
     {
@@ -104,7 +103,7 @@ public partial class RootDotnetSopsCommandTests
         var output = new StringWriter();
         var config = new CliConfiguration(command)
         {
-            Output = output
+            Output = new ReplaceUsageHelpTextWriter(output, "testhost")
         };
 
         // Act
@@ -124,7 +123,7 @@ public partial class RootDotnetSopsCommandTests
               Recomendation: Only store development secrets that cannot access production like environment.
             
             Usage:
-              testhost [command] [options]
+              dotnet sops [command] [options]
             
             Options:
               -?, -h, --help  Show help and usage information

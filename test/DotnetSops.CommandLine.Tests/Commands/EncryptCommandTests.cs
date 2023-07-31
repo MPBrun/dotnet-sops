@@ -245,7 +245,7 @@ public class EncryptCommandTests
         var output = new StringWriter();
         var config = new CliConfiguration(command)
         {
-            Output = output
+            Output = new ReplaceUsageHelpTextWriter(output, "testhost")
         };
 
         // Act
@@ -258,7 +258,7 @@ public class EncryptCommandTests
               Encrypt existing dotnet user secrets
 
             Usage:
-              testhost encrypt [options]
+              dotnet sops encrypt [options]
 
             Options:
               -p, --project   Path to project. Defaults to searching the current directory
