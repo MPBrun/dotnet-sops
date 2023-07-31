@@ -26,6 +26,8 @@ public class InitializeCommandTests
 
         var config = new CliConfiguration(command);
 
+        await File.WriteAllTextAsync(".sops.yaml", "");
+
         // Owerwrite existing file
         _logger.Error.Input.PushTextWithEnter("y");
 
@@ -53,5 +55,40 @@ public class InitializeCommandTests
               age: age123
             """, _logger.Error.Output.ReplaceLineEndings(), StringComparison.InvariantCulture);
         Assert.Equal(0, exitCode);
+    }
+
+    [Theory]
+    [InlineData("-?")]
+    [InlineData("-h")]
+    [InlineData("--help")]
+    public async Task HelpFlag_PrintHelp(string option)
+    {
+        // Arrange
+        var command = new RootDotnetSopsCommand(_serviceProvider);
+        var output = new StringWriter();
+        var config = new CliConfiguration(command)
+        {
+            Output = output
+        };
+
+        // Act
+        var exitCode = await config.InvokeAsync($"init {option}");
+
+        // Assert
+        Assert.Equal(0, exitCode);
+        Assert.Equal("""
+            Description:
+              Create .sops.yaml configuration file.
+
+            Usage:
+              testhost init [options]
+
+            Options:
+              -?, -h, --help  Show help and usage information
+              --verbose       Enable verbose logging output
+
+
+
+            """, output.ToString(), ignoreLineEndingDifferences: true);
     }
 }

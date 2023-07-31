@@ -185,4 +185,42 @@ public class DecryptCommandTests
         var option = command.Options.First(o => o.Name == "--file");
         Assert.False(option.Required);
     }
+
+    [Theory]
+    [InlineData("-?")]
+    [InlineData("-h")]
+    [InlineData("--help")]
+    public async Task HelpFlag_PrintHelp(string option)
+    {
+        // Arrange
+        var command = new RootDotnetSopsCommand(_serviceProvider);
+        var output = new StringWriter();
+        var config = new CliConfiguration(command)
+        {
+            Output = output
+        };
+
+        // Act
+        var exitCode = await config.InvokeAsync($"decrypt {option}");
+
+        // Assert
+        Assert.Equal(0, exitCode);
+        Assert.Equal("""
+            Description:
+              Decrypt secrets into dotnet user secrets
+
+            Usage:
+              testhost decrypt [options]
+
+            Options:
+              -p, --project   Path to project. Defaults to searching the current directory
+              --id            The user secret ID to use.
+              --file          File of the encrypted secrets [default: secrets.json]
+              -?, -h, --help  Show help and usage information
+              --verbose       Enable verbose logging output
+
+
+
+            """, output.ToString(), ignoreLineEndingDifferences: true);
+    }
 }

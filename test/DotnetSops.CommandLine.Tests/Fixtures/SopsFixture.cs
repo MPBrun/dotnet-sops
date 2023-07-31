@@ -8,6 +8,14 @@ public class SopsFixture : IAsyncLifetime
 {
     public Task DisposeAsync()
     {
+        if (File.Exists("sops.exe"))
+        {
+            File.Delete("sops.exe");
+        }
+        if (File.Exists("sops"))
+        {
+            File.Delete("sops");
+        }
         return Task.CompletedTask;
     }
 
