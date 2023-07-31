@@ -15,16 +15,16 @@ internal class ProjectInfoService : IProjectInfoService
                 .ToList();
             if (projectFiles.Count > 1)
             {
-                throw new ProjectInfoSearchException($"""
-                        Multiple MSBuild project files found in '{currentDirectory}'.
-                        Specify which to use with the --project option
-                        """);
+                throw new ProjectInfoSearchException($"Multiple MSBuild project files found in '{currentDirectory}'.")
+                {
+                    Suggestion = "Specify which project to use with the [yellow]'--project'[/] option."
+                };
             }
             projectFile = projectFiles.Count == 0
-                ? throw new ProjectInfoSearchException($"""
-                        Could not find a MSBuild project file in '{currentDirectory}'.
-                        Specify which project to use with the --project option or use the '--id' option.
-                        """)
+                ? throw new ProjectInfoSearchException($"Could not find a MSBuild project file in '{currentDirectory}'.")
+                {
+                    Suggestion = "Specify which project to use with the [yellow]'--project'[/] option or use the [yellow]'--id'[/] option."
+                }
                 : projectFiles[0];
         }
 
@@ -38,10 +38,15 @@ internal class ProjectInfoService : IProjectInfoService
             var userSecretId = projectDocument.XPathSelectElements("//UserSecretsId").FirstOrDefault()?.Value;
 
             return string.IsNullOrWhiteSpace(userSecretId)
-                ? throw new ProjectInfoSearchException($"""
-                        Could not find the global property 'UserSecretsId' in MSBuild project '{projectFile.FullName}'
-                        Ensure this property is set in the project or use the '--id' command line option.
-                        """)
+                ? throw new ProjectInfoSearchException($"Could not find the global property 'UserSecretsId' in MSBuild project '{projectFile.FullName}'")
+                {
+                    Suggestion = """
+                            Ensure this property is set in the project or use the [yellow]'--id'[/] command line option.
+                            
+                            The 'UserSecretsId' property can be created by running this command:
+                              [yellow]dotnet user-secrets init[/]
+                            """
+                }
                 : userSecretId;
         }
         catch (ProjectInfoSearchException)
@@ -50,9 +55,7 @@ internal class ProjectInfoService : IProjectInfoService
         }
         catch (Exception)
         {
-            throw new ProjectInfoSearchException($"""
-                        Could not load the MSBuild project '{projectFile.FullName}'.
-                        """);
+            throw new ProjectInfoSearchException($"Could not load the MSBuild project '{projectFile.FullName}'.");
         }
     }
 }

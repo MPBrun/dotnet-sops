@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.PlatformInformation;
 using DotnetSops.CommandLine.Services.Sops;
 using Moq;
@@ -27,7 +28,9 @@ public class SopsDownloadServiceTests
         mockPlatformInformation.Setup(p => p.IsLinux()).Returns(linux);
         mockPlatformInformation.Setup(p => p.ProcessArchitecture).Returns(architecture);
 
-        var service = new SopsDownloadService(mockPlatformInformation.Object, httpClient);
+        var mockLogger = new Mock<ILogger>();
+
+        var service = new SopsDownloadService(mockPlatformInformation.Object, httpClient, mockLogger.Object);
 
         // Act / Assert
         await service.DownloadAsync();
@@ -41,8 +44,9 @@ public class SopsDownloadServiceTests
         using var httpClient = new HttpClient();
 
         var mockPlatformInformation = new Mock<IPlatformInformationService>();
+        var mockLogger = new Mock<ILogger>();
 
-        var service = new SopsDownloadService(mockPlatformInformation.Object, httpClient);
+        var service = new SopsDownloadService(mockPlatformInformation.Object, httpClient, mockLogger.Object);
 
         // Act / Assert
         var exception = await Assert.ThrowsAsync<NotSupportedException>(() => service.DownloadAsync());
@@ -56,6 +60,8 @@ public class SopsDownloadServiceTests
         var mockPlatformInformation = new Mock<IPlatformInformationService>();
         mockPlatformInformation.Setup(p => p.IsWindows()).Returns(true);
 
+        var mockLogger = new Mock<ILogger>();
+
         var mockHttpClientHandler = new Mock<HttpMessageHandler>();
         using var result = new HttpResponseMessage()
         {
@@ -68,7 +74,7 @@ public class SopsDownloadServiceTests
             .ReturnsAsync(result);
         using var httpClient = new HttpClient(mockHttpClientHandler.Object);
 
-        var service = new SopsDownloadService(mockPlatformInformation.Object, httpClient);
+        var service = new SopsDownloadService(mockPlatformInformation.Object, httpClient, mockLogger.Object);
 
         // Act / Assert
         var exception = await Assert.ThrowsAsync<SopsDownloadException>(() => service.DownloadAsync());
@@ -88,6 +94,8 @@ public class SopsDownloadServiceTests
         var mockPlatformInformation = new Mock<IPlatformInformationService>();
         mockPlatformInformation.Setup(p => p.IsWindows()).Returns(true);
 
+        var mockLogger = new Mock<ILogger>();
+
         var mockHttpClientHandler = new Mock<HttpMessageHandler>();
         using var result = new HttpResponseMessage()
         {
@@ -99,7 +107,7 @@ public class SopsDownloadServiceTests
             .ReturnsAsync(result);
         using var httpClient = new HttpClient(mockHttpClientHandler.Object);
 
-        var service = new SopsDownloadService(mockPlatformInformation.Object, httpClient);
+        var service = new SopsDownloadService(mockPlatformInformation.Object, httpClient, mockLogger.Object);
 
         // Act / Assert
         var exception = await Assert.ThrowsAsync<SopsDownloadException>(() => service.DownloadAsync());

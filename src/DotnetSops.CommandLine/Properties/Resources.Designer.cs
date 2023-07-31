@@ -245,7 +245,7 @@ namespace DotnetSops.CommandLine.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to You can download it by executing the following command:
-        ///dotnet sops download-sops.
+        ///  [yellow]dotnet sops download-sops[/].
         /// </summary>
         internal static string SopsIsMissingTry {
             get {
@@ -263,7 +263,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SOPS failed with error.
+        ///   Looks up a localized string similar to SOPS failed with error:
         ///
         ///{0}.
         /// </summary>

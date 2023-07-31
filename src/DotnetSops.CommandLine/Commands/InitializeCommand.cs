@@ -130,7 +130,10 @@ internal class InitializeCommand : CliCommand
 
         consoleError.WriteLine();
         consoleError.MarkupLine("[green]Generated .sops.yaml with the following content:[/]");
-        consoleError.MarkupLineInterpolated($"[yellow]{content}[/]");
+        consoleError.MarkupLineInterpolated($"[gray]{content}[/]");
+
+        consoleError.MarkupLine("You can now encrypt your dotnet user secrets by running:");
+        consoleError.MarkupLineInterpolated($"  [yellow]dotnet sops encrypt[/]");
 
         return 0;
     }

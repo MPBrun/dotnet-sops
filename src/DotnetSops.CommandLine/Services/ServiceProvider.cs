@@ -8,13 +8,13 @@ using Spectre.Console;
 namespace DotnetSops.CommandLine.Services;
 internal class ServiceProvider : IServiceProvider
 {
-    public Lazy<ISopsService> SopsService => new(() => new SopsService());
+    public Lazy<ISopsService> SopsService => new(() => new SopsService(Logger.Value));
 
     public Lazy<IUserSecretsService> UserSecretsService => new(() => new UserSecretsService());
 
     public Lazy<IFileBomService> FileBomService => new(() => new FileBomService());
 
-    public Lazy<ISopsDownloadService> SopsDownloadService => new(() => new SopsDownloadService(PlatformInformationService.Value, HttpClient.Value));
+    public Lazy<ISopsDownloadService> SopsDownloadService => new(() => new SopsDownloadService(PlatformInformationService.Value, HttpClient.Value, Logger.Value));
 
     public Lazy<IPlatformInformationService> PlatformInformationService => new(() => new PlatformInformationService());
 

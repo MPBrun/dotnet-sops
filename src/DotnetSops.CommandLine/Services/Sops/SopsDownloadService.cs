@@ -8,11 +8,13 @@ internal class SopsDownloadService : ISopsDownloadService
     private const string Version = "3.7.3";
     private readonly IPlatformInformationService _platformInformation;
     private readonly HttpClient _httpClient;
+    private readonly ILogger _logger;
 
-    public SopsDownloadService(IPlatformInformationService platformInformation, HttpClient httpClient)
+    public SopsDownloadService(IPlatformInformationService platformInformation, HttpClient httpClient, ILogger logger)
     {
         _platformInformation = platformInformation;
         _httpClient = httpClient;
+        _logger = logger;
     }
 
     public async Task DownloadAsync(CancellationToken cancellationToken = default)
@@ -22,6 +24,9 @@ internal class SopsDownloadService : ISopsDownloadService
         // Download sops
         var platformFile = release.ReleaseFileName;
         var url = new Uri($"https://github.com/getsops/sops/releases/download/v{Version}/{platformFile}");
+
+        _logger.LogDebug($"Download SOPS from '{url}'");
+
         var response = await _httpClient.GetAsync(url, cancellationToken);
         if (response.StatusCode != System.Net.HttpStatusCode.OK)
         {

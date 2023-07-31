@@ -199,13 +199,13 @@ Actual:   {1}</value>
   </data>
   <data name="SopsIsMissingTry" xml:space="preserve">
     <value>You can download it by executing the following command:
-dotnet sops download-sops</value>
+  [yellow]dotnet sops download-sops[/]</value>
   </data>
   <data name="SopsRunFailed" xml:space="preserve">
     <value>Failed to run sops.</value>
   </data>
   <data name="SopsRunFailedWithError" xml:space="preserve">
-    <value>SOPS failed with error.
+    <value>SOPS failed with error:
 
 {0}</value>
     <comment>{0} is error output</comment>

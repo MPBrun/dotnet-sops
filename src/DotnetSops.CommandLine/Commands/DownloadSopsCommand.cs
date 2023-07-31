@@ -27,7 +27,7 @@ internal class DownloadSopsCommand : CliCommand
     {
         try
         {
-            logger.LogInformation("Downloading [green]SOPS[/] from [link]https://github.com/getsops/sops[/]");
+            logger.LogInformation("Downloading [yellow]SOPS[/] from [link]https://github.com/getsops/sops[/]");
 
             await logger.Status().StartAsync(Properties.Resources.DownloadSopsLoader, async (ctx) =>
             {

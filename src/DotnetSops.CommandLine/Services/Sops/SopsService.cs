@@ -5,27 +5,30 @@ namespace DotnetSops.CommandLine.Services.Sops;
 
 internal class SopsService : ISopsService
 {
+    private readonly ILogger _logger;
+
     public string WorkingDirectory { get; }
 
     public async Task EncryptAsync(FileInfo inputFilePath, FileInfo outoutFilePath, CancellationToken cancellationToken = default)
     {
-        await ExecuteAsync(new string[] { "--output", outoutFilePath.FullName, "--encrypt", inputFilePath.FullName, "--verbose" }, cancellationToken);
+        await ExecuteAsync(new string[] { "--output", outoutFilePath.FullName, "--encrypt", inputFilePath.FullName }, cancellationToken);
     }
 
     public async Task DecryptAsync(FileInfo inputFilePath, FileInfo outoutFilePath, CancellationToken cancellationToken = default)
     {
-        await ExecuteAsync(new string[] { "--output", outoutFilePath.FullName, "--decrypt", inputFilePath.FullName, "--verbose" }, cancellationToken);
+        await ExecuteAsync(new string[] { "--output", outoutFilePath.FullName, "--decrypt", inputFilePath.FullName }, cancellationToken);
     }
 
-    public SopsService()
-        : this(Directory.GetCurrentDirectory())
+    public SopsService(ILogger logger)
+        : this(Directory.GetCurrentDirectory(), logger)
     {
 
     }
 
-    internal SopsService(string workingDirectory)
+    internal SopsService(string workingDirectory, ILogger logger)
     {
         WorkingDirectory = workingDirectory;
+        _logger = logger;
     }
 
     private async Task ExecuteAsync(string[] arguments, CancellationToken cancellationToken = default)
@@ -43,6 +46,8 @@ internal class SopsService : ISopsService
 
         try
         {
+            _logger.LogDebug($"Executing sops with arguments: {string.Join(" ", processStartInfo.ArgumentList)}");
+
             using var process = Process.Start(processStartInfo) ?? throw new SopsMissingException(Properties.Resources.SopsRunFailed);
             await process.WaitForExitAsync(cancellationToken);
             if (process.ExitCode != 0)

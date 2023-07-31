@@ -53,26 +53,36 @@ internal class DecryptCommand : CliCommand
 
     private static async Task<int> ExecuteAsync(FileInfo? projectFile, string? userSecretId, FileInfo inputFile, ILogger logger, IProjectInfoService projectInfoService, ISopsService sopsService, IUserSecretsService userSecretsService, CancellationToken cancellationToken)
     {
+        logger.LogDebug($"Using input file '{inputFile}'");
+
         if (string.IsNullOrWhiteSpace(userSecretId))
         {
             try
             {
                 userSecretId = projectInfoService.FindUserSecretId(projectFile);
+
+                logger.LogDebug($"Using usersecret id '{userSecretId}'");
             }
             catch (ProjectInfoSearchException ex)
             {
                 logger.LogError(ex.Message);
+                if (ex.Suggestion != null)
+                {
+                    logger.LogInformation(string.Empty);
+                    logger.LogInformation(ex.Suggestion);
+                }
                 return 1;
             }
         }
+
+        var outputFile = userSecretsService.GetSecretsPathFromSecretsId(userSecretId);
+        logger.LogDebug($"Using user secret file '{outputFile}'");
 
         if (!inputFile.Exists)
         {
             logger.LogError(LocalizationResources.FileDoesNotExist(inputFile.FullName));
             return 1;
         }
-
-        var outputFile = userSecretsService.GetSecretsPathFromSecretsId(userSecretId);
 
         if (outputFile.Directory != null)
         {
@@ -83,7 +93,7 @@ internal class DecryptCommand : CliCommand
         {
             await sopsService.DecryptAsync(inputFile, outputFile, cancellationToken);
 
-            logger.LogSuccess($"{inputFile.Name} successfully decrypted to user secret with id \"{userSecretId}\".");
+            logger.LogSuccess($"{inputFile.Name} successfully decrypted to user secret with id '{userSecretId}'.");
 
             return 0;
         }

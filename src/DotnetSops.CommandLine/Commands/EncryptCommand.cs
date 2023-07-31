@@ -55,23 +55,40 @@ internal class EncryptCommand : CliCommand
 
     private static async Task<int> ExecuteAsync(FileInfo? projectFile, string? userSecretId, FileInfo outputFile, ILogger logger, IProjectInfoService projectInfoService, ISopsService sopsService, IUserSecretsService userSecretsService, IFileBomService fileBomService, CancellationToken cancellationToken)
     {
+        logger.LogDebug($"Using output file '{outputFile}'");
+
         if (string.IsNullOrWhiteSpace(userSecretId))
         {
             try
             {
                 userSecretId = projectInfoService.FindUserSecretId(projectFile);
+
+                logger.LogDebug($"Using usersecret id '{userSecretId}'");
             }
             catch (ProjectInfoSearchException ex)
             {
                 logger.LogError(ex.Message);
+                if (ex.Suggestion != null)
+                {
+                    logger.LogInformation(string.Empty);
+                    logger.LogInformation(ex.Suggestion);
+                }
+
                 return 1;
             }
         }
 
         var inputFile = userSecretsService.GetSecretsPathFromSecretsId(userSecretId);
+        logger.LogDebug($"Using user secret file '{inputFile}'");
+
         if (!inputFile.Exists)
         {
             logger.LogError(LocalizationResources.UserSecretsFileDoesNotExist(inputFile.FullName));
+            logger.LogInformation(string.Empty);
+            logger.LogInformation($"""
+                                You have no secrets created. You can add secrets by running this command:
+                                  [yellow]dotnet user-secrets set [[name]] [[value]][/]
+                                """);
             return 1;
         }
 
@@ -81,7 +98,7 @@ internal class EncryptCommand : CliCommand
         {
             await sopsService.EncryptAsync(inputFile, outputFile, cancellationToken);
 
-            logger.LogSuccess($"User secret with id \"{userSecretId}\" successfully encrypted to \"{outputFile.FullName}\".");
+            logger.LogSuccess($"User secret with id '{userSecretId}' successfully encrypted to '{outputFile.FullName}'.");
 
             return 0;
         }

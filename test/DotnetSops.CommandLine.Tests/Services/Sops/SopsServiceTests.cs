@@ -1,6 +1,8 @@
 using System.Text.Json;
+using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.Sops;
 using DotnetSops.CommandLine.Tests.Fixtures;
+using Moq;
 
 namespace DotnetSops.CommandLine.Tests.Services.Sops;
 
@@ -16,7 +18,7 @@ public class SopsServiceTests
     public void DefaultConsturctor_WorkingDirectory_IsCurrentDirectory()
     {
         // Arrange / Act
-        var service = new SopsService();
+        var service = new SopsService(null!);
 
         // Assert
         Assert.Equal(Directory.GetCurrentDirectory(), service.WorkingDirectory);
@@ -29,7 +31,7 @@ public class SopsServiceTests
         var workingDir = Guid.NewGuid().ToString();
 
         // Act
-        var service = new SopsService(workingDir);
+        var service = new SopsService(workingDir, null!);
 
         // Assert
         Assert.Equal(workingDir, service.WorkingDirectory);
@@ -40,7 +42,8 @@ public class SopsServiceTests
     {
         // Arrange
         var dir = Directory.CreateDirectory(Guid.NewGuid().ToString());
-        var sopsService = new SopsService(dir.FullName);
+        var logger = new Mock<ILogger>();
+        var sopsService = new SopsService(dir.FullName, logger.Object);
         var fileName = new FileInfo(Path.Combine(dir.FullName, "secrets.json"));
         var jsonContent = new
         {
@@ -80,7 +83,8 @@ public class SopsServiceTests
     {
         // Arrange
         var dir = Directory.CreateDirectory(Guid.NewGuid().ToString());
-        var sopsService = new SopsService(dir.FullName);
+        var logger = new Mock<ILogger>();
+        var sopsService = new SopsService(dir.FullName, logger.Object);
         var fileName = new FileInfo(Path.Combine(dir.FullName, "secrets.json"));
         var jsonContent = new
         {

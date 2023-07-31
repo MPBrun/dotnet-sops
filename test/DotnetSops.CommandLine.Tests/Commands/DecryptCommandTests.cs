@@ -1,6 +1,7 @@
 using System.CommandLine;
 using System.Text.Json;
 using DotnetSops.CommandLine.Commands;
+using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.FileBom;
 using DotnetSops.CommandLine.Services.ProjectInfo;
 using DotnetSops.CommandLine.Services.Sops;
@@ -9,6 +10,7 @@ using DotnetSops.CommandLine.Tests.Fixtures;
 using DotnetSops.CommandLine.Tests.Models;
 using DotnetSops.CommandLine.Tests.Services;
 using DotnetSops.CommandLine.Tests.Services.UserSecrets;
+using Moq;
 using Spectre.Console;
 using Spectre.Console.Testing;
 
@@ -28,7 +30,8 @@ public class DecryptCommandTests
         // Arrange
         var dir = Directory.CreateDirectory(Guid.NewGuid().ToString());
         var projectInfoService = new ProjectInfoService();
-        var sopsService = new SopsService(dir.FullName);
+        var logger = new Mock<ILogger>();
+        var sopsService = new SopsService(dir.FullName, logger.Object);
         var userSecretsService = new UserSecretsServiceStub(dir.FullName);
         var fileBomService = new FileBomService();
         using var ansiConsoleError = new TestConsole();
@@ -106,7 +109,8 @@ public class DecryptCommandTests
         // Arrange
         var dir = Directory.CreateDirectory(Guid.NewGuid().ToString());
         var projectInfoService = new ProjectInfoService();
-        var sopsService = new SopsService(dir.FullName);
+        var logger = new Mock<ILogger>();
+        var sopsService = new SopsService(dir.FullName, logger.Object);
         var userSecretsService = new UserSecretsServiceStub(dir.FullName);
         var fileBomService = new FileBomService();
         using var ansiConsoleError = new TestConsole();
@@ -167,7 +171,7 @@ public class DecryptCommandTests
         // Assert
         Assert.Equal(128, exitCode);
         Assert.Equal("""
-            SOPS failed with error.
+            SOPS failed with error:
 
             Failed to get the data key required to decrypt the SOPS file.
 
