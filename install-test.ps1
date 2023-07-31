@@ -1,14 +1,33 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
+function Invoke-Dotnet {
+    [CmdletBinding()]
+    Param (
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $Command
+    )
+
+    $DotnetArgs = @()
+    $DotnetArgs = $DotnetArgs + ($Command -split "\s+")
+    dotnet $DotnetArgs
+
+    # Should throw if the last command failed.
+    if ($LASTEXITCODE -ne 0) {
+        throw "Invoking 'dotnet $DotnetArgs' failed"
+    }
+}
+
 $DateTime = (Get-Date).ToUniversalTime()
 $UnixTimeStamp = [System.Math]::Truncate((Get-Date -Date $DateTime -UFormat %s))
 $VersionSuffix = "alpha-${UnixTimeStamp}"
 
-dotnet pack --version-suffix $VersionSuffix --configuration Release
+Write-Host ""
+Write-Host "Build dotnet-sops tool"
+Invoke-Dotnet -Command "pack --version-suffix $VersionSuffix --configuration Release"
 
 # Delete local cache. https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-install#local-tools
-
 $NugetFolder = "$env:USERPROFILE\.nuget\packages\dotnet-sops"
 if (Test-Path $NugetFolder) {
   Remove-Item $NugetFolder -Recurse
@@ -23,20 +42,27 @@ $FolderName = "ToolInstallTest"
 if (Test-Path $FolderName) {
   Remove-Item $FolderName -Recurse
 }
-New-Item $FolderName -ItemType "directory"
+New-Item $FolderName -ItemType "directory" | Out-Null
 
 Push-Location $FolderName
 
-dotnet new tool-manifest
-dotnet tool install --add-source ..\src\DotnetSops.CommandLine\bin\nupkg dotnet-sops --prerelease
+try {
+  Write-Host ""
+  Write-Host "Testing as local tool"
+  Invoke-Dotnet -Command "new tool-manifest"
+  Invoke-Dotnet -Command "tool install --add-source ..\src\DotnetSops.CommandLine\bin\nupkg dotnet-sops --prerelease"
+  Invoke-Dotnet -Command "tool run dotnet-sops -- --version"
+  Invoke-Dotnet -Command "dotnet-sops --version"
+  Invoke-Dotnet -Command "sops --version"
+  Invoke-Dotnet -Command "sops download-sops"
+  Invoke-Dotnet -Command "tool uninstall dotnet-sops"
 
-dotnet tool run dotnet-sops -- --version
-
-dotnet dotnet-sops --version
-dotnet sops --version
-
-Pop-Location
-
-if ($?) { 
-  Exit $LASTEXITCODE 
+  Write-Host ""
+  Write-Host "Testing as global tool"
+  Invoke-Dotnet -Command "tool install --add-source ..\src\DotnetSops.CommandLine\bin\nupkg dotnet-sops --prerelease --global"
+  Invoke-Dotnet -Command "sops --version"
+  Invoke-Dotnet -Command "sops download-sops"
+  Invoke-Dotnet -Command "tool uninstall dotnet-sops --global"
+} finally {
+  Pop-Location
 }
