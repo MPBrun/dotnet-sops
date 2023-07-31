@@ -30,7 +30,7 @@ internal class InitializeCommand : CliCommand
         var alreadyExist = File.Exists(".sops.yaml");
         if (alreadyExist)
         {
-            var generate = await logger.ConfirmAsync("Are you sure to overwrite existing [yellow].sops.yaml[/]?", cancellationToken);
+            var generate = await logger.ConfirmAsync(Properties.Resources.InitializeCommandConfigAlreadyExistQuestion, cancellationToken);
             if (!generate)
             {
                 return 0;
@@ -61,7 +61,7 @@ internal class InitializeCommand : CliCommand
             SopsEncryptionType.Pgp
         };
 
-        var encryptionType = await logger.SelectAsync("Which encryption whould you like to use?", choices, encryptionTypeConverter, cancellationToken);
+        var encryptionType = await logger.SelectAsync(Properties.Resources.InitializeCommandEncryptionQuestion, choices, encryptionTypeConverter, cancellationToken);
 
         var sopsCreationRule = new SopsCreationRule()
         {
@@ -79,9 +79,9 @@ internal class InitializeCommand : CliCommand
         {
             case SopsEncryptionType.AzureKeyVault:
                 {
-                    var keyVaultName = await logger.AskAsync("What is the name of the key vault?", cancellationToken);
-                    var keyName = await logger.AskAsync("What is object name of the key?", cancellationToken);
-                    var keyVersion = await logger.AskAsync("What is object version of the key?", cancellationToken);
+                    var keyVaultName = await logger.AskAsync(Properties.Resources.InitializeCommandAzureKeyVaultNameQuestion, cancellationToken);
+                    var keyName = await logger.AskAsync(Properties.Resources.InitializeCommandAzureKeyVaultKeyQuestion, cancellationToken);
+                    var keyVersion = await logger.AskAsync(Properties.Resources.InitializeCommandAzureKeyVaultVersionQuestion, cancellationToken);
 
                     var key = $"https://{keyVaultName.Trim()}.vault.azure.net/keys/{keyName.Trim()}/{keyVersion.Trim()}";
                     sopsCreationRule.AzureKeyvault = key;
@@ -95,14 +95,14 @@ internal class InitializeCommand : CliCommand
                 throw new NotImplementedException();
             case SopsEncryptionType.Age:
                 {
-                    var publicKey = await logger.AskAsync("What is public key of age?", cancellationToken);
+                    var publicKey = await logger.AskAsync(Properties.Resources.InitializeCommandAgePublicKeyQuestion, cancellationToken);
                     sopsCreationRule.Age = publicKey.Trim();
                     break;
                 }
 
             case SopsEncryptionType.Pgp:
                 {
-                    var publicKey = await logger.AskAsync("What is public key of PGP?", cancellationToken);
+                    var publicKey = await logger.AskAsync(Properties.Resources.InitializeCommandPgpPublicKeyQuestion, cancellationToken);
                     sopsCreationRule.Pgp = publicKey.Trim();
                     break;
                 }
@@ -120,11 +120,10 @@ internal class InitializeCommand : CliCommand
         await File.WriteAllTextAsync(".sops.yaml", content, cancellationToken);
 
         logger.LogInformation();
-        logger.LogInformation("[green]Generated .sops.yaml with the following content:[/]");
+        logger.LogInformation(Properties.Resources.InitializeCommandSuccessGenerated);
         logger.LogInformationInterpolated($"[gray]{content}[/]");
 
-        logger.LogInformation("You can now encrypt your dotnet user secrets by running:");
-        logger.LogInformation($"  [yellow]dotnet sops encrypt[/]");
+        logger.LogInformation(Properties.Resources.InitializeCommandSuccessSuggestion);
 
         return 0;
     }

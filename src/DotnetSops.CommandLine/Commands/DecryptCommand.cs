@@ -94,7 +94,7 @@ internal class DecryptCommand : CliCommand
         {
             await sopsService.DecryptAsync(inputFile, outputFile, cancellationToken);
 
-            logger.LogSuccess($"{inputFile.Name} successfully decrypted to user secret with id '{userSecretId}'.");
+            logger.LogSuccess(LocalizationResources.DecryptCommandSuccess(inputFile.Name, userSecretId));
 
             return 0;
         }
@@ -102,7 +102,7 @@ internal class DecryptCommand : CliCommand
         {
             logger.LogError(ex.Message);
             logger.LogInformation();
-            logger.LogInformation(Properties.Resources.SopsIsMissingTry);
+            logger.LogInformation(Properties.Resources.SopsIsMissingSuggestion);
             return 1;
         }
         catch (SopsExecutionException ex)

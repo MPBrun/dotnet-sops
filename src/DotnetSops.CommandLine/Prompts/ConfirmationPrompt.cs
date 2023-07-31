@@ -1,6 +1,6 @@
 using Spectre.Console;
 
-namespace DotnetSops.CommandLine.Commands.Prompts;
+namespace DotnetSops.CommandLine.Prompts;
 internal class ConfirmationPrompt : IPrompt<bool>
 {
     private readonly string _prompt;

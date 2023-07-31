@@ -86,10 +86,7 @@ internal class EncryptCommand : CliCommand
         {
             logger.LogError(LocalizationResources.UserSecretsFileDoesNotExist(inputFile.FullName));
             logger.LogInformation();
-            logger.LogInformation($"""
-                                You have no secrets created. You can add secrets by running this command:
-                                  [yellow]dotnet user-secrets set [[name]] [[value]][/]
-                                """);
+            logger.LogInformation(Properties.Resources.UserSecretsFileDoesNotExistSuggestion);
             return 1;
         }
 
@@ -99,7 +96,7 @@ internal class EncryptCommand : CliCommand
         {
             await sopsService.EncryptAsync(inputFile, outputFile, cancellationToken);
 
-            logger.LogSuccess($"User secret with id '{userSecretId}' successfully encrypted to '{outputFile.FullName}'.");
+            logger.LogSuccess(LocalizationResources.EncryptCommandSuccess(userSecretId, outputFile.FullName));
 
             return 0;
         }
@@ -107,7 +104,7 @@ internal class EncryptCommand : CliCommand
         {
             logger.LogError(ex.Message);
             logger.LogInformation();
-            logger.LogInformation(Properties.Resources.SopsIsMissingTry);
+            logger.LogInformation(Properties.Resources.SopsIsMissingSuggestion);
             return 1;
         }
         catch (SopsExecutionException ex)

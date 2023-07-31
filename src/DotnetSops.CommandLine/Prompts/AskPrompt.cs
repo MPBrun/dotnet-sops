@@ -1,6 +1,6 @@
 using Spectre.Console;
 
-namespace DotnetSops.CommandLine.Commands.Prompts;
+namespace DotnetSops.CommandLine.Prompts;
 internal class AskPrompt : IPrompt<string>
 {
     private readonly string _prompt;

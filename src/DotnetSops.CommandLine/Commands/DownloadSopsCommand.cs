@@ -28,14 +28,14 @@ internal class DownloadSopsCommand : CliCommand
     {
         try
         {
-            logger.LogInformation("Downloading [yellow]SOPS[/] from [link]https://github.com/getsops/sops[/]");
+            logger.LogInformation(Properties.Resources.DownloadSopsCommandInformation);
 
             await logger.Status().StartAsync(Properties.Resources.DownloadSopsLoader, async (ctx) =>
             {
                 await sopsDownloadService.DownloadAsync(cancellationToken);
             });
 
-            logger.LogSuccess("SOPS has been successfully downloaded.");
+            logger.LogSuccess(Properties.Resources.DownloadSopsCommandSuccess);
             return 0;
         }
         catch (SopsExecutionException ex)

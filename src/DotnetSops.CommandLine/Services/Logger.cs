@@ -61,13 +61,13 @@ internal class Logger : ILogger
 
     public async Task<string> AskAsync(string question, CancellationToken cancellationToken)
     {
-        return await new Commands.Prompts.AskPrompt($"[green]?[/] {question}")
+        return await new Prompts.AskPrompt($"[green]?[/] {question}")
             .ShowAsync(_errorConsole, cancellationToken);
     }
 
     public async Task<bool> ConfirmAsync(string question, CancellationToken cancellationToken)
     {
-        return await new Commands.Prompts.ConfirmationPrompt($"[green]?[/] {question}")
+        return await new Prompts.ConfirmationPrompt($"[green]?[/] {question}")
             .ShowAsync(_errorConsole, cancellationToken);
     }
 

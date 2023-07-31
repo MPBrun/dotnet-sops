@@ -129,8 +129,19 @@
   <data name="DecryptCommandSecretsIdOptionDescription" xml:space="preserve">
     <value>The user secret ID to use.</value>
   </data>
+  <data name="DecryptCommandSuccess" xml:space="preserve">
+    <value>'{0}' successfully decrypted to user secret with id '{1}'.</value>
+    <comment>{0} is file path
+{1} is id</comment>
+  </data>
   <data name="DownloadSopsCommandDescription" xml:space="preserve">
     <value>Download SOPS from https://github.com/getsops/sops</value>
+  </data>
+  <data name="DownloadSopsCommandInformation" xml:space="preserve">
+    <value>Downloading [yellow]SOPS[/] from [link]https://github.com/getsops/sops[/]</value>
+  </data>
+  <data name="DownloadSopsCommandSuccess" xml:space="preserve">
+    <value>SOPS has been successfully downloaded.</value>
   </data>
   <data name="DownloadSopsLoader" xml:space="preserve">
     <value>Downloading SOPS</value>
@@ -147,23 +158,76 @@
   <data name="EncryptCommandSecretsIdOptionDescription" xml:space="preserve">
     <value>The user secret ID to use.</value>
   </data>
+  <data name="EncryptCommandSuccess" xml:space="preserve">
+    <value>User secret with id '{0}' successfully encrypted to '{1}'.</value>
+    <comment>{0} is id
+{1} is file path</comment>
+  </data>
   <data name="FileDoesNotExist" xml:space="preserve">
     <value>File '{0}' does not exist.</value>
     <comment>{0} is file path</comment>
   </data>
+  <data name="InitializeCommandAgePublicKeyQuestion" xml:space="preserve">
+    <value>What is public key of age?</value>
+  </data>
+  <data name="InitializeCommandAzureKeyVaultKeyQuestion" xml:space="preserve">
+    <value>What is object name of the key?</value>
+  </data>
+  <data name="InitializeCommandAzureKeyVaultNameQuestion" xml:space="preserve">
+    <value>What is the name of the key vault?</value>
+  </data>
+  <data name="InitializeCommandAzureKeyVaultVersionQuestion" xml:space="preserve">
+    <value>What is object version of the key?</value>
+  </data>
+  <data name="InitializeCommandConfigAlreadyExistQuestion" xml:space="preserve">
+    <value>Are you sure to overwrite existing [yellow].sops.yaml[/]?</value>
+  </data>
   <data name="InitializeCommandDescription" xml:space="preserve">
-    <value>Create .sops.yaml configuration file.
-
-Documentation on how to create encryptions keys:
-Azure Key Vault - https://learn.microsoft.com/en-us/azure/key-vault
-GCP KMS - https://cloud.google.com/security-key-management
-AWS KMS - https://aws.amazon.com/kms
-Hashicorp Vault - https://www.vaultproject.io
-age - https://github.com/FiloSottile/age
-PGP - https://www.openpgp.org</value>
+    <value>Create .sops.yaml configuration file.</value>
+  </data>
+  <data name="InitializeCommandEncryptionQuestion" xml:space="preserve">
+    <value>Which encryption whould you like to use?</value>
+  </data>
+  <data name="InitializeCommandPgpPublicKeyQuestion" xml:space="preserve">
+    <value>What is public key of PGP?</value>
+  </data>
+  <data name="InitializeCommandSuccessGenerated" xml:space="preserve">
+    <value>[green]Generated .sops.yaml with the following content:[/]</value>
+  </data>
+  <data name="InitializeCommandSuccessSuggestion" xml:space="preserve">
+    <value>You can now encrypt your dotnet user secrets by running:
+  [yellow]dotnet sops encrypt[/]</value>
   </data>
   <data name="OperatingSystemNotSupported" xml:space="preserve">
     <value>Operating system is not supported.</value>
+  </data>
+  <data name="ProjectInfoServiceMultipleFoundError" xml:space="preserve">
+    <value>Multiple MSBuild project files found in '{0}'.</value>
+    <comment>{0} is the current directory</comment>
+  </data>
+  <data name="ProjectInfoServiceMultipleFoundSuggestion" xml:space="preserve">
+    <value>Specify which project to use with the [yellow]'--project'[/] option.</value>
+  </data>
+  <data name="ProjectInfoServiceNotFoundError" xml:space="preserve">
+    <value>Could not find a MSBuild project file in '{0}'.</value>
+    <comment>{0} is the current directory</comment>
+  </data>
+  <data name="ProjectInfoServiceNotFoundSuggestion" xml:space="preserve">
+    <value>Specify which project to use with the [yellow]'--project'[/] option or use the [yellow]'--id'[/] option.</value>
+  </data>
+  <data name="ProjectInfoServiceNotLoadableError" xml:space="preserve">
+    <value>Could not load the MSBuild project '{0}'.</value>
+    <comment>{0} is the project path</comment>
+  </data>
+  <data name="ProjectInfoServiceUserSecretIdNotFoundError" xml:space="preserve">
+    <value>Could not find the global property 'UserSecretsId' in MSBuild project '{0}'.</value>
+    <comment>{0} is the project path</comment>
+  </data>
+  <data name="ProjectInfoServiceUserSecretIdNotFoundSuggestion" xml:space="preserve">
+    <value>Ensure this property is set in the project or use the [yellow]'--id'[/] command line option.
+
+The 'UserSecretsId' property can be created by running this command:
+  [yellow]dotnet user-secrets init[/]</value>
   </data>
   <data name="RootCommandDescription" xml:space="preserve">
     <value>Store and share encrypted secrets, created using user-secrets tool.
@@ -195,9 +259,9 @@ Actual:   {1}</value>
 {1} is actual</comment>
   </data>
   <data name="SopsIsMissing" xml:space="preserve">
-    <value>SOPS executable is missing from path environment.</value>
+    <value>SOPS executable could not be found on the PATH.</value>
   </data>
-  <data name="SopsIsMissingTry" xml:space="preserve">
+  <data name="SopsIsMissingSuggestion" xml:space="preserve">
     <value>You can download it by executing the following command:
   [yellow]dotnet sops download-sops[/]</value>
   </data>
@@ -213,5 +277,9 @@ Actual:   {1}</value>
   <data name="UserSecretsFileDoesNotExist" xml:space="preserve">
     <value>User secrets file '{0}' does not exist.</value>
     <comment>{0} is file path</comment>
+  </data>
+  <data name="UserSecretsFileDoesNotExistSuggestion" xml:space="preserve">
+    <value>You have no secrets created. You can add secrets by running this command:
+  [yellow]dotnet user-secrets set [[name]] [[value]][/]</value>
   </data>
 </root>

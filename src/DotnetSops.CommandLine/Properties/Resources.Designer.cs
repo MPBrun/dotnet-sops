@@ -97,11 +97,38 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; successfully decrypted to user secret with id &apos;{1}&apos;..
+        /// </summary>
+        internal static string DecryptCommandSuccess {
+            get {
+                return ResourceManager.GetString("DecryptCommandSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download SOPS from https://github.com/getsops/sops.
         /// </summary>
         internal static string DownloadSopsCommandDescription {
             get {
                 return ResourceManager.GetString("DownloadSopsCommandDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading [yellow]SOPS[/] from [link]https://github.com/getsops/sops[/].
+        /// </summary>
+        internal static string DownloadSopsCommandInformation {
+            get {
+                return ResourceManager.GetString("DownloadSopsCommandInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SOPS has been successfully downloaded..
+        /// </summary>
+        internal static string DownloadSopsCommandSuccess {
+            get {
+                return ResourceManager.GetString("DownloadSopsCommandSuccess", resourceCulture);
             }
         }
         
@@ -151,6 +178,15 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User secret with id &apos;{0}&apos; successfully encrypted to &apos;{1}&apos;..
+        /// </summary>
+        internal static string EncryptCommandSuccess {
+            get {
+                return ResourceManager.GetString("EncryptCommandSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File &apos;{0}&apos; does not exist..
         /// </summary>
         internal static string FileDoesNotExist {
@@ -160,19 +196,93 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create .sops.yaml configuration file.
-        ///
-        ///Documentation on how to create encryptions keys:
-        ///Azure Key Vault - https://learn.microsoft.com/en-us/azure/key-vault
-        ///GCP KMS - https://cloud.google.com/security-key-management
-        ///AWS KMS - https://aws.amazon.com/kms
-        ///Hashicorp Vault - https://www.vaultproject.io
-        ///age - https://github.com/FiloSottile/age
-        ///PGP - https://www.openpgp.org.
+        ///   Looks up a localized string similar to What is public key of age?.
+        /// </summary>
+        internal static string InitializeCommandAgePublicKeyQuestion {
+            get {
+                return ResourceManager.GetString("InitializeCommandAgePublicKeyQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What is object name of the key?.
+        /// </summary>
+        internal static string InitializeCommandAzureKeyVaultKeyQuestion {
+            get {
+                return ResourceManager.GetString("InitializeCommandAzureKeyVaultKeyQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What is the name of the key vault?.
+        /// </summary>
+        internal static string InitializeCommandAzureKeyVaultNameQuestion {
+            get {
+                return ResourceManager.GetString("InitializeCommandAzureKeyVaultNameQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What is object version of the key?.
+        /// </summary>
+        internal static string InitializeCommandAzureKeyVaultVersionQuestion {
+            get {
+                return ResourceManager.GetString("InitializeCommandAzureKeyVaultVersionQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure to overwrite existing [yellow].sops.yaml[/]?.
+        /// </summary>
+        internal static string InitializeCommandConfigAlreadyExistQuestion {
+            get {
+                return ResourceManager.GetString("InitializeCommandConfigAlreadyExistQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create .sops.yaml configuration file..
         /// </summary>
         internal static string InitializeCommandDescription {
             get {
                 return ResourceManager.GetString("InitializeCommandDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Which encryption whould you like to use?.
+        /// </summary>
+        internal static string InitializeCommandEncryptionQuestion {
+            get {
+                return ResourceManager.GetString("InitializeCommandEncryptionQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What is public key of PGP?.
+        /// </summary>
+        internal static string InitializeCommandPgpPublicKeyQuestion {
+            get {
+                return ResourceManager.GetString("InitializeCommandPgpPublicKeyQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [green]Generated .sops.yaml with the following content:[/].
+        /// </summary>
+        internal static string InitializeCommandSuccessGenerated {
+            get {
+                return ResourceManager.GetString("InitializeCommandSuccessGenerated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can now encrypt your dotnet user secrets by running:
+        ///  [yellow]dotnet sops encrypt[/].
+        /// </summary>
+        internal static string InitializeCommandSuccessSuggestion {
+            get {
+                return ResourceManager.GetString("InitializeCommandSuccessSuggestion", resourceCulture);
             }
         }
         
@@ -182,6 +292,72 @@ namespace DotnetSops.CommandLine.Properties {
         internal static string OperatingSystemNotSupported {
             get {
                 return ResourceManager.GetString("OperatingSystemNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple MSBuild project files found in &apos;{0}&apos;..
+        /// </summary>
+        internal static string ProjectInfoServiceMultipleFoundError {
+            get {
+                return ResourceManager.GetString("ProjectInfoServiceMultipleFoundError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specify which project to use with the [yellow]&apos;--project&apos;[/] option..
+        /// </summary>
+        internal static string ProjectInfoServiceMultipleFoundSuggestion {
+            get {
+                return ResourceManager.GetString("ProjectInfoServiceMultipleFoundSuggestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not find a MSBuild project file in &apos;{0}&apos;..
+        /// </summary>
+        internal static string ProjectInfoServiceNotFoundError {
+            get {
+                return ResourceManager.GetString("ProjectInfoServiceNotFoundError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specify which project to use with the [yellow]&apos;--project&apos;[/] option or use the [yellow]&apos;--id&apos;[/] option..
+        /// </summary>
+        internal static string ProjectInfoServiceNotFoundSuggestion {
+            get {
+                return ResourceManager.GetString("ProjectInfoServiceNotFoundSuggestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not load the MSBuild project &apos;{0}&apos;..
+        /// </summary>
+        internal static string ProjectInfoServiceNotLoadableError {
+            get {
+                return ResourceManager.GetString("ProjectInfoServiceNotLoadableError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not find the global property &apos;UserSecretsId&apos; in MSBuild project &apos;{0}&apos;..
+        /// </summary>
+        internal static string ProjectInfoServiceUserSecretIdNotFoundError {
+            get {
+                return ResourceManager.GetString("ProjectInfoServiceUserSecretIdNotFoundError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ensure this property is set in the project or use the [yellow]&apos;--id&apos;[/] command line option.
+        ///
+        ///The &apos;UserSecretsId&apos; property can be created by running this command:
+        ///  [yellow]dotnet user-secrets init[/].
+        /// </summary>
+        internal static string ProjectInfoServiceUserSecretIdNotFoundSuggestion {
+            get {
+                return ResourceManager.GetString("ProjectInfoServiceUserSecretIdNotFoundSuggestion", resourceCulture);
             }
         }
         
@@ -235,7 +411,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SOPS executable is missing from path environment..
+        ///   Looks up a localized string similar to SOPS executable could not be found on the PATH..
         /// </summary>
         internal static string SopsIsMissing {
             get {
@@ -247,9 +423,9 @@ namespace DotnetSops.CommandLine.Properties {
         ///   Looks up a localized string similar to You can download it by executing the following command:
         ///  [yellow]dotnet sops download-sops[/].
         /// </summary>
-        internal static string SopsIsMissingTry {
+        internal static string SopsIsMissingSuggestion {
             get {
-                return ResourceManager.GetString("SopsIsMissingTry", resourceCulture);
+                return ResourceManager.GetString("SopsIsMissingSuggestion", resourceCulture);
             }
         }
         
@@ -279,6 +455,16 @@ namespace DotnetSops.CommandLine.Properties {
         internal static string UserSecretsFileDoesNotExist {
             get {
                 return ResourceManager.GetString("UserSecretsFileDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have no secrets created. You can add secrets by running this command:
+        ///  [yellow]dotnet user-secrets set [[name]] [[value]][/].
+        /// </summary>
+        internal static string UserSecretsFileDoesNotExistSuggestion {
+            get {
+                return ResourceManager.GetString("UserSecretsFileDoesNotExistSuggestion", resourceCulture);
             }
         }
     }

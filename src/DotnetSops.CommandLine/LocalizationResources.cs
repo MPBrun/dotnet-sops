@@ -1,18 +1,40 @@
 using System.Globalization;
-using Spectre.Console;
 
 namespace DotnetSops.CommandLine;
 internal static class LocalizationResources
 {
-    public static string FileDoesNotExist(string filePath) => GetResourceString(Properties.Resources.FileDoesNotExist, filePath.EscapeMarkup());
+    /// <inheritdoc cref="Properties.Resources.FileDoesNotExist"/>
+    public static string FileDoesNotExist(string filePath) => GetResourceString(Properties.Resources.FileDoesNotExist, filePath);
 
-    public static string UserSecretsFileDoesNotExist(string filePath) => GetResourceString(Properties.Resources.UserSecretsFileDoesNotExist, filePath.EscapeMarkup());
+    /// <inheritdoc cref="Properties.Resources.UserSecretsFileDoesNotExist"/>
+    public static string UserSecretsFileDoesNotExist(string filePath) => GetResourceString(Properties.Resources.UserSecretsFileDoesNotExist, filePath);
 
-    public static string SopsDownloadHttpFailed(int statusCode, Uri? url) => GetResourceString(Properties.Resources.SopsDownloadHttpFailed, statusCode, url?.ToString()?.EscapeMarkup());
+    /// <inheritdoc cref="Properties.Resources.SopsDownloadHttpFailed"/>
+    public static string SopsDownloadHttpFailed(int statusCode, Uri? url) => GetResourceString(Properties.Resources.SopsDownloadHttpFailed, statusCode, url?.ToString());
 
-    public static string SopsDownloadSha512Failed(string expected, string actual) => GetResourceString(Properties.Resources.SopsDownloadSha512Failed, expected.EscapeMarkup(), actual.EscapeMarkup());
+    /// <inheritdoc cref="Properties.Resources.SopsDownloadSha512Failed"/>
+    public static string SopsDownloadSha512Failed(string expected, string actual) => GetResourceString(Properties.Resources.SopsDownloadSha512Failed, expected, actual);
 
-    public static string SopsRunFailedWithError(string output) => GetResourceString(Properties.Resources.SopsRunFailedWithError, output.EscapeMarkup());
+    /// <inheritdoc cref="Properties.Resources.SopsRunFailedWithError"/>
+    public static string SopsRunFailedWithError(string output) => GetResourceString(Properties.Resources.SopsRunFailedWithError, output);
+
+    /// <inheritdoc cref="Properties.Resources.DecryptCommandSuccess"/>
+    public static string DecryptCommandSuccess(string filePath, string userSecretId) => GetResourceString(Properties.Resources.DecryptCommandSuccess, filePath, userSecretId);
+
+    /// <inheritdoc cref="Properties.Resources.EncryptCommandSuccess"/>
+    public static string EncryptCommandSuccess(string userSecretId, string filePath) => GetResourceString(Properties.Resources.EncryptCommandSuccess, userSecretId, filePath);
+
+    /// <inheritdoc cref="Properties.Resources.ProjectInfoServiceMultipleFoundError"/>
+    public static string ProjectInfoServiceMultipleFoundError(string currentDirectory) => GetResourceString(Properties.Resources.ProjectInfoServiceMultipleFoundError, currentDirectory);
+
+    /// <inheritdoc cref="Properties.Resources.ProjectInfoServiceNotFoundError"/>
+    public static string ProjectInfoServiceNotFoundError(string currentDirectory) => GetResourceString(Properties.Resources.ProjectInfoServiceNotFoundError, currentDirectory);
+
+    /// <inheritdoc cref="Properties.Resources.ProjectInfoServiceUserSecretIdNotFoundError"/>
+    public static string ProjectInfoServiceUserSecretIdNotFoundError(string projectFilePath) => GetResourceString(Properties.Resources.ProjectInfoServiceNotFoundError, projectFilePath);
+
+    /// <inheritdoc cref="Properties.Resources.ProjectInfoServiceNotLoadableError"/>
+    public static string ProjectInfoServiceNotLoadableError(string projectFilePath) => GetResourceString(Properties.Resources.ProjectInfoServiceNotFoundError, projectFilePath);
 
     private static string GetResourceString(string resourceString, params object?[] formatArguments)
     {
