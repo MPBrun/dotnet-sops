@@ -7,44 +7,34 @@ using Moq;
 namespace DotnetSops.CommandLine.Tests.Services.Sops;
 
 [Collection(CollectionNames.Sops)]
-public class SopsServiceTests
+public class SopsServiceTests : IDisposable
 {
-    public SopsServiceTests()
+    private readonly UniqueCurrentDirectoryFixture _uniqueCurrentDirectoryFixture = new();
+
+    public SopsServiceTests(SopsFixture sopsFixture)
+    {
+        sopsFixture?.CopySopsToDirectory(_uniqueCurrentDirectoryFixture.TestDirectory.FullName);
+    }
+
+    protected virtual void Dispose(bool disposing)
     {
         Environment.SetEnvironmentVariable("SOPS_AGE_KEY", null);
+        _uniqueCurrentDirectoryFixture.Dispose();
     }
 
-    [Fact]
-    public void DefaultConsturctor_WorkingDirectory_IsCurrentDirectory()
+    public void Dispose()
     {
-        // Arrange / Act
-        var service = new SopsService(null!);
-
-        // Assert
-        Assert.Equal(Directory.GetCurrentDirectory(), service.WorkingDirectory);
-    }
-
-    [Fact]
-    public void InternalConsturctor_WorkingDirectory_Set()
-    {
-        // Arrange
-        var workingDir = Guid.NewGuid().ToString();
-
-        // Act
-        var service = new SopsService(workingDir, null!);
-
-        // Assert
-        Assert.Equal(workingDir, service.WorkingDirectory);
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
     [Fact]
     public async Task EncryptAsync_Valid_Encrypts()
     {
         // Arrange
-        var dir = Directory.CreateDirectory(Guid.NewGuid().ToString());
         var logger = new Mock<ILogger>();
-        var sopsService = new SopsService(dir.FullName, logger.Object);
-        var fileName = new FileInfo(Path.Combine(dir.FullName, "secrets.json"));
+        var sopsService = new SopsService(logger.Object);
+        var fileName = new FileInfo("secrets.json");
         var jsonContent = new
         {
             add = "Add",
@@ -54,14 +44,13 @@ public class SopsServiceTests
         await File.WriteAllTextAsync(fileName.FullName, content);
 
         // Sops config
-        var sopsConfigPath = Path.Combine(dir.FullName, ".sops.yaml");
-        await File.WriteAllTextAsync(sopsConfigPath, """
+        await File.WriteAllTextAsync(".sops.yaml", """
             creation_rules:
                 - path_regex: .*.json
                   age: 'age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8'
             """);
 
-        var encrypedFile = new FileInfo(Path.Combine(dir.FullName, "encrypted.json"));
+        var encrypedFile = new FileInfo("encrypted.json");
 
         // Act
         await sopsService.EncryptAsync(fileName, encrypedFile);
@@ -82,10 +71,9 @@ public class SopsServiceTests
     public async Task DecryptAsync_Valid_Decrypts()
     {
         // Arrange
-        var dir = Directory.CreateDirectory(Guid.NewGuid().ToString());
         var logger = new Mock<ILogger>();
-        var sopsService = new SopsService(dir.FullName, logger.Object);
-        var fileName = new FileInfo(Path.Combine(dir.FullName, "secrets.json"));
+        var sopsService = new SopsService(logger.Object);
+        var fileName = new FileInfo("secrets.json");
         var jsonContent = new
         {
             add = "Add",
@@ -98,17 +86,16 @@ public class SopsServiceTests
         Environment.SetEnvironmentVariable("SOPS_AGE_KEY", "AGE-SECRET-KEY-10HA9FMZENQKN8DXGZPRWZ7YK5R83AYK4FQVZ8Y5LPAV3430HXW7QZAFV9Z");
 
         // Sops config
-        var sopsConfigPath = Path.Combine(dir.FullName, ".sops.yaml");
-        await File.WriteAllTextAsync(sopsConfigPath, """
+        await File.WriteAllTextAsync(".sops.yaml", """
             creation_rules:
                 - path_regex: .*.json
                   age: 'age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8'
             """);
 
-        var encrypedFile = new FileInfo(Path.Combine(dir.FullName, "encrypted.json"));
+        var encrypedFile = new FileInfo("encrypted.json");
         await sopsService.EncryptAsync(fileName, encrypedFile);
 
-        var decrypedFile = new FileInfo(Path.Combine(dir.FullName, "decrypted.json"));
+        var decrypedFile = new FileInfo("decrypted.json");
 
         // Act
         await sopsService.DecryptAsync(encrypedFile, decrypedFile);

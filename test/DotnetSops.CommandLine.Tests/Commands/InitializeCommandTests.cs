@@ -1,13 +1,18 @@
 using System.CommandLine;
 using DotnetSops.CommandLine.Commands;
 using DotnetSops.CommandLine.Services;
+using DotnetSops.CommandLine.Tests.Extensions;
+using DotnetSops.CommandLine.Tests.Fixtures;
 using DotnetSops.CommandLine.Tests.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Testing;
 
 namespace DotnetSops.CommandLine.Tests.Commands;
-public class InitializeCommandTests
+
+[Collection(CollectionNames.UniqueCurrentDirectory)]
+public class InitializeCommandTests : IDisposable
 {
+    private readonly UniqueCurrentDirectoryFixture _uniqueCurrentDirectoryFixture = new();
     private readonly LoggerMock _logger = new(new TestConsole(), new TestConsole());
     private readonly IServiceProvider _serviceProvider;
 
@@ -16,6 +21,17 @@ public class InitializeCommandTests
         _serviceProvider = new ServiceCollection()
             .AddSingleton<ILogger>(_logger)
             .BuildServiceProvider();
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        _uniqueCurrentDirectoryFixture.Dispose();
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
     [Fact]
@@ -89,6 +105,6 @@ public class InitializeCommandTests
 
 
 
-            """, output.ToString(), ignoreLineEndingDifferences: true);
+            """, output.ToString().RemoveHelpWrapNewLines(), ignoreLineEndingDifferences: true);
     }
 }

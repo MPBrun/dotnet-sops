@@ -2,13 +2,28 @@ using System.Runtime.InteropServices;
 using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.PlatformInformation;
 using DotnetSops.CommandLine.Services.Sops;
+using DotnetSops.CommandLine.Tests.Fixtures;
 using Moq;
 using Moq.Protected;
 
 namespace DotnetSops.CommandLine.Tests.Services.Sops;
 
-public class SopsDownloadServiceTests
+[Collection(CollectionNames.UniqueCurrentDirectory)]
+public class SopsDownloadServiceTests : IDisposable
 {
+    private readonly UniqueCurrentDirectoryFixture _uniqueCurrentDirectoryFixture = new();
+
+    protected virtual void Dispose(bool disposing)
+    {
+        _uniqueCurrentDirectoryFixture.Dispose();
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
     [Theory]
     [InlineData(true, false, false, Architecture.X86)]
     [InlineData(false, true, false, Architecture.X86)]

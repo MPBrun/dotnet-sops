@@ -1,16 +1,31 @@
 using System.Text;
 using DotnetSops.CommandLine.Services.FileBom;
+using DotnetSops.CommandLine.Tests.Fixtures;
 
 namespace DotnetSops.CommandLine.Tests.Services.FileBom;
-public class FileBomServiceTests
+
+[Collection(CollectionNames.UniqueCurrentDirectory)]
+public class FileBomServiceTests : IDisposable
 {
+    private readonly UniqueCurrentDirectoryFixture _uniqueCurrentDirectoryFixture = new();
+
+    protected virtual void Dispose(bool disposing)
+    {
+        _uniqueCurrentDirectoryFixture.Dispose();
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
     [Fact]
     public async Task RemoveBomFromFileAsync_WithBomInFile_RemovesBom()
     {
         // Arrange
         var service = new FileBomService();
-        var dir = Directory.CreateDirectory(Guid.NewGuid().ToString());
-        var filePath = new FileInfo(Path.Combine(dir.FullName, "file.json"));
+        var filePath = new FileInfo("file.json");
 
         await File.AppendAllTextAsync(filePath.FullName, "content", new UTF8Encoding(encoderShouldEmitUTF8Identifier: true));
 
@@ -37,8 +52,7 @@ public class FileBomServiceTests
     {
         // Arrange
         var service = new FileBomService();
-        var dir = Directory.CreateDirectory(Guid.NewGuid().ToString());
-        var filePath = new FileInfo(Path.Combine(dir.FullName, "file.json"));
+        var filePath = new FileInfo("file.json");
 
         await File.AppendAllTextAsync(filePath.FullName, "content", new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
 

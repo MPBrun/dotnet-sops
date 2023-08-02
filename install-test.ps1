@@ -21,11 +21,13 @@ function Invoke-Dotnet {
 
 $DateTime = (Get-Date).ToUniversalTime()
 $UnixTimeStamp = [System.Math]::Truncate((Get-Date -Date $DateTime -UFormat %s))
-$VersionSuffix = "alpha-${UnixTimeStamp}"
+$VersionSuffix = "alpha.${UnixTimeStamp}"
+$VersionPrefix = "0.0.1"
+$Configuration = "Release"
 
 Write-Host ""
 Write-Host "Build dotnet-sops tool"
-Invoke-Dotnet -Command "pack --version-suffix $VersionSuffix --configuration Release"
+Invoke-Dotnet -Command "pack  -p:VersionPrefix=$VersionPrefix --version-suffix $VersionSuffix --configuration $Configuration"
 
 # Delete local cache. https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-install#local-tools
 $NugetFolder = "$env:USERPROFILE\.nuget\packages\dotnet-sops"

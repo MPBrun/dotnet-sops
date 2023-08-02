@@ -1,19 +1,34 @@
 using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.Sops;
+using DotnetSops.CommandLine.Tests.Fixtures;
 using Moq;
 
 namespace DotnetSops.CommandLine.Tests.Services.Sops;
-public class SopsServiceTests_SopsMissing
+
+[Collection(CollectionNames.UniqueCurrentDirectory)]
+public class SopsServiceTests_SopsMissing : IDisposable
 {
+    private readonly UniqueCurrentDirectoryFixture _uniqueCurrentDirectoryFixture = new();
+
+    protected virtual void Dispose(bool disposing)
+    {
+        _uniqueCurrentDirectoryFixture.Dispose();
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
     [Fact]
-    public async Task EncryptAsync_Valid_Encrypts()
+    public async Task EncryptAsync_NoSops_ThrowsSopsMissingException()
     {
         // Arrange
-        var dir = Directory.CreateDirectory(Guid.NewGuid().ToString());
         var logger = new Mock<ILogger>();
-        var sopsService = new SopsService(dir.FullName, logger.Object);
-        var fileName = new FileInfo(Path.Combine(dir.FullName, "secrets.json"));
-        var encrypedFile = new FileInfo(Path.Combine(dir.FullName, "encrypted.json"));
+        var sopsService = new SopsService(logger.Object);
+        var fileName = new FileInfo("secrets.json");
+        var encrypedFile = new FileInfo("encrypted.json");
 
         // Act / Assert
         var exception = await Assert.ThrowsAsync<SopsMissingException>(() => sopsService.EncryptAsync(fileName, encrypedFile));

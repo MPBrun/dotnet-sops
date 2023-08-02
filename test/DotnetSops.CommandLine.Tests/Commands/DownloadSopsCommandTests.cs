@@ -2,14 +2,19 @@ using System.CommandLine;
 using DotnetSops.CommandLine.Commands;
 using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.Sops;
+using DotnetSops.CommandLine.Tests.Extensions;
+using DotnetSops.CommandLine.Tests.Fixtures;
 using DotnetSops.CommandLine.Tests.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Spectre.Console.Testing;
 
 namespace DotnetSops.CommandLine.Tests.Commands;
-public class DownloadSopsCommandTests
+
+[Collection(CollectionNames.UniqueCurrentDirectory)]
+public class DownloadSopsCommandTests : IDisposable
 {
+    private readonly UniqueCurrentDirectoryFixture _uniqueCurrentDirectoryFixture = new();
     private readonly IServiceProvider _serviceProvider;
 
     public DownloadSopsCommandTests()
@@ -21,6 +26,17 @@ public class DownloadSopsCommandTests
                 .AddSingleton(mockSopsDownloadService.Object)
                 .AddSingleton<ILogger>(logger)
                 .BuildServiceProvider();
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        _uniqueCurrentDirectoryFixture.Dispose();
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
     [Fact]
@@ -70,6 +86,6 @@ public class DownloadSopsCommandTests
 
 
 
-            """, output.ToString(), ignoreLineEndingDifferences: true);
+            """, output.ToString().RemoveHelpWrapNewLines(), ignoreLineEndingDifferences: true);
     }
 }

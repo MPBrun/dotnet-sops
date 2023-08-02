@@ -9,7 +9,7 @@ Supports all encryption types supported by SOPS: AWS KMS, GCP KMS, Azure Key Vau
 
 [![Nuget](https://img.shields.io/nuget/v/dotnet-sops)](https://www.nuget.org/packages/dotnet-sops/)
 
-# Warning
+## Warning
 When secrets are decrypted they are stored in plain, unencrypted text, that can be loaded by [user-secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-7.0&tabs=windows#secret-manager) tool.
 Only store development secrets that cannot access production like environment.
 

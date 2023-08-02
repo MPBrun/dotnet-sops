@@ -7,6 +7,7 @@ using DotnetSops.CommandLine.Services.PlatformInformation;
 using DotnetSops.CommandLine.Services.ProjectInfo;
 using DotnetSops.CommandLine.Services.Sops;
 using DotnetSops.CommandLine.Services.UserSecrets;
+using DotnetSops.CommandLine.Tests.Extensions;
 using DotnetSops.CommandLine.Tests.Fixtures;
 using DotnetSops.CommandLine.Tests.Models;
 using DotnetSops.CommandLine.Tests.Services;
@@ -17,20 +18,20 @@ using Spectre.Console.Testing;
 namespace DotnetSops.CommandLine.Tests.Commands;
 
 [Collection(CollectionNames.Sops)]
-public class DecryptCommandTests
+public class DecryptCommandTests : IDisposable
 {
-    private readonly DirectoryInfo _directory = Directory.CreateDirectory(Guid.NewGuid().ToString());
+    private readonly UniqueCurrentDirectoryFixture _uniqueCurrentDirectoryFixture = new();
     private readonly LoggerMock _logger = new(new TestConsole(), new TestConsole());
     private readonly IServiceProvider _serviceProvider;
     private readonly IUserSecretsService _userSecretsService;
 
-    public DecryptCommandTests()
+    public DecryptCommandTests(SopsFixture? sopsFixture)
     {
-        Environment.SetEnvironmentVariable("SOPS_AGE_KEY", null);
+        sopsFixture?.CopySopsToDirectory(_uniqueCurrentDirectoryFixture.TestDirectory.FullName);
 
         _serviceProvider = new ServiceCollection()
-            .AddSingleton<ISopsService>(sp => new SopsService(_directory.FullName, sp.GetRequiredService<ILogger>()))
-            .AddSingleton<IUserSecretsService>(sp => new UserSecretsServiceStub(_directory.FullName))
+            .AddSingleton<ISopsService, SopsService>()
+            .AddSingleton<IUserSecretsService>(sp => new UserSecretsServiceStub(_uniqueCurrentDirectoryFixture.TestDirectory.FullName))
             .AddSingleton<IFileBomService, FileBomService>()
             .AddSingleton<IPlatformInformationService, PlatformInformationService>()
             .AddSingleton<IProjectInfoService, ProjectInfoService>()
@@ -38,6 +39,18 @@ public class DecryptCommandTests
             .BuildServiceProvider();
 
         _userSecretsService = _serviceProvider.GetRequiredService<IUserSecretsService>();
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        _uniqueCurrentDirectoryFixture.Dispose();
+        Environment.SetEnvironmentVariable("SOPS_AGE_KEY", null);
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
     [Fact]
@@ -54,15 +67,13 @@ public class DecryptCommandTests
         Environment.SetEnvironmentVariable("SOPS_AGE_KEY", "AGE-SECRET-KEY-10HA9FMZENQKN8DXGZPRWZ7YK5R83AYK4FQVZ8Y5LPAV3430HXW7QZAFV9Z");
 
         // Sops config
-        var sopsConfigPath = Path.Combine(_directory.FullName, ".sops.yaml");
-        await File.WriteAllTextAsync(sopsConfigPath, """
+        await File.WriteAllTextAsync(".sops.yaml", """
             creation_rules:
                 - path_regex: secrets.json
                   age: 'age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8'
             """);
 
-        var secretPath = Path.Combine(_directory.FullName, "secrets.json");
-        await File.WriteAllTextAsync(secretPath, /*lang=json,strict*/ """
+        await File.WriteAllTextAsync("secrets.json", /*lang=json,strict*/ """
             {
                 "TestKey": "ENC[AES256_GCM,data:L3MRIGiBVhqFcA==,iv:+57aY2xTo6lwwVaUF2ifbvgs5uPT0xsmwPFlWRexFrg=,tag:b3v7JRAhLxZRCgblwGOZvg==,type:str]",
                 "sops": {
@@ -85,7 +96,7 @@ public class DecryptCommandTests
             }
             """);
 
-        var inputPath = Path.Combine(_directory.FullName, "secrets.json");
+        var inputPath = "secrets.json";
 
         var config = new CliConfiguration(command);
 
@@ -108,15 +119,13 @@ public class DecryptCommandTests
         var id = $"unittest-{Guid.NewGuid()}";
 
         // Sops config
-        var sopsConfigPath = Path.Combine(_directory.FullName, ".sops.yaml");
-        await File.WriteAllTextAsync(sopsConfigPath, """
+        await File.WriteAllTextAsync(".sops.yaml", """
             creation_rules:
                 - path_regex: secrets.json
                   age: 'age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8'
             """);
 
-        var secretPath = Path.Combine(_directory.FullName, "secrets.json");
-        await File.WriteAllTextAsync(secretPath, /*lang=json,strict*/ """
+        await File.WriteAllTextAsync("secrets.json", /*lang=json,strict*/ """
             {
                 "TestKey": "ENC[AES256_GCM,data:L3MRIGiBVhqFcA==,iv:+57aY2xTo6lwwVaUF2ifbvgs5uPT0xsmwPFlWRexFrg=,tag:b3v7JRAhLxZRCgblwGOZvg==,type:str]",
                 "sops": {
@@ -139,7 +148,7 @@ public class DecryptCommandTests
             }
             """);
 
-        var inputPath = Path.Combine(_directory.FullName, "secrets.json");
+        var inputPath = "secrets.json";
 
         var config = new CliConfiguration(command);
 
@@ -221,6 +230,6 @@ public class DecryptCommandTests
 
 
 
-            """, output.ToString(), ignoreLineEndingDifferences: true);
+            """, output.ToString().RemoveHelpWrapNewLines(), ignoreLineEndingDifferences: true);
     }
 }

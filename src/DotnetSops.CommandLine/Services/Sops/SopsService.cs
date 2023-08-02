@@ -7,8 +7,6 @@ internal class SopsService : ISopsService
 {
     private readonly ILogger _logger;
 
-    public string WorkingDirectory { get; }
-
     public async Task EncryptAsync(FileInfo inputFilePath, FileInfo outoutFilePath, CancellationToken cancellationToken = default)
     {
         await ExecuteAsync(new string[] { "--output", outoutFilePath.FullName, "--encrypt", inputFilePath.FullName }, cancellationToken);
@@ -20,14 +18,7 @@ internal class SopsService : ISopsService
     }
 
     public SopsService(ILogger logger)
-        : this(Directory.GetCurrentDirectory(), logger)
     {
-
-    }
-
-    internal SopsService(string workingDirectory, ILogger logger)
-    {
-        WorkingDirectory = workingDirectory;
         _logger = logger;
     }
 
@@ -35,10 +26,11 @@ internal class SopsService : ISopsService
     {
         var processStartInfo = new ProcessStartInfo()
         {
-            WorkingDirectory = WorkingDirectory,
+            WorkingDirectory = Directory.GetCurrentDirectory(),
             FileName = "sops",
             RedirectStandardError = true,
         };
+        processStartInfo.Environment.Add("NO_COLOR", "1"); // Remove ansi color from sops output for consistency
         foreach (var argument in arguments)
         {
             processStartInfo.ArgumentList.Add(argument);

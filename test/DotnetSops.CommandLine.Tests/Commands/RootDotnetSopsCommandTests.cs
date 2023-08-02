@@ -2,6 +2,7 @@ using System.CommandLine;
 using System.Text.RegularExpressions;
 using DotnetSops.CommandLine.Commands;
 using DotnetSops.CommandLine.Services;
+using DotnetSops.CommandLine.Tests.Extensions;
 using DotnetSops.CommandLine.Tests.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Testing;
@@ -137,6 +138,6 @@ public partial class RootDotnetSopsCommandTests
               download-sops  Download SOPS from https://github.com/getsops/sops
 
 
-            """, output.ToString(), ignoreLineEndingDifferences: true);
+            """, output.ToString().RemoveHelpWrapNewLines(), ignoreLineEndingDifferences: true);
     }
 }

@@ -12,7 +12,7 @@
     <PackAsTool>true</PackAsTool>
     <PackageId>dotnet-sops</PackageId>
     <PackageTags>dotnet sops</PackageTags>
-    <Authors>madsbrun,peterbrun</Authors>
+    <Authors>Mads Sandberg Brun, Peter Sandberg Brun</Authors>
     <Description>Store and share dotnet user-secrets secure. Uses SOPS to encrypt and decrypt secrets.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <ToolCommandName>dotnet-sops</ToolCommandName>
@@ -21,10 +21,13 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <NeutralLanguage>en</NeutralLanguage>
 
-    <!--<RuntimeIdentifier>win10-x64</RuntimeIdentifier>-->
-    <!--<PublishAot>true</PublishAot>-->
-    <!--<PublishTrimmed>true</PublishTrimmed>-->
-    <!--<AdditionalFileItemNames>$(AdditionalFileItemNames);EmbeddedResource</AdditionalFileItemNames>-->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,6 +37,10 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Spectre.Console" Version="0.47.0" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.23326.1" />
     <PackageReference Include="YamlDotNet" Version="13.1.1" />

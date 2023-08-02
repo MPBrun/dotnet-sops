@@ -8,6 +8,7 @@ using DotnetSops.CommandLine.Services.PlatformInformation;
 using DotnetSops.CommandLine.Services.ProjectInfo;
 using DotnetSops.CommandLine.Services.Sops;
 using DotnetSops.CommandLine.Services.UserSecrets;
+using DotnetSops.CommandLine.Tests.Extensions;
 using DotnetSops.CommandLine.Tests.Fixtures;
 using DotnetSops.CommandLine.Tests.Models;
 using DotnetSops.CommandLine.Tests.Services;
@@ -18,18 +19,20 @@ using Spectre.Console.Testing;
 namespace DotnetSops.CommandLine.Tests.Commands;
 
 [Collection(CollectionNames.Sops)]
-public class EncryptCommandTests
+public class EncryptCommandTests : IDisposable
 {
-    private readonly DirectoryInfo _directory = Directory.CreateDirectory(Guid.NewGuid().ToString());
+    private readonly UniqueCurrentDirectoryFixture _uniqueCurrentDirectoryFixture = new();
     private readonly LoggerMock _logger = new(new TestConsole(), new TestConsole());
     private readonly IServiceProvider _serviceProvider;
     private readonly IUserSecretsService _userSecretsService;
 
-    public EncryptCommandTests()
+    public EncryptCommandTests(SopsFixture sopsFixture)
     {
+        sopsFixture?.CopySopsToDirectory(_uniqueCurrentDirectoryFixture.TestDirectory.FullName);
+
         _serviceProvider = new ServiceCollection()
-            .AddSingleton<ISopsService>(sp => new SopsService(_directory.FullName, sp.GetRequiredService<ILogger>()))
-            .AddSingleton<IUserSecretsService>(sp => new UserSecretsServiceStub(_directory.FullName))
+            .AddSingleton<ISopsService, SopsService>()
+            .AddSingleton<IUserSecretsService>(sp => new UserSecretsServiceStub(_uniqueCurrentDirectoryFixture.TestDirectory.FullName))
             .AddSingleton<IFileBomService, FileBomService>()
             .AddSingleton<ISopsDownloadService, SopsDownloadService>()
             .AddSingleton<IPlatformInformationService, PlatformInformationService>()
@@ -38,6 +41,17 @@ public class EncryptCommandTests
             .BuildServiceProvider();
 
         _userSecretsService = _serviceProvider.GetRequiredService<IUserSecretsService>();
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        _uniqueCurrentDirectoryFixture.Dispose();
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
     [Fact]
@@ -56,14 +70,14 @@ public class EncryptCommandTests
         await File.AppendAllTextAsync(filePath.FullName, JsonSerializer.Serialize(secrets), new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)); //dotnet user secrets save files with bom
 
         // Sops config
-        var sopsConfigPath = Path.Combine(_directory.FullName, ".sops.yaml");
+        var sopsConfigPath = ".sops.yaml";
         await File.WriteAllTextAsync(sopsConfigPath, """
             creation_rules:
                 - path_regex: secrets.json
                   age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
             """);
 
-        var outputPath = Path.Combine(_directory.FullName, "secrets.json");
+        var outputPath = "secrets.json";
 
         var config = new CliConfiguration(command);
 
@@ -95,7 +109,7 @@ public class EncryptCommandTests
         await File.AppendAllTextAsync(filePath.FullName, JsonSerializer.Serialize(secrets), new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)); //dotnet user secrets save files with bom
 
         // Sops config
-        var sopsConfigPath = Path.Combine(_directory.FullName, ".sops.yaml");
+        var sopsConfigPath = ".sops.yaml";
         await File.WriteAllTextAsync(sopsConfigPath, """
             creation_rules:
                 - path_regex: secrets.json
@@ -104,7 +118,7 @@ public class EncryptCommandTests
                     age1y8lprkvcf2m0s2pnh866gjj4dtrazqz84kna7y3ndej0pku6ms6s84yf04
             """);
 
-        var outputPath = Path.Combine(_directory.FullName, "secrets.json");
+        var outputPath = "secrets.json";
 
         var config = new CliConfiguration(command);
 
@@ -136,7 +150,7 @@ public class EncryptCommandTests
         await File.AppendAllTextAsync(filePath.FullName, JsonSerializer.Serialize(secrets), new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)); //dotnet user secrets save files with bom
 
         // Sops config
-        var sopsConfigPath = Path.Combine(_directory.FullName, ".sops.yaml");
+        var sopsConfigPath = ".sops.yaml";
         await File.WriteAllTextAsync(sopsConfigPath, """
             creation_rules:
                 - path_regex: secrets.json
@@ -151,7 +165,7 @@ public class EncryptCommandTests
                         - age1kg6yjfq8ce9k7u4yjnd3jsp5hkkghxmc65raafrkxlcrtlmz8u7qv57ehh
             """);
 
-        var outputPath = Path.Combine(_directory.FullName, "secrets.json");
+        var outputPath = "secrets.json";
 
         var config = new CliConfiguration(command);
 
@@ -187,14 +201,14 @@ public class EncryptCommandTests
         await File.AppendAllTextAsync(filePath.FullName, JsonSerializer.Serialize(secrets), new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)); //dotnet user secrets save files with bom
 
         // Sops config
-        var sopsConfigPath = Path.Combine(_directory.FullName, ".sops.yaml");
+        var sopsConfigPath = ".sops.yaml";
         await File.WriteAllTextAsync(sopsConfigPath, """
             creation_rules:
                 - path_regex: secrets.json
                   age: invalid
             """);
 
-        var outputPath = Path.Combine(_directory.FullName, "secrets.json");
+        var outputPath = "secrets.json";
 
         var config = new CliConfiguration(command);
 
@@ -269,6 +283,6 @@ public class EncryptCommandTests
 
 
 
-            """, output.ToString(), ignoreLineEndingDifferences: true);
+            """, output.ToString().RemoveHelpWrapNewLines(), ignoreLineEndingDifferences: true);
     }
 }
