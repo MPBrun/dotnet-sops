@@ -46,6 +46,10 @@ internal class SopsDownloadService : ISopsDownloadService
         // Save content to disk
         var destinationFileName = release.ExecutableFileName;
         await File.WriteAllBytesAsync(destinationFileName, content, cancellationToken);
+        if (_platformInformation.IsMacOS() || _platformInformation.IsLinux())
+        {
+            File.SetUnixFileMode(destinationFileName, UnixFileMode.UserRead | UnixFileMode.UserExecute);
+        }
     }
     private SopsReleaseFileInfo PlatformSopsReleaseFile()
     {
