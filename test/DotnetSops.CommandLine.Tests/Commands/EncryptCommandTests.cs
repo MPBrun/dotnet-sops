@@ -280,7 +280,6 @@ public class EncryptCommandTests : IDisposable
               --verbose       Enable verbose logging output
 
 
-
             """, output.ToString().RemoveHelpWrapNewLines(), ignoreLineEndingDifferences: true);
     }
 }

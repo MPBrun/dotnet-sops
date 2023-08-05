@@ -229,7 +229,6 @@ public class DecryptCommandTests : IDisposable
               --verbose       Enable verbose logging output
 
 
-
             """, output.ToString().RemoveHelpWrapNewLines(), ignoreLineEndingDifferences: true);
     }
 }

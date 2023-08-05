@@ -42,7 +42,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Spectre.Console" Version="0.47.0" />
-    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.23326.1" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.23381.1" />
     <PackageReference Include="YamlDotNet" Version="13.1.1" />
   </ItemGroup>
 
@@ -75,7 +75,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Update="SonarAnalyzer.CSharp" Version="9.6.0.74858">
+    <PackageReference Update="SonarAnalyzer.CSharp" Version="9.7.0.75501">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
