@@ -45,6 +45,7 @@ public class DecryptCommandTests : IDisposable
     {
         _uniqueCurrentDirectoryFixture.Dispose();
         Environment.SetEnvironmentVariable("SOPS_AGE_KEY", null);
+        Environment.SetEnvironmentVariable("SOPS_AGE_KEY_FILE", null);
     }
 
     public void Dispose()
@@ -124,6 +125,11 @@ public class DecryptCommandTests : IDisposable
             - path_regex: secrets.json
               age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
             """);
+
+        // Set SOPS_AGE_KEY_FILE to a empty keys file
+        var keysFilePath = Path.Join(_uniqueCurrentDirectoryFixture.TestDirectory.FullName, "keys.txt");
+        await File.Create(keysFilePath).DisposeAsync();
+        Environment.SetEnvironmentVariable("SOPS_AGE_KEY_FILE", keysFilePath);
 
         await File.WriteAllTextAsync("secrets.json", /*lang=json,strict*/ """
             {
