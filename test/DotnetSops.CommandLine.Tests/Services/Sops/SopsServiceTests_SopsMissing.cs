@@ -8,11 +8,19 @@ namespace DotnetSops.CommandLine.Tests.Services.Sops;
 [Collection(CollectionNames.UniqueCurrentDirectory)]
 public class SopsServiceTests_SopsMissing : IDisposable
 {
+    private const string PathEnvironmentVariableName = "PATH";
     private readonly UniqueCurrentDirectoryFixture _uniqueCurrentDirectoryFixture = new();
+    private readonly string? _originalPathEnviromentVariableValue;
+
+    public SopsServiceTests_SopsMissing()
+    {
+        _originalPathEnviromentVariableValue = Environment.GetEnvironmentVariable(PathEnvironmentVariableName);
+    }
 
     protected virtual void Dispose(bool disposing)
     {
         _uniqueCurrentDirectoryFixture.Dispose();
+        Environment.SetEnvironmentVariable(PathEnvironmentVariableName, _originalPathEnviromentVariableValue);
     }
 
     public void Dispose()
@@ -25,6 +33,8 @@ public class SopsServiceTests_SopsMissing : IDisposable
     public async Task EncryptAsync_NoSops_ThrowsSopsMissingException()
     {
         // Arrange
+        Environment.SetEnvironmentVariable(PathEnvironmentVariableName, null);
+
         var logger = new Mock<ILogger>();
         var sopsService = new SopsService(logger.Object);
         var fileName = new FileInfo("secrets.json");
