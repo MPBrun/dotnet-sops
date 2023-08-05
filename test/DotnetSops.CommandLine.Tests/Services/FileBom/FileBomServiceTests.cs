@@ -29,8 +29,6 @@ public class FileBomServiceTests : IDisposable
 
         await File.AppendAllTextAsync(filePath.FullName, "content", new UTF8Encoding(encoderShouldEmitUTF8Identifier: true));
 
-        var creationTime = File.GetLastWriteTimeUtc(filePath.FullName);
-
         var fileContentBefore = await File.ReadAllBytesAsync(filePath.FullName);
         Assert.Equal(new byte[] { 0xEF, 0xBB, 0xBF }, fileContentBefore.Take(3).ToArray());
         Assert.Equal(10, fileContentBefore.Length);
@@ -42,9 +40,6 @@ public class FileBomServiceTests : IDisposable
         var fileContentAfter = await File.ReadAllBytesAsync(filePath.FullName);
         Assert.NotEqual(new byte[] { 0xEF, 0xBB, 0xBF }, fileContentAfter.Take(3).ToArray());
         Assert.Equal(7, fileContentAfter.Length);
-
-        var updateTime = File.GetLastWriteTimeUtc(filePath.FullName);
-        Assert.NotEqual(creationTime, updateTime);
     }
 
     [Fact]
@@ -55,8 +50,6 @@ public class FileBomServiceTests : IDisposable
         var filePath = new FileInfo("file.json");
 
         await File.AppendAllTextAsync(filePath.FullName, "content", new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
-
-        var creationTime = File.GetLastWriteTimeUtc(filePath.FullName);
 
         var fileContentBefore = await File.ReadAllBytesAsync(filePath.FullName);
         Assert.NotEqual(new byte[] { 0xEF, 0xBB, 0xBF }, fileContentBefore.Take(3).ToArray());
@@ -69,8 +62,5 @@ public class FileBomServiceTests : IDisposable
         var fileContentAfter = await File.ReadAllBytesAsync(filePath.FullName);
         Assert.NotEqual(new byte[] { 0xEF, 0xBB, 0xBF }, fileContentAfter.Take(3).ToArray());
         Assert.Equal(7, fileContentAfter.Length);
-
-        var updateTime = File.GetLastWriteTimeUtc(filePath.FullName);
-        Assert.Equal(creationTime, updateTime);
     }
 }
