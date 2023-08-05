@@ -1,0 +1,42 @@
+name: Build
+on:
+  pull_request:
+    branches:
+    - main
+  push:
+    branches:
+    - main
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        global-json-file: global.json
+
+    - name: Restore
+      run: dotnet restore
+      
+    - name: Build
+      run: dotnet build --configuration Release
+
+    - name: Format
+      run: dotnet format --verify-no-changes
+
+    - name: Test
+      run: dotnet test --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage" --logger trx
+
+    - name: Test - Package
+      shell: pwsh
+      run: ./install-test.ps1
