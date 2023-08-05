@@ -46,8 +46,8 @@ public class SopsServiceTests : IDisposable
         // Sops config
         await File.WriteAllTextAsync(".sops.yaml", """
             creation_rules:
-                - path_regex: .*.json
-                  age: 'age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8'
+            - path_regex: .*.json
+              age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
             """);
 
         var encrypedFile = new FileInfo("encrypted.json");
@@ -88,8 +88,8 @@ public class SopsServiceTests : IDisposable
         // Sops config
         await File.WriteAllTextAsync(".sops.yaml", """
             creation_rules:
-                - path_regex: .*.json
-                  age: 'age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8'
+            - path_regex: .*.json
+              age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
             """);
 
         var encrypedFile = new FileInfo("encrypted.json");

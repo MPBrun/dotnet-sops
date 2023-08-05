@@ -55,20 +55,20 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushKey(ConsoleKey.Enter);
 
         // Age public key
-        _logger.Error.Input.PushTextWithEnter("age123");
+        _logger.Error.Input.PushTextWithEnter("age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8");
 
         // Act
         var exitCode = await config.InvokeAsync("");
 
         Assert.Contains("? Are you sure to overwrite existing .sops.yaml? [y/n]: y", _logger.Error.Output, StringComparison.InvariantCulture);
         Assert.Contains("? Which encryption whould you like to use? age", _logger.Error.Output, StringComparison.InvariantCulture);
-        Assert.Contains("? What is public key of age? age123", _logger.Error.Output, StringComparison.InvariantCulture);
+        Assert.Contains("? What is public key of age? age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8", _logger.Error.Output, StringComparison.InvariantCulture);
         Assert.Contains(
             """
             Generated .sops.yaml with the following content:
             creation_rules:
             - path_regex: secrets.json
-              age: age123
+              age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
             """, _logger.Error.Output.ReplaceLineEndings(), StringComparison.InvariantCulture);
         Assert.Equal(0, exitCode);
     }

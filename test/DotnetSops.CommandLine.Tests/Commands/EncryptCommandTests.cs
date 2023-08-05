@@ -73,8 +73,8 @@ public class EncryptCommandTests : IDisposable
         var sopsConfigPath = ".sops.yaml";
         await File.WriteAllTextAsync(sopsConfigPath, """
             creation_rules:
-                - path_regex: secrets.json
-                  age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
+            - path_regex: secrets.json
+              age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
             """);
 
         var outputPath = "secrets.json";
@@ -112,10 +112,8 @@ public class EncryptCommandTests : IDisposable
         var sopsConfigPath = ".sops.yaml";
         await File.WriteAllTextAsync(sopsConfigPath, """
             creation_rules:
-                - path_regex: secrets.json
-                  age: >-
-                    age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8,
-                    age1y8lprkvcf2m0s2pnh866gjj4dtrazqz84kna7y3ndej0pku6ms6s84yf04
+            - path_regex: secrets.json
+              age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8,age1y8lprkvcf2m0s2pnh866gjj4dtrazqz84kna7y3ndej0pku6ms6s84yf04
             """);
 
         var outputPath = "secrets.json";
@@ -153,16 +151,16 @@ public class EncryptCommandTests : IDisposable
         var sopsConfigPath = ".sops.yaml";
         await File.WriteAllTextAsync(sopsConfigPath, """
             creation_rules:
-                - path_regex: secrets.json
-                  shamir_threshold: 2
-                  key_groups:
-                    - age:
-                        - age1y8lprkvcf2m0s2pnh866gjj4dtrazqz84kna7y3ndej0pku6ms6s84yf04
-                    - age:
-                        - age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-                        - age10l04egantyrujnu4ll0unhxkd6m4krardf4kqnfg4uqcczyawcts9pgtlm
-                    - age:
-                        - age1kg6yjfq8ce9k7u4yjnd3jsp5hkkghxmc65raafrkxlcrtlmz8u7qv57ehh
+            - path_regex: secrets.json
+              shamir_threshold: 2
+              key_groups:
+              - age:
+                  - age1y8lprkvcf2m0s2pnh866gjj4dtrazqz84kna7y3ndej0pku6ms6s84yf04
+              - age:
+                  - age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
+                  - age10l04egantyrujnu4ll0unhxkd6m4krardf4kqnfg4uqcczyawcts9pgtlm
+              - age:
+                  - age1kg6yjfq8ce9k7u4yjnd3jsp5hkkghxmc65raafrkxlcrtlmz8u7qv57ehh
             """);
 
         var outputPath = "secrets.json";
@@ -204,8 +202,8 @@ public class EncryptCommandTests : IDisposable
         var sopsConfigPath = ".sops.yaml";
         await File.WriteAllTextAsync(sopsConfigPath, """
             creation_rules:
-                - path_regex: secrets.json
-                  age: invalid
+            - path_regex: secrets.json
+              age: invalid
             """);
 
         var outputPath = "secrets.json";
