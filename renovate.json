@@ -5,5 +5,13 @@
   ],
   "ignorePresets": [
     ":ignoreModulesAndTests"
+  ],
+  "regexManagers": [
+    {
+      "fileMatch": ["SopsDownloadService.cs$"],
+      "matchStrings": ["private const string Version = \"(?<currentValue>.*?)\";\\n"],
+      "datasourceTemplate": "go",
+      "depNameTemplate": "go.mozilla.org/sops/v3"
+    }
   ]
 }
