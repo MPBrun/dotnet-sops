@@ -65,7 +65,7 @@ public class SopsDownloadServiceTests : IDisposable
 
         // Act / Assert
         var exception = await Assert.ThrowsAsync<NotSupportedException>(() => service.DownloadAsync());
-        Assert.Equal("Operating system is not supported.", exception.Message);
+        Assert.Equal("This operating system is not supported.", exception.Message);
     }
 
     [Fact]

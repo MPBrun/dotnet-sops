@@ -27,6 +27,7 @@ internal class AskPrompt : IPrompt<string>
     private TextPrompt<string> CreatePrompt()
     {
         return new TextPrompt<string>(_prompt)
+            .ShowDefaultValue()
             .PromptStyle(PromptStyle);
     }
 }

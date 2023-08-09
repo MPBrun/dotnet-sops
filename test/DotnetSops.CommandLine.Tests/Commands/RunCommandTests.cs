@@ -1,44 +1,30 @@
 using System.CommandLine;
-using System.Text.Json;
 using DotnetSops.CommandLine.Commands;
 using DotnetSops.CommandLine.Services;
-using DotnetSops.CommandLine.Services.FileBom;
-using DotnetSops.CommandLine.Services.PlatformInformation;
-using DotnetSops.CommandLine.Services.ProjectInfo;
 using DotnetSops.CommandLine.Services.Sops;
-using DotnetSops.CommandLine.Services.UserSecrets;
 using DotnetSops.CommandLine.Tests.Extensions;
 using DotnetSops.CommandLine.Tests.Fixtures;
-using DotnetSops.CommandLine.Tests.Models;
 using DotnetSops.CommandLine.Tests.Services;
-using DotnetSops.CommandLine.Tests.Services.UserSecrets;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Testing;
 
 namespace DotnetSops.CommandLine.Tests.Commands;
 
 [Collection(CollectionNames.Sops)]
-public class DecryptCommandTests : IDisposable
+public class RunCommandTests : IDisposable
 {
     private readonly UniqueCurrentDirectoryFixture _uniqueCurrentDirectoryFixture = new();
     private readonly LoggerMock _logger = new(new TestConsole(), new TestConsole());
     private readonly IServiceProvider _serviceProvider;
-    private readonly IUserSecretsService _userSecretsService;
 
-    public DecryptCommandTests(SopsFixture? sopsFixture)
+    public RunCommandTests(SopsFixture? sopsFixture)
     {
         sopsFixture?.CopySopsToDirectory(_uniqueCurrentDirectoryFixture.TestDirectory.FullName);
 
         _serviceProvider = new ServiceCollection()
             .AddSingleton<ISopsService, SopsService>()
-            .AddSingleton<IUserSecretsService>(sp => new UserSecretsServiceStub(_uniqueCurrentDirectoryFixture.TestDirectory.FullName))
-            .AddSingleton<IFileBomService, FileBomService>()
-            .AddSingleton<IPlatformInformationService, PlatformInformationService>()
-            .AddSingleton<IProjectInfoService, ProjectInfoService>()
             .AddSingleton<ILogger>(_logger)
             .BuildServiceProvider();
-
-        _userSecretsService = _serviceProvider.GetRequiredService<IUserSecretsService>();
     }
 
     protected virtual void Dispose(bool disposing)
@@ -55,14 +41,21 @@ public class DecryptCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task DecryptCommand_ValidOptions_CreateFile()
+    public void RunCommand_File_NotRequired()
     {
         // Arrange
-        var command = new DecryptCommand(_serviceProvider);
-        var id = $"unittest-{Guid.NewGuid()}";
+        var command = new RunCommand(_serviceProvider);
 
-        // user secret
-        var filePath = _userSecretsService.GetSecretsPathFromSecretsId(id);
+        // Act / Assert
+        var option = command.Options.First(o => o.Name == "--file");
+        Assert.False(option.Required);
+    }
+
+    [Fact]
+    public async Task RunCommand_ValidOptions_ExecuteDotnetRun()
+    {
+        // Arrange
+        var command = new RunCommand(_serviceProvider);
 
         // Provide age secret key for unit test purpose
         Environment.SetEnvironmentVariable("SOPS_AGE_KEY", "AGE-SECRET-KEY-10HA9FMZENQKN8DXGZPRWZ7YK5R83AYK4FQVZ8Y5LPAV3430HXW7QZAFV9Z");
@@ -97,27 +90,48 @@ public class DecryptCommandTests : IDisposable
             }
             """);
 
+        await File.WriteAllTextAsync("Project.csproj", """
+            <Project Sdk="Microsoft.NET.Sdk">
+
+              <PropertyGroup>
+                <OutputType>Exe</OutputType>
+                <TargetFramework>net7.0</TargetFramework>
+                <ImplicitUsings>enable</ImplicitUsings>
+                <Nullable>enable</Nullable>
+              </PropertyGroup>
+
+            </Project>
+            """);
+
+        await File.WriteAllTextAsync("Program.cs", """
+            // Return 0 if environment variable is equal expected
+            var valid = true;
+            #if DEBUG
+            valid = false; //Verify is release configuration
+            #endif
+            valid &= Environment.GetEnvironmentVariable("TestKey") == "test value";
+            valid &= args[0] == "arg1";
+            valid &= args[1] == "arg2";
+            valid &= args[2] == "arg3";
+            return valid ? 0 : 1;
+            """);
+
         var inputPath = "secrets.json";
 
         var config = new CliConfiguration(command);
 
         // Act
-        var exitCode = await config.InvokeAsync($"--id {id} --file {inputPath}");
+        var exitCode = await config.InvokeAsync($"arg1 arg2 arg3 --configuration Release --file {inputPath}");
 
         // Assert
         Assert.Equal(0, exitCode);
-        Assert.True(File.Exists(filePath.FullName));
-
-        var secretContent = JsonSerializer.Deserialize<TestSecretCotent>(File.ReadAllText(filePath.FullName))!;
-        Assert.Equal("test value", secretContent.TestKey);
     }
 
     [Fact]
-    public async Task DecryptCommand_MissingSecretKey_OutputSopsError()
+    public async Task RunCommand_MissingSecretKey_OutputSopsError()
     {
         // Arrange
-        var command = new DecryptCommand(_serviceProvider);
-        var id = $"unittest-{Guid.NewGuid()}";
+        var command = new RunCommand(_serviceProvider);
 
         // Sops config
         await File.WriteAllTextAsync(".sops.yaml", """
@@ -159,7 +173,7 @@ public class DecryptCommandTests : IDisposable
         var config = new CliConfiguration(command);
 
         // Act
-        var exitCode = await config.InvokeAsync($"--id {id} --file {inputPath}");
+        var exitCode = await config.InvokeAsync($"--file {inputPath}");
 
         // Assert
         Assert.Equal(128, exitCode);
@@ -167,28 +181,6 @@ public class DecryptCommandTests : IDisposable
             Executing SOPS failed.
 
             """, _logger.Error.Output, ignoreLineEndingDifferences: true);
-    }
-
-    [Fact]
-    public void DecryptCommand_Id_NotRequired()
-    {
-        // Arrange
-        var command = new DecryptCommand(_serviceProvider);
-
-        // Act / Assert
-        var option = command.Options.First(o => o.Name == "--id");
-        Assert.False(option.Required);
-    }
-
-    [Fact]
-    public void DecryptCommand_File_NotRequired()
-    {
-        // Arrange
-        var command = new DecryptCommand(_serviceProvider);
-
-        // Act / Assert
-        var option = command.Options.First(o => o.Name == "--file");
-        Assert.False(option.Required);
     }
 
     [Theory]
@@ -206,20 +198,21 @@ public class DecryptCommandTests : IDisposable
         };
 
         // Act
-        var exitCode = await config.InvokeAsync($"decrypt {option}");
+        var exitCode = await config.InvokeAsync($"run {option}");
 
         // Assert
         Assert.Equal(0, exitCode);
         Assert.Equal("""
             Description:
-              Decrypt secrets into .NET User Secrets
+              Execute 'dotnet run' with decrypted secrets inserted into the environment
 
             Usage:
-              dotnet sops decrypt [options]
+              dotnet sops run [<dotnetArguments>...] [options]
+
+            Arguments:
+              <dotnetArguments>  Arguments passed to the 'dotnet run' command.
 
             Options:
-              -p, --project   Path to the project. Defaults to searching the current directory.
-              --id            The user secret ID to use.
               --file          Encrypted secrets file [default: secrets.json]
               -?, -h, --help  Show help and usage information
               --verbose       Enable verbose logging output

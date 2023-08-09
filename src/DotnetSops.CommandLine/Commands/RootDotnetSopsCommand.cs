@@ -19,6 +19,7 @@ internal class RootDotnetSopsCommand : CliRootCommand
         Add(new InitializeCommand(serviceProvider));
         Add(new EncryptCommand(serviceProvider));
         Add(new DecryptCommand(serviceProvider));
+        Add(new RunCommand(serviceProvider));
         Add(new DownloadSopsCommand(serviceProvider));
 
         _verboseOption.Validators.Add(optionResult =>
@@ -29,4 +30,3 @@ internal class RootDotnetSopsCommand : CliRootCommand
         });
     }
 }
-

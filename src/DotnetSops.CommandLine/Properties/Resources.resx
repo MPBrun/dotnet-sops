@@ -118,19 +118,19 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DecryptCommandDescription" xml:space="preserve">
-    <value>Decrypt secrets into dotnet user secrets</value>
+    <value>Decrypt secrets into .NET User Secrets</value>
   </data>
   <data name="DecryptCommandFileOptionDescription" xml:space="preserve">
-    <value>File of the encrypted secrets</value>
+    <value>Encrypted secrets file</value>
   </data>
   <data name="DecryptCommandProjectOptionDescription" xml:space="preserve">
-    <value>Path to project. Defaults to searching the current directory</value>
+    <value>Path to the project. Defaults to searching the current directory.</value>
   </data>
   <data name="DecryptCommandSecretsIdOptionDescription" xml:space="preserve">
     <value>The user secret ID to use.</value>
   </data>
   <data name="DecryptCommandSuccess" xml:space="preserve">
-    <value>'{0}' successfully decrypted to user secret with id '{1}'.</value>
+    <value>'{0}' successfully decrypted to user secret with ID '{1}'.</value>
     <comment>{0} is file path
 {1} is id</comment>
   </data>
@@ -147,19 +147,19 @@
     <value>Downloading SOPS</value>
   </data>
   <data name="EncryptCommandDescription" xml:space="preserve">
-    <value>Encrypt existing dotnet user secrets</value>
+    <value>Encrypt existing .NET User Secrets</value>
   </data>
   <data name="EncryptCommandFileOptionDescription" xml:space="preserve">
-    <value>File of the encrypted secrets</value>
+    <value>Encrypted secrets file.</value>
   </data>
   <data name="EncryptCommandProjectOptionDescription" xml:space="preserve">
-    <value>Path to project. Defaults to searching the current directory</value>
+    <value>Path to the project. Defaults to searching the current directory.</value>
   </data>
   <data name="EncryptCommandSecretsIdOptionDescription" xml:space="preserve">
     <value>The user secret ID to use.</value>
   </data>
   <data name="EncryptCommandSuccess" xml:space="preserve">
-    <value>User secret with id '{0}' successfully encrypted to '{1}'.</value>
+    <value>User secret with ID '{0}' successfully encrypted to '{1}'.</value>
     <comment>{0} is id
 {1} is file path</comment>
   </data>
@@ -168,38 +168,110 @@
     <comment>{0} is file path</comment>
   </data>
   <data name="InitializeCommandAgePublicKeyQuestion" xml:space="preserve">
-    <value>What is public key of age?</value>
+    <value>What is the public key of age?</value>
+  </data>
+  <data name="InitializeCommandAwsKmsFormat" xml:space="preserve">
+    <value>An ARN has following format: arn:partition:service:region:account-id:resource-type/resource-id</value>
+  </data>
+  <data name="InitializeCommandAwsKmsQuestion" xml:space="preserve">
+    <value>What is the ARN of the key?</value>
+  </data>
+  <data name="InitializeCommandAzureKeyIdentifierQuestion" xml:space="preserve">
+    <value>What is the key identifier of the key?</value>
+  </data>
+  <data name="InitializeCommandAzureKeyVaultFormat" xml:space="preserve">
+    <value>An Azure Vault key is defined by 3 parts of the key identifier: https://{vault-name}.vault.azure.net/keys/{object-name}/{object-version}</value>
+  </data>
+  <data name="InitializeCommandAzureKeyVaultIdentifierFormat" xml:space="preserve">
+    <value>A key identifier has following format: https://{vault-name}.vault.azure.net/keys/{object-name}/{object-version}</value>
   </data>
   <data name="InitializeCommandAzureKeyVaultKeyQuestion" xml:space="preserve">
-    <value>What is object name of the key?</value>
+    <value>What is the object name of the key?</value>
   </data>
   <data name="InitializeCommandAzureKeyVaultNameQuestion" xml:space="preserve">
-    <value>What is the name of the key vault?</value>
+    <value>What is the name of the Key Vault?</value>
   </data>
   <data name="InitializeCommandAzureKeyVaultVersionQuestion" xml:space="preserve">
-    <value>What is object version of the key?</value>
+    <value>What is the object version of the key?</value>
   </data>
   <data name="InitializeCommandConfigAlreadyExistQuestion" xml:space="preserve">
-    <value>Are you sure to overwrite existing [yellow].sops.yaml[/]?</value>
+    <value>Are you sure you want to overwrite the existing [yellow].sops.yaml[/]?</value>
   </data>
   <data name="InitializeCommandDescription" xml:space="preserve">
-    <value>Create .sops.yaml configuration file.</value>
+    <value>Create a .sops.yaml configuration file.</value>
   </data>
-  <data name="InitializeCommandEncryptionQuestion" xml:space="preserve">
-    <value>Which encryption whould you like to use?</value>
+  <data name="InitializeCommandGcpKmsFormat" xml:space="preserve">
+    <value>The resource ID has the following format: projects/PROJECT_ID/locations/LOCATION/keyRings/KEY_RING/cryptoKeys/KEY_NAME</value>
+  </data>
+  <data name="InitializeCommandGcpKmsQuestion" xml:space="preserve">
+    <value>What is the resource ID of the key?</value>
+  </data>
+  <data name="InitializeCommandHashicorpVaultQuestion" xml:space="preserve">
+    <value>What is the URI of the vault key?</value>
+  </data>
+  <data name="InitializeCommandKeyInformation" xml:space="preserve">
+    <value>[yellow]Keys:[/]
+  SOPS supports different keys. You can refer to their respective documentation on how to create a key that supports encryption and decryption.
+
+[yellow]Documentation:[/]
+  [yellow]Azure Key Vault[/] - https://learn.microsoft.com/en-us/azure/key-vault
+  [yellow]AWS KMS[/] - https://aws.amazon.com/kms
+  [yellow]GCP KMS[/] - https://cloud.google.com/security-key-management
+  [yellow]Hashicorp Vault[/] - https://www.vaultproject.io
+  [yellow]age[/] - https://github.com/FiloSottile/age
+  [yellow]PGP[/] - https://www.openpgp.org
+
+[yellow]Key groups:[/]
+  SOPS can be used to encrypt data under multiple keys, so that if any of the keys are available, the data can be decrypted. 
+  
+  However, SOPS also supports "key groups", which require access to multiple keys in order to decrypt.
+</value>
+  </data>
+  <data name="InitializeCommandKeyTypeQuestion" xml:space="preserve">
+    <value>Which key type would you like to use?</value>
+  </data>
+  <data name="InitializeCommandMoreKeyGroupsQuestion" xml:space="preserve">
+    <value>Add more key groups?</value>
+  </data>
+  <data name="InitializeCommandMoreKeysQuestion" xml:space="preserve">
+    <value>Add more keys?</value>
+  </data>
+  <data name="InitializeCommandMoreKeysToKeyGroupQuestion" xml:space="preserve">
+    <value>Add more keys to the group?</value>
   </data>
   <data name="InitializeCommandPgpPublicKeyQuestion" xml:space="preserve">
-    <value>What is public key of PGP?</value>
+    <value>What is the public key of PGP?</value>
   </data>
   <data name="InitializeCommandSuccessGenerated" xml:space="preserve">
     <value>[green]Generated .sops.yaml with the following content:[/]</value>
   </data>
   <data name="InitializeCommandSuccessSuggestion" xml:space="preserve">
-    <value>You can now encrypt your dotnet user secrets by running:
+    <value>You can now encrypt your .NET User Secrets by running:
   [yellow]dotnet sops encrypt[/]</value>
   </data>
+  <data name="InitializeCommandUseKeyGroupsQuestion" xml:space="preserve">
+    <value>Use key groups?</value>
+  </data>
+  <data name="KeyTypeAge" xml:space="preserve">
+    <value>age</value>
+  </data>
+  <data name="KeyTypeAwsKms" xml:space="preserve">
+    <value>AWS KMS</value>
+  </data>
+  <data name="KeyTypeAzureKeyVault" xml:space="preserve">
+    <value>Azure Key Vault</value>
+  </data>
+  <data name="KeyTypeGcpKms" xml:space="preserve">
+    <value>GCP KMS</value>
+  </data>
+  <data name="KeyTypeHashicorpVault" xml:space="preserve">
+    <value>Hashicorp Vault</value>
+  </data>
+  <data name="KeyTypePgp" xml:space="preserve">
+    <value>PGP</value>
+  </data>
   <data name="OperatingSystemNotSupported" xml:space="preserve">
-    <value>Operating system is not supported.</value>
+    <value>This operating system is not supported.</value>
   </data>
   <data name="ProjectInfoServiceMultipleFoundError" xml:space="preserve">
     <value>Multiple MSBuild project files found in '{0}'.</value>
@@ -224,23 +296,27 @@
     <comment>{0} is the project path</comment>
   </data>
   <data name="ProjectInfoServiceUserSecretIdNotFoundSuggestion" xml:space="preserve">
-    <value>Ensure this property is set in the project or use the [yellow]'--id'[/] command line option.
+    <value>Ensure this property is set in the project or use the [yellow]'--id'[/] command-line option.
 
 The 'UserSecretsId' property can be created by running this command:
   [yellow]dotnet user-secrets init[/]</value>
   </data>
   <data name="RootCommandDescription" xml:space="preserve">
-    <value>Store and share encrypted secrets, created using user-secrets tool.
-Secrets are encrypted and decrypted using SOPS.
-Encrypted secrets can shared with other team members than can decrypt it, if they have access.
+    <value>Encrypt and share secrets with the user-secrets tool, utilizing SOPS for encryption and decryption. Encrypted secrets can be shared with other team members who can decrypt them if they have access.
 
-Encryption types is configured using .sops.yaml file. Run "dotnet sops init" for help wizard to create .sops.yaml.
-
-Warning: When secrets are decrypted they are stored in plain, unencrypted text, that can be loaded by user-secrets tool.
-Recomendation: Only store development secrets that cannot access production like environment.</value>
+Key types are configured using the .sops.yaml file. Run 'dotnet sops init' for a helpful wizard to create the .sops.yaml.</value>
   </data>
   <data name="RootDotnetSopsCommandVerboseOptionDescription" xml:space="preserve">
     <value>Enable verbose logging output</value>
+  </data>
+  <data name="RunCommandArgumentsDescription" xml:space="preserve">
+    <value>Arguments passed to the 'dotnet run' command.</value>
+  </data>
+  <data name="RunCommandDescription" xml:space="preserve">
+    <value>Execute 'dotnet run' with decrypted secrets inserted into the environment</value>
+  </data>
+  <data name="RunCommandFileOptionDescription" xml:space="preserve">
+    <value>Encrypted secrets file</value>
   </data>
   <data name="SopsDownloadHttpFailed" xml:space="preserve">
     <value>Failed to download SOPS.
@@ -269,10 +345,7 @@ Actual:   {1}</value>
     <value>Failed to run sops.</value>
   </data>
   <data name="SopsRunFailedWithError" xml:space="preserve">
-    <value>SOPS failed with error:
-
-{0}</value>
-    <comment>{0} is error output</comment>
+    <value>Executing SOPS failed.</value>
   </data>
   <data name="UserSecretsFileDoesNotExist" xml:space="preserve">
     <value>User secrets file '{0}' does not exist.</value>
