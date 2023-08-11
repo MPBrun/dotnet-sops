@@ -6,7 +6,7 @@ using DotnetSops.CommandLine.Tests.Extensions;
 using DotnetSops.CommandLine.Tests.Fixtures;
 using DotnetSops.CommandLine.Tests.Services;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
+using NSubstitute;
 using Spectre.Console.Testing;
 
 namespace DotnetSops.CommandLine.Tests.Commands;
@@ -20,10 +20,10 @@ public class DownloadSopsCommandTests : IDisposable
     public DownloadSopsCommandTests()
     {
         var logger = new LoggerMock(new TestConsole(), new TestConsole());
-        var mockSopsDownloadService = new Mock<ISopsDownloadService>();
+        var mockSopsDownloadService = Substitute.For<ISopsDownloadService>();
 
         _serviceProvider = new ServiceCollection()
-                .AddSingleton(mockSopsDownloadService.Object)
+                .AddSingleton(mockSopsDownloadService)
                 .AddSingleton<ILogger>(logger)
                 .BuildServiceProvider();
     }

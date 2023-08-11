@@ -2,9 +2,9 @@ using System.Runtime.InteropServices;
 using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.PlatformInformation;
 using DotnetSops.CommandLine.Services.Sops;
+using DotnetSops.CommandLine.Tests.Extensions;
 using DotnetSops.CommandLine.Tests.Fixtures;
-using Moq;
-using Moq.Protected;
+using NSubstitute;
 
 namespace DotnetSops.CommandLine.Tests.Services.Sops;
 
@@ -37,15 +37,15 @@ public class SopsDownloadServiceTests : IDisposable
         // Arrange
         using var httpClient = new HttpClient();
 
-        var mockPlatformInformation = new Mock<IPlatformInformationService>();
-        mockPlatformInformation.Setup(p => p.IsWindows()).Returns(windows);
-        mockPlatformInformation.Setup(p => p.IsMacOS()).Returns(macos);
-        mockPlatformInformation.Setup(p => p.IsLinux()).Returns(linux);
-        mockPlatformInformation.Setup(p => p.ProcessArchitecture).Returns(architecture);
+        var mockPlatformInformation = Substitute.For<IPlatformInformationService>();
+        mockPlatformInformation.IsWindows().Returns(windows);
+        mockPlatformInformation.IsMacOS().Returns(macos);
+        mockPlatformInformation.IsLinux().Returns(linux);
+        mockPlatformInformation.ProcessArchitecture.Returns(architecture);
 
-        var mockLogger = new Mock<ILogger>();
+        var mockLogger = Substitute.For<ILogger>();
 
-        var service = new SopsDownloadService(mockPlatformInformation.Object, httpClient, mockLogger.Object);
+        var service = new SopsDownloadService(mockPlatformInformation, httpClient, mockLogger);
 
         // Act / Assert
         await service.DownloadAsync();
@@ -58,10 +58,10 @@ public class SopsDownloadServiceTests : IDisposable
         // Arrange
         using var httpClient = new HttpClient();
 
-        var mockPlatformInformation = new Mock<IPlatformInformationService>();
-        var mockLogger = new Mock<ILogger>();
+        var mockPlatformInformation = Substitute.For<IPlatformInformationService>();
+        var mockLogger = Substitute.For<ILogger>();
 
-        var service = new SopsDownloadService(mockPlatformInformation.Object, httpClient, mockLogger.Object);
+        var service = new SopsDownloadService(mockPlatformInformation, httpClient, mockLogger);
 
         // Act / Assert
         var exception = await Assert.ThrowsAsync<NotSupportedException>(() => service.DownloadAsync());
@@ -72,24 +72,23 @@ public class SopsDownloadServiceTests : IDisposable
     public async Task DownloadAsync_InvalidChecksum_Throws()
     {
         // Arrange
-        var mockPlatformInformation = new Mock<IPlatformInformationService>();
-        mockPlatformInformation.Setup(p => p.IsWindows()).Returns(true);
+        var mockPlatformInformation = Substitute.For<IPlatformInformationService>();
+        mockPlatformInformation.IsWindows().Returns(true);
 
-        var mockLogger = new Mock<ILogger>();
+        var mockLogger = Substitute.For<ILogger>();
 
-        var mockHttpClientHandler = new Mock<HttpMessageHandler>();
+        var mockHttpClientHandler = Substitute.For<HttpMessageHandler>();
         using var result = new HttpResponseMessage()
         {
             StatusCode = System.Net.HttpStatusCode.OK,
             Content = new StringContent("Invalid content")
         };
         mockHttpClientHandler
-            .Protected()
-            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(result);
-        using var httpClient = new HttpClient(mockHttpClientHandler.Object);
+            .ProtectedMethod<Task<HttpResponseMessage>>("SendAsync", Arg.Any<HttpRequestMessage>(), Arg.Any<CancellationToken>())
+            .Returns(result);
+        using var httpClient = new HttpClient(mockHttpClientHandler);
 
-        var service = new SopsDownloadService(mockPlatformInformation.Object, httpClient, mockLogger.Object);
+        var service = new SopsDownloadService(mockPlatformInformation, httpClient, mockLogger);
 
         // Act / Assert
         var exception = await Assert.ThrowsAsync<SopsDownloadException>(() => service.DownloadAsync());
@@ -106,23 +105,22 @@ public class SopsDownloadServiceTests : IDisposable
     public async Task DownloadAsync_InvalidStatusCode_Throws()
     {
         // Arrange
-        var mockPlatformInformation = new Mock<IPlatformInformationService>();
-        mockPlatformInformation.Setup(p => p.IsWindows()).Returns(true);
+        var mockPlatformInformation = Substitute.For<IPlatformInformationService>();
+        mockPlatformInformation.IsWindows().Returns(true);
 
-        var mockLogger = new Mock<ILogger>();
+        var mockLogger = Substitute.For<ILogger>();
 
-        var mockHttpClientHandler = new Mock<HttpMessageHandler>();
+        var mockHttpClientHandler = Substitute.For<HttpMessageHandler>();
         using var result = new HttpResponseMessage()
         {
             StatusCode = System.Net.HttpStatusCode.NotFound,
         };
         mockHttpClientHandler
-            .Protected()
-            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(result);
-        using var httpClient = new HttpClient(mockHttpClientHandler.Object);
+            .ProtectedMethod<Task<HttpResponseMessage>>("SendAsync", Arg.Any<HttpRequestMessage>(), Arg.Any<CancellationToken>())
+            .Returns(result);
+        using var httpClient = new HttpClient(mockHttpClientHandler);
 
-        var service = new SopsDownloadService(mockPlatformInformation.Object, httpClient, mockLogger.Object);
+        var service = new SopsDownloadService(mockPlatformInformation, httpClient, mockLogger);
 
         // Act / Assert
         var exception = await Assert.ThrowsAsync<SopsDownloadException>(() => service.DownloadAsync());

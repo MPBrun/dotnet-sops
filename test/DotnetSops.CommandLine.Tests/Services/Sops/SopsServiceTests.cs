@@ -2,7 +2,7 @@ using System.Text.Json;
 using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.Sops;
 using DotnetSops.CommandLine.Tests.Fixtures;
-using Moq;
+using NSubstitute;
 
 namespace DotnetSops.CommandLine.Tests.Services.Sops;
 
@@ -32,8 +32,8 @@ public class SopsServiceTests : IDisposable
     public async Task EncryptAsync_Valid_Encrypts()
     {
         // Arrange
-        var logger = new Mock<ILogger>();
-        var sopsService = new SopsService(logger.Object);
+        var logger = Substitute.For<ILogger>();
+        var sopsService = new SopsService(logger);
         var fileName = new FileInfo("secrets.json");
         var jsonContent = new
         {
@@ -71,8 +71,8 @@ public class SopsServiceTests : IDisposable
     public async Task DecryptAsync_Valid_Decrypts()
     {
         // Arrange
-        var logger = new Mock<ILogger>();
-        var sopsService = new SopsService(logger.Object);
+        var logger = Substitute.For<ILogger>();
+        var sopsService = new SopsService(logger);
         var fileName = new FileInfo("secrets.json");
         var jsonContent = new
         {

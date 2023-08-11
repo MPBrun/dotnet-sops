@@ -1,7 +1,7 @@
 using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.PlatformInformation;
 using DotnetSops.CommandLine.Services.Sops;
-using Moq;
+using NSubstitute;
 
 namespace DotnetSops.CommandLine.Tests.Fixtures;
 public class SopsFixture : IAsyncLifetime
@@ -24,9 +24,9 @@ public class SopsFixture : IAsyncLifetime
 
         using var httpClient = new HttpClient();
         var platformInformation = new PlatformInformationService();
-        var mockLogger = new Mock<ILogger>();
+        var mockLogger = Substitute.For<ILogger>();
 
-        var service = new SopsDownloadService(platformInformation, httpClient, mockLogger.Object);
+        var service = new SopsDownloadService(platformInformation, httpClient, mockLogger);
         await service.DownloadAsync();
 
         Directory.SetCurrentDirectory(currentDir);
