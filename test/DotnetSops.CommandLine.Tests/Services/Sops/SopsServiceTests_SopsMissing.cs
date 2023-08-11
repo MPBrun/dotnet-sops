@@ -1,7 +1,7 @@
 using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.Sops;
 using DotnetSops.CommandLine.Tests.Fixtures;
-using Moq;
+using NSubstitute;
 
 namespace DotnetSops.CommandLine.Tests.Services.Sops;
 
@@ -35,8 +35,8 @@ public class SopsServiceTests_SopsMissing : IDisposable
         // Arrange
         Environment.SetEnvironmentVariable(PathEnvironmentVariableName, null);
 
-        var logger = new Mock<ILogger>();
-        var sopsService = new SopsService(logger.Object);
+        var logger = Substitute.For<ILogger>();
+        var sopsService = new SopsService(logger);
         var fileName = new FileInfo("secrets.json");
         var encrypedFile = new FileInfo("encrypted.json");
 
