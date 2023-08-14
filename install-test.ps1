@@ -19,16 +19,6 @@ function Invoke-Dotnet {
     }
 }
 
-$DateTime = (Get-Date).ToUniversalTime()
-$UnixTimeStamp = [System.Math]::Truncate((Get-Date -Date $DateTime -UFormat %s))
-$VersionSuffix = "alpha.${UnixTimeStamp}"
-$VersionPrefix = "0.0.1"
-$Configuration = "Release"
-
-Write-Host ""
-Write-Host "Build dotnet-sops tool"
-Invoke-Dotnet -Command "pack  -p:VersionPrefix=$VersionPrefix --version-suffix $VersionSuffix --configuration $Configuration"
-
 # Delete local cache. https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-install#local-tools
 $NugetFolder = "$env:USERPROFILE\.nuget\packages\dotnet-sops"
 if (Test-Path $NugetFolder) {
@@ -42,7 +32,7 @@ if (Test-Path $DotnetToolCacheFolder) {
 
 $FolderName = "ToolInstallTest"
 if (Test-Path $FolderName) {
-  Remove-Item $FolderName -Recurse
+  Remove-Item $FolderName -Recurse -Force
 }
 New-Item $FolderName -ItemType "directory" | Out-Null
 
@@ -67,4 +57,8 @@ try {
   Invoke-Dotnet -Command "tool uninstall dotnet-sops --global"
 } finally {
   Pop-Location
+
+  if (Test-Path $FolderName) {
+    Remove-Item $FolderName -Recurse -Force
+  }
 }

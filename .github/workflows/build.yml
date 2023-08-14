@@ -27,16 +27,35 @@ jobs:
 
     - name: Restore
       run: dotnet restore
+
+    - name: Restore tool
+      run: dotnet tool restore
+
+    - name: Find version number
+      id: version
+      run: |
+        MajorMinorPatch=$(dotnet gitversion /showvariable MajorMinorPatch)
+        echo "VERSION=${MajorMinorPatch}-alpha.${{ github.run_number }}" >> $GITHUB_OUTPUT
       
     - name: Build
-      run: dotnet build --configuration Release
+      run: dotnet build --configuration Release -p:Version=${{ steps.version.outputs.VERSION }}
 
     - name: Format
-      run: dotnet format --verify-no-changes
+      run: dotnet format --no-restore --verify-no-changes
 
     - name: Test
       run: dotnet test --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage" --logger trx
 
+    - name: Pack
+      run: dotnet pack --no-build --configuration Release -p:Version=${{ steps.version.outputs.VERSION }}
+
     - name: Test - Package
       shell: pwsh
       run: ./install-test.ps1
+
+    - name: Upload NuGet artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: nuget
+        path: src/DotnetSops.CommandLine/bin/nupkg/*.*
+        if-no-files-found: error
