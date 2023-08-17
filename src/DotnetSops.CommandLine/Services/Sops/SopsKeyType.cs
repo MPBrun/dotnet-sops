@@ -1,5 +1,5 @@
 namespace DotnetSops.CommandLine.Services.Sops;
-internal enum SopsEncryptionType
+internal enum SopsKeyType
 {
     AzureKeyVault,
     AwsKms,

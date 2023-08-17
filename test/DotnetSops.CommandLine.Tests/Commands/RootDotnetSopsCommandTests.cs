@@ -114,28 +114,24 @@ public partial class RootDotnetSopsCommandTests
         Assert.Equal(0, exitCode);
         Assert.Equal("""
             Description:
-              Store and share encrypted secrets, created using user-secrets tool.
-              Secrets are encrypted and decrypted using SOPS.
-              Encrypted secrets can shared with other team members than can decrypt it, if they have access.
+              Encrypt and share secrets with the user-secrets tool, utilizing SOPS for encryption and decryption. Encrypted secrets can be shared with other team members who can decrypt them if they have access.
               
-              Encryption types is configured using .sops.yaml file. Run "dotnet sops init" for help wizard to create .sops.yaml.
-              
-              Warning: When secrets are decrypted they are stored in plain, unencrypted text, that can be loaded by user-secrets tool.
-              Recomendation: Only store development secrets that cannot access production like environment.
-            
+              Key types are configured using the .sops.yaml file. Run 'dotnet sops init' for a helpful wizard to create the .sops.yaml.
+
             Usage:
               dotnet sops [command] [options]
-            
+
             Options:
               -?, -h, --help  Show help and usage information
               --version       Show version information
               --verbose       Enable verbose logging output
-            
+
             Commands:
-              init           Create .sops.yaml configuration file.
-              encrypt        Encrypt existing dotnet user secrets
-              decrypt        Decrypt secrets into dotnet user secrets
-              download-sops  Download SOPS from https://github.com/getsops/sops
+              init                   Create a .sops.yaml configuration file.
+              encrypt                Encrypt existing .NET User Secrets
+              decrypt                Decrypt secrets into .NET User Secrets
+              run <dotnetArguments>  Execute 'dotnet run' with decrypted secrets inserted into the environment
+              download-sops          Download SOPS from https://github.com/getsops/sops
 
 
             """, output.ToString().RemoveHelpWrapNewLines(), ignoreLineEndingDifferences: true);

@@ -61,7 +61,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Decrypt secrets into dotnet user secrets.
+        ///   Looks up a localized string similar to Decrypt secrets into .NET User Secrets.
         /// </summary>
         internal static string DecryptCommandDescription {
             get {
@@ -70,7 +70,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File of the encrypted secrets.
+        ///   Looks up a localized string similar to Encrypted secrets file.
         /// </summary>
         internal static string DecryptCommandFileOptionDescription {
             get {
@@ -79,7 +79,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Path to project. Defaults to searching the current directory.
+        ///   Looks up a localized string similar to Path to the project. Defaults to searching the current directory..
         /// </summary>
         internal static string DecryptCommandProjectOptionDescription {
             get {
@@ -97,7 +97,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; successfully decrypted to user secret with id &apos;{1}&apos;..
+        ///   Looks up a localized string similar to &apos;{0}&apos; successfully decrypted to user secret with ID &apos;{1}&apos;..
         /// </summary>
         internal static string DecryptCommandSuccess {
             get {
@@ -142,7 +142,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Encrypt existing dotnet user secrets.
+        ///   Looks up a localized string similar to Encrypt existing .NET User Secrets.
         /// </summary>
         internal static string EncryptCommandDescription {
             get {
@@ -151,7 +151,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File of the encrypted secrets.
+        ///   Looks up a localized string similar to Encrypted secrets file..
         /// </summary>
         internal static string EncryptCommandFileOptionDescription {
             get {
@@ -160,7 +160,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Path to project. Defaults to searching the current directory.
+        ///   Looks up a localized string similar to Path to the project. Defaults to searching the current directory..
         /// </summary>
         internal static string EncryptCommandProjectOptionDescription {
             get {
@@ -178,7 +178,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User secret with id &apos;{0}&apos; successfully encrypted to &apos;{1}&apos;..
+        ///   Looks up a localized string similar to User secret with ID &apos;{0}&apos; successfully encrypted to &apos;{1}&apos;..
         /// </summary>
         internal static string EncryptCommandSuccess {
             get {
@@ -196,7 +196,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to What is public key of age?.
+        ///   Looks up a localized string similar to What is the public key of age?.
         /// </summary>
         internal static string InitializeCommandAgePublicKeyQuestion {
             get {
@@ -205,7 +205,52 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to What is object name of the key?.
+        ///   Looks up a localized string similar to An ARN has following format: arn:partition:service:region:account-id:resource-type/resource-id.
+        /// </summary>
+        internal static string InitializeCommandAwsKmsFormat {
+            get {
+                return ResourceManager.GetString("InitializeCommandAwsKmsFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What is the ARN of the key?.
+        /// </summary>
+        internal static string InitializeCommandAwsKmsQuestion {
+            get {
+                return ResourceManager.GetString("InitializeCommandAwsKmsQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What is the key identifier of the key?.
+        /// </summary>
+        internal static string InitializeCommandAzureKeyIdentifierQuestion {
+            get {
+                return ResourceManager.GetString("InitializeCommandAzureKeyIdentifierQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An Azure Vault key is defined by 3 parts of the key identifier: https://{vault-name}.vault.azure.net/keys/{object-name}/{object-version}.
+        /// </summary>
+        internal static string InitializeCommandAzureKeyVaultFormat {
+            get {
+                return ResourceManager.GetString("InitializeCommandAzureKeyVaultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A key identifier has following format: https://{vault-name}.vault.azure.net/keys/{object-name}/{object-version}.
+        /// </summary>
+        internal static string InitializeCommandAzureKeyVaultIdentifierFormat {
+            get {
+                return ResourceManager.GetString("InitializeCommandAzureKeyVaultIdentifierFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What is the object name of the key?.
         /// </summary>
         internal static string InitializeCommandAzureKeyVaultKeyQuestion {
             get {
@@ -214,7 +259,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to What is the name of the key vault?.
+        ///   Looks up a localized string similar to What is the name of the Key Vault?.
         /// </summary>
         internal static string InitializeCommandAzureKeyVaultNameQuestion {
             get {
@@ -223,7 +268,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to What is object version of the key?.
+        ///   Looks up a localized string similar to What is the object version of the key?.
         /// </summary>
         internal static string InitializeCommandAzureKeyVaultVersionQuestion {
             get {
@@ -232,7 +277,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure to overwrite existing [yellow].sops.yaml[/]?.
+        ///   Looks up a localized string similar to Are you sure you want to overwrite the existing [yellow].sops.yaml[/]?.
         /// </summary>
         internal static string InitializeCommandConfigAlreadyExistQuestion {
             get {
@@ -241,7 +286,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create .sops.yaml configuration file..
+        ///   Looks up a localized string similar to Create a .sops.yaml configuration file..
         /// </summary>
         internal static string InitializeCommandDescription {
             get {
@@ -250,16 +295,87 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Which encryption whould you like to use?.
+        ///   Looks up a localized string similar to The resource ID has the following format: projects/PROJECT_ID/locations/LOCATION/keyRings/KEY_RING/cryptoKeys/KEY_NAME.
         /// </summary>
-        internal static string InitializeCommandEncryptionQuestion {
+        internal static string InitializeCommandGcpKmsFormat {
             get {
-                return ResourceManager.GetString("InitializeCommandEncryptionQuestion", resourceCulture);
+                return ResourceManager.GetString("InitializeCommandGcpKmsFormat", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to What is public key of PGP?.
+        ///   Looks up a localized string similar to What is the resource ID of the key?.
+        /// </summary>
+        internal static string InitializeCommandGcpKmsQuestion {
+            get {
+                return ResourceManager.GetString("InitializeCommandGcpKmsQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What is the URI of the vault key?.
+        /// </summary>
+        internal static string InitializeCommandHashicorpVaultQuestion {
+            get {
+                return ResourceManager.GetString("InitializeCommandHashicorpVaultQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [yellow]Keys:[/]
+        ///  SOPS supports different keys. You can refer to their respective documentation on how to create a key that supports encryption and decryption.
+        ///
+        ///[yellow]Documentation:[/]
+        ///  [yellow]Azure Key Vault[/] - https://learn.microsoft.com/en-us/azure/key-vault
+        ///  [yellow]AWS KMS[/] - https://aws.amazon.com/kms
+        ///  [yellow]GCP KMS[/] - https://cloud.google.com/security-key-management
+        ///  [yellow]Hashicorp Vault[/] - https://www.vaultproject.io
+        ///  [yellow]age[/] - https://github.com/FiloSottile/age        /// [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string InitializeCommandKeyInformation {
+            get {
+                return ResourceManager.GetString("InitializeCommandKeyInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Which key type would you like to use?.
+        /// </summary>
+        internal static string InitializeCommandKeyTypeQuestion {
+            get {
+                return ResourceManager.GetString("InitializeCommandKeyTypeQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add more key groups?.
+        /// </summary>
+        internal static string InitializeCommandMoreKeyGroupsQuestion {
+            get {
+                return ResourceManager.GetString("InitializeCommandMoreKeyGroupsQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add more keys?.
+        /// </summary>
+        internal static string InitializeCommandMoreKeysQuestion {
+            get {
+                return ResourceManager.GetString("InitializeCommandMoreKeysQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add more keys to the group?.
+        /// </summary>
+        internal static string InitializeCommandMoreKeysToKeyGroupQuestion {
+            get {
+                return ResourceManager.GetString("InitializeCommandMoreKeysToKeyGroupQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What is the public key of PGP?.
         /// </summary>
         internal static string InitializeCommandPgpPublicKeyQuestion {
             get {
@@ -277,7 +393,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can now encrypt your dotnet user secrets by running:
+        ///   Looks up a localized string similar to You can now encrypt your .NET User Secrets by running:
         ///  [yellow]dotnet sops encrypt[/].
         /// </summary>
         internal static string InitializeCommandSuccessSuggestion {
@@ -287,7 +403,70 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Operating system is not supported..
+        ///   Looks up a localized string similar to Use key groups?.
+        /// </summary>
+        internal static string InitializeCommandUseKeyGroupsQuestion {
+            get {
+                return ResourceManager.GetString("InitializeCommandUseKeyGroupsQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to age.
+        /// </summary>
+        internal static string KeyTypeAge {
+            get {
+                return ResourceManager.GetString("KeyTypeAge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AWS KMS.
+        /// </summary>
+        internal static string KeyTypeAwsKms {
+            get {
+                return ResourceManager.GetString("KeyTypeAwsKms", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Azure Key Vault.
+        /// </summary>
+        internal static string KeyTypeAzureKeyVault {
+            get {
+                return ResourceManager.GetString("KeyTypeAzureKeyVault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GCP KMS.
+        /// </summary>
+        internal static string KeyTypeGcpKms {
+            get {
+                return ResourceManager.GetString("KeyTypeGcpKms", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hashicorp Vault.
+        /// </summary>
+        internal static string KeyTypeHashicorpVault {
+            get {
+                return ResourceManager.GetString("KeyTypeHashicorpVault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PGP.
+        /// </summary>
+        internal static string KeyTypePgp {
+            get {
+                return ResourceManager.GetString("KeyTypePgp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This operating system is not supported..
         /// </summary>
         internal static string OperatingSystemNotSupported {
             get {
@@ -350,7 +529,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ensure this property is set in the project or use the [yellow]&apos;--id&apos;[/] command line option.
+        ///   Looks up a localized string similar to Ensure this property is set in the project or use the [yellow]&apos;--id&apos;[/] command-line option.
         ///
         ///The &apos;UserSecretsId&apos; property can be created by running this command:
         ///  [yellow]dotnet user-secrets init[/].
@@ -362,14 +541,9 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Store and share encrypted secrets, created using user-secrets tool.
-        ///Secrets are encrypted and decrypted using SOPS.
-        ///Encrypted secrets can shared with other team members than can decrypt it, if they have access.
+        ///   Looks up a localized string similar to Encrypt and share secrets with the user-secrets tool, utilizing SOPS for encryption and decryption. Encrypted secrets can be shared with other team members who can decrypt them if they have access.
         ///
-        ///Encryption types is configured using .sops.yaml file. Run &quot;dotnet sops init&quot; for help wizard to create .sops.yaml.
-        ///
-        ///Warning: When secrets are decrypted they are stored in plain, unencrypted text, that can be loaded by user-secrets tool.
-        ///Recomendation: Only store development secrets that canno [rest of string was truncated]&quot;;.
+        ///Key types are configured using the .sops.yaml file. Run &apos;dotnet sops init&apos; for a helpful wizard to create the .sops.yaml..
         /// </summary>
         internal static string RootCommandDescription {
             get {
@@ -383,6 +557,33 @@ namespace DotnetSops.CommandLine.Properties {
         internal static string RootDotnetSopsCommandVerboseOptionDescription {
             get {
                 return ResourceManager.GetString("RootDotnetSopsCommandVerboseOptionDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Arguments passed to the &apos;dotnet run&apos; command..
+        /// </summary>
+        internal static string RunCommandArgumentsDescription {
+            get {
+                return ResourceManager.GetString("RunCommandArgumentsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Execute &apos;dotnet run&apos; with decrypted secrets inserted into the environment.
+        /// </summary>
+        internal static string RunCommandDescription {
+            get {
+                return ResourceManager.GetString("RunCommandDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Encrypted secrets file.
+        /// </summary>
+        internal static string RunCommandFileOptionDescription {
+            get {
+                return ResourceManager.GetString("RunCommandFileOptionDescription", resourceCulture);
             }
         }
         
@@ -439,9 +640,7 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SOPS failed with error:
-        ///
-        ///{0}.
+        ///   Looks up a localized string similar to Executing SOPS failed..
         /// </summary>
         internal static string SopsRunFailedWithError {
             get {

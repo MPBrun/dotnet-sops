@@ -47,6 +47,9 @@ public class InitializeCommandTests : IDisposable
         // Owerwrite existing file
         _logger.Error.Input.PushTextWithEnter("y");
 
+        // No key groups
+        _logger.Error.Input.PushTextWithEnter("n");
+
         // Select age encryption
         _logger.Error.Input.PushKey(ConsoleKey.DownArrow);
         _logger.Error.Input.PushKey(ConsoleKey.DownArrow);
@@ -57,18 +60,23 @@ public class InitializeCommandTests : IDisposable
         // Age public key
         _logger.Error.Input.PushTextWithEnter("age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8");
 
+        // No more keys
+        _logger.Error.Input.PushTextWithEnter("n");
+
         // Act
         var exitCode = await config.InvokeAsync("");
 
-        Assert.Contains("? Are you sure to overwrite existing .sops.yaml? [y/n]: y", _logger.Error.Output, StringComparison.InvariantCulture);
-        Assert.Contains("? Which encryption whould you like to use? age", _logger.Error.Output, StringComparison.InvariantCulture);
-        Assert.Contains("? What is public key of age? age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8", _logger.Error.Output, StringComparison.InvariantCulture);
+        Assert.Contains("? Are you sure you want to overwrite the existing .sops.yaml? [y/n] (n): y", _logger.Error.Output, StringComparison.InvariantCulture);
+        Assert.Contains("? Use key groups? [y/n] (n): n", _logger.Error.Output, StringComparison.InvariantCulture);
+        Assert.Contains("? Which key type would you like to use?", _logger.Error.Output, StringComparison.InvariantCulture);
+        Assert.Contains("? What is the public key of age? age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8", _logger.Error.Output, StringComparison.InvariantCulture);
+        Assert.Contains("? Add more keys? [y/n] (n): n", _logger.Error.Output, StringComparison.InvariantCulture);
         Assert.Contains(
             """
             Generated .sops.yaml with the following content:
             creation_rules:
-            - path_regex: secrets.json
-              age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
+              - path_regex: secrets.json
+                age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
             """, _logger.Error.Output.ReplaceLineEndings(), StringComparison.InvariantCulture);
         Assert.Equal(0, exitCode);
     }
@@ -94,7 +102,7 @@ public class InitializeCommandTests : IDisposable
         Assert.Equal(0, exitCode);
         Assert.Equal("""
             Description:
-              Create .sops.yaml configuration file.
+              Create a .sops.yaml configuration file.
 
             Usage:
               dotnet sops init [options]

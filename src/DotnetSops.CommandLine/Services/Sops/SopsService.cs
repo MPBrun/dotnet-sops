@@ -17,6 +17,11 @@ internal class SopsService : ISopsService
         await ExecuteAsync(new string[] { "--output", outoutFilePath.FullName, "--decrypt", inputFilePath.FullName }, cancellationToken);
     }
 
+    public async Task RunCommandWithSecretsEnvironmentAsync(string command, FileInfo inputFilePath, CancellationToken cancellationToken = default)
+    {
+        await ExecuteAsync(new string[] { "exec-env", inputFilePath.FullName, command }, cancellationToken);
+    }
+
     public SopsService(ILogger logger)
     {
         _logger = logger;
@@ -28,9 +33,7 @@ internal class SopsService : ISopsService
         {
             WorkingDirectory = Directory.GetCurrentDirectory(),
             FileName = "sops",
-            RedirectStandardError = true,
         };
-        processStartInfo.Environment.Add("NO_COLOR", "1"); // Remove ansi color from sops output for consistency
         foreach (var argument in arguments)
         {
             processStartInfo.ArgumentList.Add(argument);
@@ -44,8 +47,7 @@ internal class SopsService : ISopsService
             await process.WaitForExitAsync(cancellationToken);
             if (process.ExitCode != 0)
             {
-                var output = await process.StandardError.ReadToEndAsync(cancellationToken);
-                throw new SopsExecutionException(LocalizationResources.SopsRunFailedWithError(output.ReplaceLineEndings().Trim()))
+                throw new SopsExecutionException(Properties.Resources.SopsRunFailedWithError)
                 {
                     ExitCode = process.ExitCode
                 };

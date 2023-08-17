@@ -51,6 +51,7 @@ internal class ConfirmationPrompt : IPrompt<bool>
             .ValidationErrorMessage(InvalidChoiceMessage)
             .ShowChoices(ShowChoices)
             .ShowDefaultValue(ShowDefaultValue)
+            .DefaultValue(No)
             .PromptStyle(PromptStyle)
             .ChoicesStyle(ChoicesStyle)
             .AddChoice(Yes)
