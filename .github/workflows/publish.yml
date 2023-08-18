@@ -1,0 +1,17 @@
+name: Publish
+on:
+  release:
+    types:
+    - published
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download release artifact
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: gh release download ${{ github.ref_name }} --repo MPBrun/dotnet-sops
+
+    - name: Publish NuGet package on nuget.org
+      run: dotnet nuget push "*.nupkg" --source https://api.nuget.org/v3/index.json --api-key "${{ secrets.NUGET_API_KEY }}"
