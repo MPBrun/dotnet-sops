@@ -43,8 +43,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Spectre.Console" Version="0.47.0" />
-    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.23381.1" />
-    <PackageReference Include="YamlDotNet" Version="13.1.1" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.23407.1" />
+    <PackageReference Include="YamlDotNet" Version="13.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -72,7 +72,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.6.40">
+    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

@@ -267,7 +267,7 @@ internal class InitializeCommand : CliCommand
 
     private static async Task<SopsKeyType> PromptKeyTypeAsync(ILogger logger, CancellationToken cancellationToken)
     {
-        var keyTypeConverter = (SopsKeyType keyType) =>
+        static string KeyTypeConverter(SopsKeyType keyType)
         {
             return keyType switch
             {
@@ -279,7 +279,7 @@ internal class InitializeCommand : CliCommand
                 SopsKeyType.Pgp => Properties.Resources.KeyTypePgp,
                 _ => throw new NotSupportedException(),
             };
-        };
+        }
 
         var keyChoices = new SopsKeyType[]
         {
@@ -291,6 +291,6 @@ internal class InitializeCommand : CliCommand
             SopsKeyType.Pgp
         };
 
-        return await logger.SelectAsync(Properties.Resources.InitializeCommandKeyTypeQuestion, keyChoices, keyTypeConverter, cancellationToken);
+        return await logger.SelectAsync(Properties.Resources.InitializeCommandKeyTypeQuestion, keyChoices, KeyTypeConverter, cancellationToken);
     }
 }
