@@ -39,12 +39,12 @@ jobs:
         else
           echo "VERSION=0.0.0-alpha.${{ github.run_number }}" >> $GITHUB_OUTPUT;
         fi
-      
-    - name: Build
-      run: dotnet build --configuration Release -p:Version=${{ steps.version.outputs.VERSION }}
 
     - name: Format
       run: dotnet format --no-restore --verify-no-changes
+      
+    - name: Build
+      run: dotnet build --configuration Release -p:Version=${{ steps.version.outputs.VERSION }}
 
     - name: Test
       run: dotnet test --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage" --logger trx
@@ -53,8 +53,7 @@ jobs:
       run: dotnet pack --no-build --configuration Release -p:Version=${{ steps.version.outputs.VERSION }}
 
     - name: Test - Package
-      shell: pwsh
-      run: ./install-test.ps1
+      run: ./build/tool-test.sh
 
     - name: Upload NuGet artifact
       uses: actions/upload-artifact@v3

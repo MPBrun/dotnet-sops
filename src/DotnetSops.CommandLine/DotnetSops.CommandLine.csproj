@@ -5,7 +5,6 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <UserSecretsId>f9428084-91de-4bb1-af29-da8d220a7b4b</UserSecretsId>
     <PackageOutputPath>./bin/nupkg</PackageOutputPath>
     <AssemblyName>dotnet-sops</AssemblyName>
 
