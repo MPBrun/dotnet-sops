@@ -6,6 +6,8 @@ on:
   push:
     branches:
     - main
+    tags:
+    - "v*.*.*"
 
 jobs:
   build:
@@ -28,14 +30,15 @@ jobs:
     - name: Restore
       run: dotnet restore
 
-    - name: Restore tool
-      run: dotnet tool restore
-
     - name: Find version number
       id: version
       run: |
-        MajorMinorPatch=$(dotnet gitversion /showvariable MajorMinorPatch)
-        echo "VERSION=${MajorMinorPatch}-alpha.${{ github.run_number }}" >> $GITHUB_OUTPUT
+        if [[ "${{ github.ref }}" == refs/tags/* ]]
+        then
+          echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT;
+        else
+          echo "VERSION=0.0.0-alpha.${{ github.run_number }}" >> $GITHUB_OUTPUT;
+        fi
       
     - name: Build
       run: dotnet build --configuration Release -p:Version=${{ steps.version.outputs.VERSION }}
@@ -55,7 +58,31 @@ jobs:
 
     - name: Upload NuGet artifact
       uses: actions/upload-artifact@v3
+      if: matrix.os == 'ubuntu-latest'
       with:
         name: nuget
         path: src/DotnetSops.CommandLine/bin/nupkg/*.*
         if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - name: Download NuGet artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: nuget
+
+    - name: Create release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        draft: true
+        generate_release_notes: true
+        fail_on_unmatched_files: true
+        files: |
+          *.nupkg
+          *.snupkg

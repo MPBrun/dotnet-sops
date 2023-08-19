@@ -19,12 +19,9 @@ function Invoke-Dotnet {
     }
 }
 
-Invoke-Dotnet -Command "tool restore"
-
 $DateTime = (Get-Date).ToUniversalTime()
 $UnixTimeStamp = [System.Math]::Truncate((Get-Date -Date $DateTime -UFormat %s))
-$MajorMinorPatch = @(dotnet gitversion /showvariable MajorMinorPatch)
-$Version = "${MajorMinorPatch}-alpha.${UnixTimeStamp}"
+$Version = "0.0.0-alpha.${UnixTimeStamp}"
 $Configuration = "Release"
 
 Write-Host ""
