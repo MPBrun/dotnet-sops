@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest] # [windows-latest, macos-latest, ubuntu-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
@@ -32,6 +32,7 @@ jobs:
 
     - name: Find version number
       id: version
+      shell: bash
       run: |
         if [[ "${{ github.ref }}" == refs/tags/* ]]
         then
@@ -53,6 +54,7 @@ jobs:
       run: dotnet pack --no-build --configuration Release -p:Version=${{ steps.version.outputs.VERSION }}
 
     - name: Test - Package
+      shell: bash
       run: ./build/tool-test.sh
 
     - name: Upload NuGet artifact
