@@ -12,7 +12,7 @@ It utilizes [SOPS](https://github.com/getsops/sops) under the hood to encrypt an
 
 ## Table of Contents <!-- omit in toc -->
 
-- [Motivation](#motivation)
+- [Background](#background)
 - [Installation](#installation)
 - [Get started](#get-started)
 - [Usage](#usage)
