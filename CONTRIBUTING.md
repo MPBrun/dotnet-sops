@@ -8,11 +8,13 @@ Please take a moment to review this Contributing Guide before you get started. I
 
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
-  - [Setting Up the Development Environment](#setting-up-the-development-environment)
+  - [Development](#development)
+- [Releases](#releases)
 - [Contributing](#contributing)
   - [Submitting Issues](#submitting-issues)
   - [Creating Pull Requests](#creating-pull-requests)
 - [Coding Guidelines](#coding-guidelines)
+- [Documentation](#documentation)
 - [License](#license)
 
 ## Getting Started
@@ -60,6 +62,15 @@ Tool can be packed by the following command:
 ```bash
 dotnet pack
 ```
+
+## Releases
+
+### Creating release
+
+Releases are created by maintainers using the following process:
+1. Tag branch with semantic version number. Eg. "v0.1.0" or "v0.1.0-alpha.1"
+2. Push tag to GitHub. This will start a new build and create GitHub draft release.
+3. Verify release and publish it. This will start a workflow that upload it to NuGet.org.
 
 ## Contributing
 

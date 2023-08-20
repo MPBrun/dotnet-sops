@@ -13,7 +13,8 @@
     <PackageId>dotnet-sops</PackageId>
     <PackageTags>dotnet sops</PackageTags>
     <Authors>Mads Sandberg Brun, Peter Sandberg Brun</Authors>
-    <Description>Store and share dotnet user-secrets secure. Uses SOPS to encrypt and decrypt secrets.</Description>
+    <PackageTags>sops;secrets;secrets-management;security;dotnet;command-line-tool</PackageTags>
+    <Description>dotnet-sops is a .NET tool for securely storing and sharing user-secrets with all your team members. It utilizes SOPS under the hood.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <ToolCommandName>dotnet-sops</ToolCommandName>
     <PackageProjectUrl>https://github.com/mpbrun/dotnet-sops</PackageProjectUrl>
