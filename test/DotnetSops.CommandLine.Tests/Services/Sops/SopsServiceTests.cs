@@ -11,9 +11,13 @@ public class SopsServiceTests : IDisposable
 {
     private readonly UniqueCurrentDirectoryFixture _uniqueCurrentDirectoryFixture = new();
 
-    public SopsServiceTests(SopsFixture sopsFixture)
+    private readonly ISopsPathService _sopsPathService;
+
+    public SopsServiceTests(SopsFixture? sopsFixture)
     {
-        sopsFixture?.CopySopsToDirectory(_uniqueCurrentDirectoryFixture.TestDirectory.FullName);
+        ArgumentNullException.ThrowIfNull(sopsFixture);
+
+        _sopsPathService = sopsFixture.SopsPathService;
     }
 
     protected virtual void Dispose(bool disposing)
@@ -33,7 +37,7 @@ public class SopsServiceTests : IDisposable
     {
         // Arrange
         var logger = Substitute.For<ILogger>();
-        var sopsService = new SopsService(logger);
+        var sopsService = new SopsService(logger, _sopsPathService);
         var fileName = new FileInfo("secrets.json");
         var jsonContent = new
         {
@@ -72,7 +76,7 @@ public class SopsServiceTests : IDisposable
     {
         // Arrange
         var logger = Substitute.For<ILogger>();
-        var sopsService = new SopsService(logger);
+        var sopsService = new SopsService(logger, _sopsPathService);
         var fileName = new FileInfo("secrets.json");
         var jsonContent = new
         {
@@ -116,7 +120,7 @@ public class SopsServiceTests : IDisposable
     {
         // Arrange
         var logger = Substitute.For<ILogger>();
-        var sopsService = new SopsService(logger);
+        var sopsService = new SopsService(logger, _sopsPathService);
         var fileName = new FileInfo("secrets.json");
         var jsonContent = new
         {

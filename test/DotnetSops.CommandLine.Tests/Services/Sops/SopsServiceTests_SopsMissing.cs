@@ -36,7 +36,8 @@ public class SopsServiceTests_SopsMissing : IDisposable
         Environment.SetEnvironmentVariable(PathEnvironmentVariableName, null);
 
         var logger = Substitute.For<ILogger>();
-        var sopsService = new SopsService(logger);
+        var sopsPathService = Substitute.For<ISopsPathService>();
+        var sopsService = new SopsService(logger, sopsPathService);
         var fileName = new FileInfo("secrets.json");
         var encrypedFile = new FileInfo("encrypted.json");
 

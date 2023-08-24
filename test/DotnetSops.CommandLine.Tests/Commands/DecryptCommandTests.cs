@@ -27,10 +27,11 @@ public class DecryptCommandTests : IDisposable
 
     public DecryptCommandTests(SopsFixture? sopsFixture)
     {
-        sopsFixture?.CopySopsToDirectory(_uniqueCurrentDirectoryFixture.TestDirectory.FullName);
+        ArgumentNullException.ThrowIfNull(sopsFixture);
 
         _serviceProvider = new ServiceCollection()
             .AddSingleton<ISopsService, SopsService>()
+            .AddSingleton(sopsFixture.SopsPathService)
             .AddSingleton<IUserSecretsService>(sp => new UserSecretsServiceStub(_uniqueCurrentDirectoryFixture.TestDirectory.FullName))
             .AddSingleton<IFileBomService, FileBomService>()
             .AddSingleton<IPlatformInformationService, PlatformInformationService>()

@@ -6,37 +6,25 @@ using NSubstitute;
 namespace DotnetSops.CommandLine.Tests.Fixtures;
 public class SopsFixture : IAsyncLifetime
 {
-    private string _sopsDirectory = "";
+    internal ISopsPathService SopsPathService { get; private set; } = default!;
 
     public Task DisposeAsync()
     {
-        Directory.Delete(_sopsDirectory, true);
+        Directory.Delete(SopsPathService.GetDotnetSopsUserDirectory(), true);
         return Task.CompletedTask;
     }
 
     public async Task InitializeAsync()
     {
-        var currentDir = Directory.GetCurrentDirectory();
-        var fixtureDir = Directory.CreateDirectory("sops-executables");
-
-        _sopsDirectory = fixtureDir.FullName;
-        Directory.SetCurrentDirectory(_sopsDirectory);
+        var fixtureDir = Path.Join(Directory.GetCurrentDirectory(), "sops-executables");
 
         using var httpClient = new HttpClient();
         var platformInformation = new PlatformInformationService();
-        var mockLogger = Substitute.For<ILogger>();
+        var logger = Substitute.For<ILogger>();
+        SopsPathService = Substitute.For<ISopsPathService>();
+        SopsPathService.GetDotnetSopsUserDirectory().Returns(fixtureDir);
 
-        var service = new SopsDownloadService(platformInformation, httpClient, mockLogger);
+        var service = new SopsDownloadService(platformInformation, httpClient, SopsPathService, logger);
         await service.DownloadAsync();
-
-        Directory.SetCurrentDirectory(currentDir);
-    }
-
-    public void CopySopsToDirectory(string directory)
-    {
-        foreach (var sopsFilePath in Directory.EnumerateFiles(_sopsDirectory))
-        {
-            File.Copy(sopsFilePath, Path.Combine(directory, Path.GetFileName(sopsFilePath)));
-        }
     }
 }

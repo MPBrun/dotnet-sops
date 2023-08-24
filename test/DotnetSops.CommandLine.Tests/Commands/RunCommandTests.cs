@@ -19,10 +19,11 @@ public class RunCommandTests : IDisposable
 
     public RunCommandTests(SopsFixture? sopsFixture)
     {
-        sopsFixture?.CopySopsToDirectory(_uniqueCurrentDirectoryFixture.TestDirectory.FullName);
+        ArgumentNullException.ThrowIfNull(sopsFixture);
 
         _serviceProvider = new ServiceCollection()
             .AddSingleton<ISopsService, SopsService>()
+            .AddSingleton(sopsFixture.SopsPathService)
             .AddSingleton<ILogger>(_logger)
             .BuildServiceProvider();
     }

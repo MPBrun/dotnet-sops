@@ -43,9 +43,11 @@ public class SopsDownloadServiceTests : IDisposable
         mockPlatformInformation.IsLinux().Returns(linux);
         mockPlatformInformation.ProcessArchitecture.Returns(architecture);
 
+        var sopsPathService = new SopsPathService();
+
         var mockLogger = Substitute.For<ILogger>();
 
-        var service = new SopsDownloadService(mockPlatformInformation, httpClient, mockLogger);
+        var service = new SopsDownloadService(mockPlatformInformation, httpClient, sopsPathService, mockLogger);
 
         // Act / Assert
         await service.DownloadAsync();
@@ -59,9 +61,10 @@ public class SopsDownloadServiceTests : IDisposable
         using var httpClient = new HttpClient();
 
         var mockPlatformInformation = Substitute.For<IPlatformInformationService>();
+        var sopsPathService = new SopsPathService();
         var mockLogger = Substitute.For<ILogger>();
 
-        var service = new SopsDownloadService(mockPlatformInformation, httpClient, mockLogger);
+        var service = new SopsDownloadService(mockPlatformInformation, httpClient, sopsPathService, mockLogger);
 
         // Act / Assert
         var exception = await Assert.ThrowsAsync<NotSupportedException>(() => service.DownloadAsync());
@@ -74,6 +77,8 @@ public class SopsDownloadServiceTests : IDisposable
         // Arrange
         var mockPlatformInformation = Substitute.For<IPlatformInformationService>();
         mockPlatformInformation.IsWindows().Returns(true);
+
+        var sopsPathService = new SopsPathService();
 
         var mockLogger = Substitute.For<ILogger>();
 
@@ -88,7 +93,7 @@ public class SopsDownloadServiceTests : IDisposable
             .Returns(result);
         using var httpClient = new HttpClient(mockHttpClientHandler);
 
-        var service = new SopsDownloadService(mockPlatformInformation, httpClient, mockLogger);
+        var service = new SopsDownloadService(mockPlatformInformation, httpClient, sopsPathService, mockLogger);
 
         // Act / Assert
         var exception = await Assert.ThrowsAsync<SopsDownloadException>(() => service.DownloadAsync());
@@ -108,6 +113,8 @@ public class SopsDownloadServiceTests : IDisposable
         var mockPlatformInformation = Substitute.For<IPlatformInformationService>();
         mockPlatformInformation.IsWindows().Returns(true);
 
+        var sopsPathService = new SopsPathService();
+
         var mockLogger = Substitute.For<ILogger>();
 
         var mockHttpClientHandler = Substitute.For<HttpMessageHandler>();
@@ -120,7 +127,7 @@ public class SopsDownloadServiceTests : IDisposable
             .Returns(result);
         using var httpClient = new HttpClient(mockHttpClientHandler);
 
-        var service = new SopsDownloadService(mockPlatformInformation, httpClient, mockLogger);
+        var service = new SopsDownloadService(mockPlatformInformation, httpClient, sopsPathService, mockLogger);
 
         // Act / Assert
         var exception = await Assert.ThrowsAsync<SopsDownloadException>(() => service.DownloadAsync());

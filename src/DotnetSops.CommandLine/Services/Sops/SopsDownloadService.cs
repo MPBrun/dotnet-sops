@@ -8,12 +8,14 @@ internal class SopsDownloadService : ISopsDownloadService
     private const string Version = "3.7.3";
     private readonly IPlatformInformationService _platformInformation;
     private readonly HttpClient _httpClient;
+    private readonly ISopsPathService _sopsPathService;
     private readonly ILogger _logger;
 
-    public SopsDownloadService(IPlatformInformationService platformInformation, HttpClient httpClient, ILogger logger)
+    public SopsDownloadService(IPlatformInformationService platformInformation, HttpClient httpClient, ISopsPathService sopsPathService, ILogger logger)
     {
         _platformInformation = platformInformation;
         _httpClient = httpClient;
+        _sopsPathService = sopsPathService;
         _logger = logger;
     }
 
@@ -44,7 +46,9 @@ internal class SopsDownloadService : ISopsDownloadService
         }
 
         // Save content to disk
-        var destinationFileName = release.ExecutableFileName;
+        var localSopsDirectory = _sopsPathService.GetDotnetSopsUserDirectory();
+        Directory.CreateDirectory(localSopsDirectory);
+        var destinationFileName = Path.Join(localSopsDirectory, release.ExecutableFileName);
         await File.WriteAllBytesAsync(destinationFileName, content, cancellationToken);
         if (!OperatingSystem.IsWindows())
         {
