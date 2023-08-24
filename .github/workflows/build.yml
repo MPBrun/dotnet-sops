@@ -48,7 +48,17 @@ jobs:
       run: dotnet build --configuration Release -p:Version=${{ steps.version.outputs.VERSION }}
 
     - name: Test
-      run: dotnet test --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage" --logger trx
+      run: dotnet test --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage" --logger "trx;LogFileName=test-results.trx"
+
+    - name: Test Report
+      uses: phoenix-actions/test-reporting@v12
+      if: always()
+      with:
+        name: Test results (${{ matrix.os }})
+        path: "**/*.trx"
+        reporter: dotnet-trx
+        output-to: 'step-summary'
+        fail-on-error: false
 
     - name: Pack
       run: dotnet pack --no-build --configuration Release -p:Version=${{ steps.version.outputs.VERSION }}
