@@ -5,7 +5,7 @@ using DotnetSops.CommandLine.Services.PlatformInformation;
 namespace DotnetSops.CommandLine.Services.Sops;
 internal class SopsDownloadService : ISopsDownloadService
 {
-    private const string Version = "3.7.3";
+    private const string Version = "3.8.0";
     private readonly IPlatformInformationService _platformInformation;
     private readonly HttpClient _httpClient;
     private readonly ISopsPathService _sopsPathService;
@@ -38,11 +38,19 @@ internal class SopsDownloadService : ISopsDownloadService
         // Get content
         var content = await response.Content.ReadAsByteArrayAsync(cancellationToken);
 
+        // Calculate file hash
+        var hash = BitConverter.ToString(SHA256.HashData(content))
+            .Replace("-", "", StringComparison.OrdinalIgnoreCase);
+
+#pragma warning disable CA1308 // Normalize strings to uppercase
+        // Lowercase to follow same format as defined by *.checksums.txt
+        hash = hash.ToLowerInvariant();
+#pragma warning restore CA1308 // Normalize strings to uppercase
+
         // Verify content hash
-        var hash = BitConverter.ToString(SHA512.HashData(content)).Replace("-", "", StringComparison.OrdinalIgnoreCase); // Same as cli "certutil -hashfile sops.exe SHA512"
-        if (!hash.Equals(release.Sha512Checksum, StringComparison.OrdinalIgnoreCase))
+        if (!hash.Equals(release.Sha256Checksum, StringComparison.OrdinalIgnoreCase))
         {
-            throw new SopsDownloadException(LocalizationResources.SopsDownloadSha512Failed(release.Sha512Checksum.ToUpperInvariant(), hash.ToUpperInvariant()));
+            throw new SopsDownloadException(LocalizationResources.SopsDownloadSha256Failed(release.Sha256Checksum, hash));
         }
 
         // Save content to disk
@@ -55,6 +63,8 @@ internal class SopsDownloadService : ISopsDownloadService
             File.SetUnixFileMode(destinationFileName, File.GetUnixFileMode(destinationFileName) | UnixFileMode.UserExecute);
         }
     }
+
+    // Checksums from https://github.com/getsops/sops/releases/download/v3.8.0/sops-v3.8.0.checksums.txt
     private SopsReleaseFileInfo PlatformSopsReleaseFile()
     {
         if (_platformInformation.IsWindows())
@@ -63,7 +73,7 @@ internal class SopsDownloadService : ISopsDownloadService
             {
                 ReleaseFileName = $"sops-v{Version}.exe",
                 ExecutableFileName = "sops.exe",
-                Sha512Checksum = "0b6f768d388a9316838efc58bebe16f0598b84f45643249996bdc6d2e237b5b01c65069809cfc153a3e97402691f4c1879d3ea4920b7de03b38eefd17c717c2d",
+                Sha256Checksum = "8bb627307ddefbc529ab844c7bddbc71ae3ba3643a919cd6b9e127dc74cc1841",
             };
         }
         else if (_platformInformation.IsMacOS())
@@ -74,19 +84,19 @@ internal class SopsDownloadService : ISopsDownloadService
                 {
                     ReleaseFileName = $"sops-v{Version}.darwin.arm64",
                     ExecutableFileName = "sops",
-                    Sha512Checksum = "1307f5b8ad79903a93ed31055d656a8f286ce88e924bac940eba0247513a6b0764b94f39c8c68fa6b760115c0e3356ae25700da6278afae6a53f5256cf13c07f",
+                    Sha256Checksum = "44d98ffd8622629adab069f5ad30ccada702c6cff11102f8be932f98cd04ae42",
                 },
                 Architecture.X64 => new SopsReleaseFileInfo()
                 {
                     ReleaseFileName = $"sops-v{Version}.darwin.amd64",
                     ExecutableFileName = "sops",
-                    Sha512Checksum = "b323b9c49c1635350026e37cfb0d67130312ea5b9e152c164697f2ffcfa3fe7be20a2bb4373ef7829117964011bfb5598026e27453df5d46e2961ee92b6f0dd0",
+                    Sha256Checksum = "f1b2fb34014a3965c5aad9029986fa3499419675c8344b3dab151f9efb8a3b88",
                 },
                 Architecture.X86 => new SopsReleaseFileInfo()
                 {
                     ReleaseFileName = $"sops-v{Version}.darwin",
                     ExecutableFileName = "sops",
-                    Sha512Checksum = "b323b9c49c1635350026e37cfb0d67130312ea5b9e152c164697f2ffcfa3fe7be20a2bb4373ef7829117964011bfb5598026e27453df5d46e2961ee92b6f0dd0",
+                    Sha256Checksum = "b9a686515fea2919402077c5cacc1547bd7d8467d4d915830657cbd25ce6098a",
                 },
                 Architecture.Arm => throw new NotSupportedException(),
                 Architecture.Wasm => throw new NotSupportedException(),
@@ -105,20 +115,15 @@ internal class SopsDownloadService : ISopsDownloadService
                 {
                     ReleaseFileName = $"sops-v{Version}.linux.arm64",
                     ExecutableFileName = "sops",
-                    Sha512Checksum = "56f8e71871fbc202504b42fea6eee93acc6c6a8194db3c335f9ddc3e90a4d8106ad4ad95b1e4d24f8723596302d6fff154b973ecb4a5fd6cd9f6aead0a96fe1d",
+                    Sha256Checksum = "5ec31eaed635e154b59ff4b7c9b311b6e616bd4818a68899c2f9db00c81e3a63",
                 },
                 Architecture.X64 => new SopsReleaseFileInfo()
                 {
                     ReleaseFileName = $"sops-v{Version}.linux.amd64",
                     ExecutableFileName = "sops",
-                    Sha512Checksum = "8883090802db42432dffb34a31c614a3a646c4a38bb43ea71bdbfa01cc22fac4b6b390d9b82c14a50f14770fd0089f0dba2895083e224007989c7a5672588bc7",
+                    Sha256Checksum = "48fb4a6562014a9213be15b4991931266d040b9b64dba8dbcd07b902e90025c0",
                 },
-                Architecture.X86 => new SopsReleaseFileInfo()
-                {
-                    ReleaseFileName = $"sops-v{Version}.linux",
-                    ExecutableFileName = "sops",
-                    Sha512Checksum = "8883090802db42432dffb34a31c614a3a646c4a38bb43ea71bdbfa01cc22fac4b6b390d9b82c14a50f14770fd0089f0dba2895083e224007989c7a5672588bc7",
-                },
+                Architecture.X86 => throw new NotSupportedException(),
                 Architecture.Arm => throw new NotSupportedException(),
                 Architecture.Wasm => throw new NotSupportedException(),
                 Architecture.S390x => throw new NotSupportedException(),

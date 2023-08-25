@@ -5,5 +5,5 @@ internal class SopsReleaseFileInfo
 
     public required string ExecutableFileName { get; init; }
 
-    public required string Sha512Checksum { get; init; }
+    public required string Sha256Checksum { get; init; }
 }

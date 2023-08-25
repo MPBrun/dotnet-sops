@@ -326,8 +326,8 @@ URL: {1}</value>
     <comment>{0} is status code
 {1} is url</comment>
   </data>
-  <data name="SopsDownloadSha512Failed" xml:space="preserve">
-    <value>SHA512 of SOPS executable did not match.
+  <data name="SopsDownloadSha256Failed" xml:space="preserve">
+    <value>SHA256 of SOPS executable did not match.
 
 Expected: {0}
 Actual:   {1}</value>
