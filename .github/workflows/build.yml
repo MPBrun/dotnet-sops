@@ -60,6 +60,12 @@ jobs:
         output-to: 'step-summary'
         fail-on-error: false
 
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        files: "**/coverage.cobertura.xml"
+
     - name: Pack
       run: dotnet pack --no-build --configuration Release -p:Version=${{ steps.version.outputs.VERSION }}
 
