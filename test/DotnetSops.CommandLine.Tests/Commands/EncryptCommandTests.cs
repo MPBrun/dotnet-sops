@@ -26,12 +26,13 @@ public class EncryptCommandTests : IDisposable
     private readonly IServiceProvider _serviceProvider;
     private readonly IUserSecretsService _userSecretsService;
 
-    public EncryptCommandTests(SopsFixture sopsFixture)
+    public EncryptCommandTests(SopsFixture? sopsFixture)
     {
-        sopsFixture?.CopySopsToDirectory(_uniqueCurrentDirectoryFixture.TestDirectory.FullName);
+        ArgumentNullException.ThrowIfNull(sopsFixture);
 
         _serviceProvider = new ServiceCollection()
             .AddSingleton<ISopsService, SopsService>()
+            .AddSingleton(sopsFixture.SopsPathService)
             .AddSingleton<IUserSecretsService>(sp => new UserSecretsServiceStub(_uniqueCurrentDirectoryFixture.TestDirectory.FullName))
             .AddSingleton<IFileBomService, FileBomService>()
             .AddSingleton<ISopsDownloadService, SopsDownloadService>()

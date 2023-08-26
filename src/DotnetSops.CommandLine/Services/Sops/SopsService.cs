@@ -5,7 +5,9 @@ namespace DotnetSops.CommandLine.Services.Sops;
 
 internal class SopsService : ISopsService
 {
+    private const string PathEnvironmentVariableName = "PATH";
     private readonly ILogger _logger;
+    private readonly ISopsPathService _sopsPathService;
 
     public async Task EncryptAsync(FileInfo inputFilePath, FileInfo outoutFilePath, CancellationToken cancellationToken = default)
     {
@@ -22,9 +24,10 @@ internal class SopsService : ISopsService
         await ExecuteAsync(new string[] { "exec-env", inputFilePath.FullName, command }, cancellationToken);
     }
 
-    public SopsService(ILogger logger)
+    public SopsService(ILogger logger, ISopsPathService sopsPathService)
     {
         _logger = logger;
+        _sopsPathService = sopsPathService;
     }
 
     private async Task ExecuteAsync(string[] arguments, CancellationToken cancellationToken = default)
@@ -34,6 +37,12 @@ internal class SopsService : ISopsService
             WorkingDirectory = Directory.GetCurrentDirectory(),
             FileName = "sops",
         };
+
+        // Add SOPS user directory to path for the process
+        var originalPath = Environment.GetEnvironmentVariable(PathEnvironmentVariableName);
+        var newPath = $"{originalPath}{Path.PathSeparator}{_sopsPathService.GetDotnetSopsUserDirectory()}";
+        Environment.SetEnvironmentVariable(PathEnvironmentVariableName, newPath, EnvironmentVariableTarget.Process);
+
         foreach (var argument in arguments)
         {
             processStartInfo.ArgumentList.Add(argument);
@@ -56,6 +65,14 @@ internal class SopsService : ISopsService
         catch (Win32Exception ex) when (ex.NativeErrorCode == 2)
         {
             throw new SopsMissingException(Properties.Resources.SopsIsMissing);
+        }
+        finally
+        {
+            if (originalPath != null)
+            {
+                // Reset path for the process
+                Environment.SetEnvironmentVariable(PathEnvironmentVariableName, originalPath, EnvironmentVariableTarget.Process);
+            }
         }
     }
 }
