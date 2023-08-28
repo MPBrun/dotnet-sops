@@ -54,6 +54,41 @@ public class SopsDownloadServiceTests : IDisposable
         Assert.True(true);
     }
 
+    [Theory]
+    [InlineData(false, false, false, Architecture.X64)]
+    [InlineData(false, true, false, Architecture.Arm)]
+    [InlineData(false, true, false, Architecture.Wasm)]
+    [InlineData(false, true, false, Architecture.S390x)]
+    [InlineData(false, true, false, Architecture.LoongArch64)]
+    [InlineData(false, true, false, Architecture.Armv6)]
+    [InlineData(false, true, false, Architecture.Ppc64le)]
+    [InlineData(false, false, true, Architecture.Arm)]
+    [InlineData(false, false, true, Architecture.Wasm)]
+    [InlineData(false, false, true, Architecture.S390x)]
+    [InlineData(false, false, true, Architecture.LoongArch64)]
+    [InlineData(false, false, true, Architecture.Armv6)]
+    [InlineData(false, false, true, Architecture.Ppc64le)]
+    public async Task DownloadAsync_InvalidOperatingSystemAndArchitecture_Throws(bool windows, bool macos, bool linux, Architecture architecture)
+    {
+        // Arrange
+        using var httpClient = new HttpClient();
+
+        var mockPlatformInformation = Substitute.For<IPlatformInformationService>();
+        mockPlatformInformation.IsWindows().Returns(windows);
+        mockPlatformInformation.IsMacOS().Returns(macos);
+        mockPlatformInformation.IsLinux().Returns(linux);
+        mockPlatformInformation.ProcessArchitecture.Returns(architecture);
+
+        var sopsPathService = new SopsPathService();
+
+        var mockLogger = Substitute.For<ILogger>();
+
+        var service = new SopsDownloadService(mockPlatformInformation, httpClient, sopsPathService, mockLogger);
+
+        // Act / Assert
+        await Assert.ThrowsAsync<NotSupportedException>(() => service.DownloadAsync());
+    }
+
     [Fact]
     public async Task DownloadAsync_InvalidOperatingSystem_Throws()
     {

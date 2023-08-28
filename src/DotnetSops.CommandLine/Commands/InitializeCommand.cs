@@ -176,14 +176,7 @@ internal class InitializeCommand : CliCommand
                         logger.LogInformation(Properties.Resources.InitializeCommandAzureKeyVaultIdentifierFormat);
                         var keyIdentifier = await logger.AskAsync(Properties.Resources.InitializeCommandAzureKeyIdentifierQuestion, cancellationToken);
 
-                        if (string.IsNullOrWhiteSpace(sopsCreationRule.AzureKeyvault))
-                        {
-                            sopsCreationRule.AzureKeyvault = keyIdentifier.Trim();
-                        }
-                        else
-                        {
-                            sopsCreationRule.AzureKeyvault += "," + keyIdentifier.Trim();
-                        }
+                        sopsCreationRule.AzureKeyvault += ("," + keyIdentifier).Trim(' ', ',');
                         break;
                     }
                 case SopsKeyType.AwsKms:
@@ -191,14 +184,7 @@ internal class InitializeCommand : CliCommand
                         logger.LogInformation(Properties.Resources.InitializeCommandAwsKmsFormat);
                         var arn = await logger.AskAsync(Properties.Resources.InitializeCommandAwsKmsQuestion, cancellationToken);
 
-                        if (string.IsNullOrWhiteSpace(sopsCreationRule.Kms))
-                        {
-                            sopsCreationRule.Kms = arn.Trim();
-                        }
-                        else
-                        {
-                            sopsCreationRule.Kms += "," + arn.Trim();
-                        }
+                        sopsCreationRule.Kms += ("," + arn).Trim(' ', ',');
                         break;
                     }
                 case SopsKeyType.GcpKms:
@@ -206,42 +192,21 @@ internal class InitializeCommand : CliCommand
                         logger.LogInformation(Properties.Resources.InitializeCommandGcpKmsFormat);
                         var resourceId = await logger.AskAsync(Properties.Resources.InitializeCommandGcpKmsQuestion, cancellationToken);
 
-                        if (string.IsNullOrWhiteSpace(sopsCreationRule.GcpKms))
-                        {
-                            sopsCreationRule.GcpKms = resourceId.Trim();
-                        }
-                        else
-                        {
-                            sopsCreationRule.GcpKms += "," + resourceId.Trim();
-                        }
+                        sopsCreationRule.GcpKms += ("," + resourceId).Trim(' ', ',');
                         break;
                     }
                 case SopsKeyType.HashicorpVault:
                     {
                         var url = await logger.AskAsync(Properties.Resources.InitializeCommandHashicorpVaultQuestion, cancellationToken);
 
-                        if (string.IsNullOrWhiteSpace(sopsCreationRule.HcVaultTransitUri))
-                        {
-                            sopsCreationRule.HcVaultTransitUri = url.Trim();
-                        }
-                        else
-                        {
-                            sopsCreationRule.HcVaultTransitUri += "," + url.Trim();
-                        }
+                        sopsCreationRule.HcVaultTransitUri += ("," + url).Trim(' ', ',');
                         break;
                     }
                 case SopsKeyType.Age:
                     {
                         var publicKey = await logger.AskAsync(Properties.Resources.InitializeCommandAgePublicKeyQuestion, cancellationToken);
 
-                        if (string.IsNullOrWhiteSpace(sopsCreationRule.Age))
-                        {
-                            sopsCreationRule.Age = publicKey.Trim();
-                        }
-                        else
-                        {
-                            sopsCreationRule.Age += "," + publicKey.Trim();
-                        }
+                        sopsCreationRule.Age += ("," + publicKey).Trim(' ', ',');
                         break;
                     }
 
@@ -249,14 +214,7 @@ internal class InitializeCommand : CliCommand
                     {
                         var publicKey = await logger.AskAsync(Properties.Resources.InitializeCommandPgpPublicKeyQuestion, cancellationToken);
 
-                        if (string.IsNullOrWhiteSpace(sopsCreationRule.Pgp))
-                        {
-                            sopsCreationRule.Pgp = publicKey.Trim();
-                        }
-                        else
-                        {
-                            sopsCreationRule.Pgp += "," + publicKey.Trim();
-                        }
+                        sopsCreationRule.Pgp += ("," + publicKey).Trim(' ', ',');
                         break;
                     }
                 default:

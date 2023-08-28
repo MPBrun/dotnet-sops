@@ -55,6 +55,9 @@ public class FileBomServiceTests : IDisposable
         Assert.NotEqual(new byte[] { 0xEF, 0xBB, 0xBF }, fileContentBefore.Take(3).ToArray());
         Assert.Equal(7, fileContentBefore.Length);
 
+        // Assert that file are not updated, by ensuring that the same file only can be read
+        using var _ = File.Open(filePath.FullName, FileMode.Open, FileAccess.Read, FileShare.Read);
+
         // Act
         await service.RemoveBomFromFileAsync(filePath);
 
