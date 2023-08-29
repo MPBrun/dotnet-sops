@@ -172,4 +172,37 @@ public class SopsServiceTests : IDisposable
         Assert.NotNull(result);
         Assert.Equal("RemAdd", result);
     }
+
+    [Fact]
+    public async Task EncryptAsync_Valid_ResetPathEnvironmentVariable()
+    {
+        // Arrange
+        var logger = Substitute.For<ILogger>();
+        var sopsService = new SopsService(logger, _sopsPathService);
+        var fileName = new FileInfo("secrets.json");
+        var jsonContent = new
+        {
+            add = "Add",
+            foo = "Rem"
+        };
+        var content = JsonSerializer.Serialize(jsonContent);
+        await File.WriteAllTextAsync(fileName.FullName, content);
+
+        // Sops config
+        await File.WriteAllTextAsync(".sops.yaml", """
+            creation_rules:
+              - path_regex: .*.json
+                age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
+            """);
+
+        var encrypedFile = new FileInfo("encrypted.json");
+
+        var pathEnvironmentBefore = Environment.GetEnvironmentVariable("PATH");
+
+        // Act
+        await sopsService.EncryptAsync(fileName, encrypedFile);
+
+        // Assert
+        Assert.Equal(pathEnvironmentBefore, Environment.GetEnvironmentVariable("PATH"));
+    }
 }

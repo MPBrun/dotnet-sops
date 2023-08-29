@@ -16,7 +16,7 @@ internal class FileBomService : IFileBomService
 
     private static async Task<bool> IsBomFileAsync(FileInfo file, CancellationToken cancellationToken = default)
     {
-        using var stream = file.Open(FileMode.Open);
+        using var stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.Read);
         var buffer = new byte[3].AsMemory();
         var readBytes = await stream.ReadAsync(buffer, cancellationToken);
         return readBytes == buffer.Length && buffer.Span.SequenceEqual(Bom);

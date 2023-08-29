@@ -92,6 +92,11 @@ public class EncryptCommandTests : IDisposable
         var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(File.ReadAllText(outputPath))!;
         Assert.StartsWith("ENC[", encryptedSecretContent.TestKey, StringComparison.InvariantCulture);
         Assert.Single(encryptedSecretContent.Sops.Age!);
+        Assert.Equal($"""
+            User secret with ID '{id}' successfully encrypted to '{new FileInfo(outputPath).FullName}'.
+
+            """, _logger.Out.Output, ignoreLineEndingDifferences: true);
+        Assert.Equal("", _logger.Error.Output, ignoreLineEndingDifferences: true);
     }
 
     [Fact]
@@ -218,6 +223,122 @@ public class EncryptCommandTests : IDisposable
         Assert.Equal(1, exitCode);
         Assert.Equal("""
             Executing SOPS failed.
+
+            """, _logger.Error.Output, ignoreLineEndingDifferences: true);
+    }
+
+    [Fact]
+    public async Task EncryptCommand_Defaults_FindUserSecret()
+    {
+        // Arrange
+        var command = new EncryptCommand(_serviceProvider);
+        var id = $"unittest-{Guid.NewGuid()}";
+
+        await File.WriteAllTextAsync("Project.csproj", $"""
+            <Project Sdk="Microsoft.NET.Sdk">
+
+              <PropertyGroup>
+                <OutputType>Exe</OutputType>
+                <TargetFramework>net7.0</TargetFramework>
+                <ImplicitUsings>enable</ImplicitUsings>
+                <UserSecretsId>{id}</UserSecretsId>
+                <Nullable>enable</Nullable>
+              </PropertyGroup>
+
+            </Project>
+            """);
+
+        // user secret
+        var filePath = _userSecretsService.GetSecretsPathFromSecretsId(id);
+        var secrets = new TestSecretCotent
+        {
+            TestKey = "test value"
+        };
+        await File.AppendAllTextAsync(filePath.FullName, JsonSerializer.Serialize(secrets), new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)); //dotnet user secrets save files with bom
+
+        // Sops config
+        var sopsConfigPath = ".sops.yaml";
+        await File.WriteAllTextAsync(sopsConfigPath, """
+            creation_rules:
+              - path_regex: secrets.json
+                age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
+            """);
+
+        var outputPath = "secrets.json";
+
+        var config = new CliConfiguration(command);
+
+        // Act
+        var exitCode = await config.InvokeAsync($"");
+
+        // Assert
+        Assert.Equal(0, exitCode);
+        Assert.True(File.Exists(outputPath));
+
+        var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(File.ReadAllText(outputPath))!;
+        Assert.StartsWith("ENC[", encryptedSecretContent.TestKey, StringComparison.InvariantCulture);
+        Assert.Single(encryptedSecretContent.Sops.Age!);
+    }
+
+    [Fact]
+    public async Task EncryptCommand_InvalidUserSecretsFile_Fails()
+    {
+        // Arrange
+        var command = new EncryptCommand(_serviceProvider);
+        var id = $"unittest-{Guid.NewGuid()}";
+
+        var outputPath = "secrets.json";
+
+        var config = new CliConfiguration(command);
+
+        // Act
+        var exitCode = await config.InvokeAsync($"--id {id} --file {outputPath}");
+
+        // Assert
+        Assert.Equal(1, exitCode);
+        Assert.Equal($"""
+            User secrets file '{_userSecretsService.GetSecretsPathFromSecretsId(id)}' does not exist.
+
+            You have no secrets created. You can add secrets by running this command:
+              dotnet user-secrets set [name] [value]
+
+            """, _logger.Error.Output, ignoreLineEndingDifferences: true);
+    }
+
+    [Fact]
+    public async Task EncryptCommand_DefaultsNoSecretFound_Fails()
+    {
+        // Arrange
+        var command = new EncryptCommand(_serviceProvider);
+
+        // user secret
+        await File.WriteAllTextAsync("Project.csproj", $"""
+            <Project Sdk="Microsoft.NET.Sdk">
+
+              <PropertyGroup>
+                <OutputType>Exe</OutputType>
+                <TargetFramework>net7.0</TargetFramework>
+                <ImplicitUsings>enable</ImplicitUsings>
+                <Nullable>enable</Nullable>
+              </PropertyGroup>
+
+            </Project>
+            """);
+
+        var config = new CliConfiguration(command);
+
+        // Act
+        var exitCode = await config.InvokeAsync($"");
+
+        // Assert
+        Assert.Equal(1, exitCode);
+        Assert.Equal($"""
+            Could not find the global property 'UserSecretsId' in MSBuild project '{Path.Join(Directory.GetCurrentDirectory(), "Project.csproj")}'.
+
+            Ensure this property is set in the project or use the '--id' command-line option.
+
+            The 'UserSecretsId' property can be created by running this command:
+              dotnet user-secrets init
 
             """, _logger.Error.Output, ignoreLineEndingDifferences: true);
     }

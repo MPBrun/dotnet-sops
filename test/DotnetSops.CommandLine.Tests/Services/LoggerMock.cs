@@ -15,5 +15,7 @@ internal sealed class LoggerMock : Logger
 
         outConsole.Profile.Capabilities.Interactive = true;
         erorConsole.Profile.Capabilities.Interactive = true;
+        outConsole.Profile.Width = 1000;
+        erorConsole.Profile.Width = 1000;
     }
 }

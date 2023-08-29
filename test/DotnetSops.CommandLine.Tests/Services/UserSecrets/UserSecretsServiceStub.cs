@@ -12,7 +12,7 @@ internal sealed class UserSecretsServiceStub : IUserSecretsService
 
     public FileInfo GetSecretsPathFromSecretsId(string userSecretsId)
     {
-        Directory.CreateDirectory($"{_rootDir}/{userSecretsId}");
-        return new FileInfo($"{_rootDir}/{userSecretsId}/secrets.json");
+        Directory.CreateDirectory(Path.Join(_rootDir, userSecretsId));
+        return new FileInfo(Path.Join(_rootDir, userSecretsId, "secrets.json"));
     }
 }

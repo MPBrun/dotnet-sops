@@ -28,10 +28,10 @@ internal static class LocalizationResources
     public static string ProjectInfoServiceNotFoundError(string currentDirectory) => GetResourceString(Properties.Resources.ProjectInfoServiceNotFoundError, currentDirectory);
 
     /// <inheritdoc cref="Properties.Resources.ProjectInfoServiceUserSecretIdNotFoundError"/>
-    public static string ProjectInfoServiceUserSecretIdNotFoundError(string projectFilePath) => GetResourceString(Properties.Resources.ProjectInfoServiceNotFoundError, projectFilePath);
+    public static string ProjectInfoServiceUserSecretIdNotFoundError(string projectFilePath) => GetResourceString(Properties.Resources.ProjectInfoServiceUserSecretIdNotFoundError, projectFilePath);
 
     /// <inheritdoc cref="Properties.Resources.ProjectInfoServiceNotLoadableError"/>
-    public static string ProjectInfoServiceNotLoadableError(string projectFilePath) => GetResourceString(Properties.Resources.ProjectInfoServiceNotFoundError, projectFilePath);
+    public static string ProjectInfoServiceNotLoadableError(string projectFilePath) => GetResourceString(Properties.Resources.ProjectInfoServiceNotLoadableError, projectFilePath);
 
     private static string GetResourceString(string resourceString, params object?[] formatArguments)
     {
