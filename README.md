@@ -1,6 +1,6 @@
 # dotnet-sops: A .NET tool for encrypting .NET user-secrets using SOPS
 
-[![Nuget](https://img.shields.io/nuget/v/dotnet-sops)](https://www.nuget.org/packages/dotnet-sops/)
+[![Nuget](https://img.shields.io/nuget/v/dotnet-sops?logo=nuget)](https://www.nuget.org/packages/dotnet-sops/) [![GitHub](https://img.shields.io/github/license/MPBrun/dotnet-sops)](https://github.com/MPBrun/dotnet-sops/blob/main/LICENSE.md) [![codecov](https://img.shields.io/codecov/c/github/MPBrun/dotnet-sops?token=D8YV1LQ4YE&logo=codecov)](https://codecov.io/gh/MPBrun/dotnet-sops)
 
 `dotnet-sops` is a .NET tool for securely storing and sharing [user-secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets) with all your team members.
 
