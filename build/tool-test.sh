@@ -7,6 +7,9 @@ folderName="ToolInstallTest"
 
 rm -rf $folderName && mkdir $folderName && cd $folderName
 
+dotnet new nugetconfig
+sed -i.bak '/<add/d' nuget.config && rm nuget.config.bak
+
 echo ""
 echo "Testing as local tool..."
 dotnet new tool-manifest

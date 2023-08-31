@@ -81,6 +81,11 @@ jobs:
         path: src/DotnetSops.CommandLine/bin/nupkg/*.*
         if-no-files-found: error
 
+    - name: Verify signed tag
+      if: startsWith(github.ref, 'refs/tags/')
+      shell: bash
+      run: git tag -v ${GITHUB_REF_NAME}
+
   release:
     if: startsWith(github.ref, 'refs/tags/')
     needs: build
@@ -92,10 +97,6 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: nuget
-
-    - name: Verify signed tag
-      shell: bash
-      run: git tag -v ${GITHUB_REF_NAME}
 
     - name: Create release
       uses: softprops/action-gh-release@v1
