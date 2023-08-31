@@ -68,9 +68,21 @@ dotnet pack
 ### Creating release
 
 Releases are created by maintainers following this process:
-1. Tag the branch with a semantic version number, e.g., "v0.1.0" or "v0.1.0-alpha.1".
-2. Push the tag to GitHub. This action initiates a new build and generates a draft release on GitHub.
-3. Verify the release and publish it. This initiates a workflow that uploads the release to NuGet.org.
+
+1. Checkout latest main branch
+   ```bash
+   git checkout main
+   git pull
+   ```
+2. Create a signed tag on the main branch with a semantic version number, e.g., "v0.1.0" or "v0.1.0-alpha.1".
+   ```bash
+   git tag -s -m <version> <version>
+   ```
+3. Push the tag to GitHub. This action initiates a new build and generates a draft release on GitHub.
+   ```bash
+   git push origin <version>
+   ```
+4. Verify the release and publish it. This initiates a workflow that uploads the release to NuGet.org.
 
 ## Contributing
 
