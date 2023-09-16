@@ -5,7 +5,7 @@ using DotnetSops.CommandLine.Services.PlatformInformation;
 namespace DotnetSops.CommandLine.Services.Sops;
 internal class SopsDownloadService : ISopsDownloadService
 {
-    private const string Version = "3.7.3";
+    private const string Version = "v3.8.0";
     private readonly IPlatformInformationService _platformInformation;
     private readonly HttpClient _httpClient;
     private readonly ISopsPathService _sopsPathService;
