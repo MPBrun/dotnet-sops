@@ -7,7 +7,7 @@
   "ignorePresets": [
     ":ignoreModulesAndTests"
   ],
-  "regexManagers": [
+  "customManagers": [
     {
       "customType": "regex",
       "fileMatch": [
