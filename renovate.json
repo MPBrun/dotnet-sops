@@ -17,7 +17,7 @@
         "private const string Version = \"(?<currentValue>.*?)\";\\n"
       ],
       "datasourceTemplate": "go",
-      "depNameTemplate": "go.mozilla.org/sops/v3"
+      "depNameTemplate": "github.com/getsops/sops/v3"
     }
   ]
 }

@@ -600,14 +600,14 @@ namespace DotnetSops.CommandLine.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SHA512 of SOPS executable did not match.
+        ///   Looks up a localized string similar to SHA256 of SOPS executable did not match.
         ///
         ///Expected: {0}
         ///Actual:   {1}.
         /// </summary>
-        internal static string SopsDownloadSha512Failed {
+        internal static string SopsDownloadSha256Failed {
             get {
-                return ResourceManager.GetString("SopsDownloadSha512Failed", resourceCulture);
+                return ResourceManager.GetString("SopsDownloadSha256Failed", resourceCulture);
             }
         }
         

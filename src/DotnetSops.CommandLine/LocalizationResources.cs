@@ -12,8 +12,8 @@ internal static class LocalizationResources
     /// <inheritdoc cref="Properties.Resources.SopsDownloadHttpFailed"/>
     public static string SopsDownloadHttpFailed(int statusCode, Uri? url) => GetResourceString(Properties.Resources.SopsDownloadHttpFailed, statusCode, url?.ToString());
 
-    /// <inheritdoc cref="Properties.Resources.SopsDownloadSha512Failed"/>
-    public static string SopsDownloadSha512Failed(string expected, string actual) => GetResourceString(Properties.Resources.SopsDownloadSha512Failed, expected, actual);
+    /// <inheritdoc cref="Properties.Resources.SopsDownloadSha256Failed"/>
+    public static string SopsDownloadSha256Failed(string expected, string actual) => GetResourceString(Properties.Resources.SopsDownloadSha256Failed, expected, actual);
 
     /// <inheritdoc cref="Properties.Resources.DecryptCommandSuccess"/>
     public static string DecryptCommandSuccess(string filePath, string userSecretId) => GetResourceString(Properties.Resources.DecryptCommandSuccess, filePath, userSecretId);
