@@ -1,7 +1,7 @@
 namespace DotnetSops.CommandLine.Services.FileBom;
 internal class FileBomService : IFileBomService
 {
-    public static readonly byte[] Bom = new byte[] { 0xEF, 0xBB, 0xBF };
+    public static readonly byte[] Bom = [0xEF, 0xBB, 0xBF];
 
     public async Task RemoveBomFromFileAsync(FileInfo file, CancellationToken cancellationToken = default)
     {

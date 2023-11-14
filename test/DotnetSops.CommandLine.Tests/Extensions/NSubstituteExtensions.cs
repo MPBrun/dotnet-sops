@@ -6,10 +6,7 @@ public static class NSubstituteExtensions
 {
     public static T? ProtectedMethod<T>(this object obj, string methodName, params object[] callParams)
     {
-        if (obj == null)
-        {
-            throw new ArgumentNullException(nameof(obj));
-        }
+        ArgumentNullException.ThrowIfNull(obj);
         var method = obj.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
         var result = method?.Invoke(obj, callParams);
         return (T?)result;

@@ -290,6 +290,9 @@ csharp_using_directive_placement = outside_namespace:warning
 # Namespace
 csharp_style_namespace_declarations = file_scoped:warning
 
+# Primary constructors
+csharp_style_prefer_primary_constructors = false
+
 # Other
 csharp_prefer_simple_using_statement = true:warning
 csharp_style_prefer_method_group_conversion = true:warning
