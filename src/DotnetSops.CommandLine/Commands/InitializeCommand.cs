@@ -69,10 +69,10 @@ internal class InitializeCommand : CliCommand
         };
         var sopsConfiguration = new SopsConfiguration()
         {
-            CreationRules = new List<SopsCreationRule>()
-            {
+            CreationRules =
+            [
                 sopsCreationRule
-            }
+            ]
         };
 
         var useKeyGroups = await logger.ConfirmAsync(Properties.Resources.InitializeCommandUseKeyGroupsQuestion, cancellationToken);
@@ -112,7 +112,7 @@ internal class InitializeCommand : CliCommand
                                 Version = keyVersion.Trim(),
                             };
 
-                            keyGroup.AzureKeyvault ??= new List<SopsAzureKeyVaultKeyGroup>();
+                            keyGroup.AzureKeyvault ??= [];
                             keyGroup.AzureKeyvault.Add(azureKeyVaultKey);
                             break;
                         }
@@ -120,7 +120,7 @@ internal class InitializeCommand : CliCommand
                         {
                             logger.LogInformation(Properties.Resources.InitializeCommandAwsKmsFormat);
                             var arn = await logger.AskAsync(Properties.Resources.InitializeCommandAwsKmsQuestion, cancellationToken);
-                            keyGroup.Kms ??= new List<SopsKmsKeyGroup>();
+                            keyGroup.Kms ??= [];
                             keyGroup.Kms.AddRange(arn.Trim().Split(",").Select(id => new SopsKmsKeyGroup() { Arn = id }));
                             break;
                         }
@@ -128,21 +128,21 @@ internal class InitializeCommand : CliCommand
                         {
                             logger.LogInformation(Properties.Resources.InitializeCommandGcpKmsFormat);
                             var resourceId = await logger.AskAsync(Properties.Resources.InitializeCommandGcpKmsQuestion, cancellationToken);
-                            keyGroup.GcpKms ??= new List<SopsGcpKmsKeyGroup>();
+                            keyGroup.GcpKms ??= [];
                             keyGroup.GcpKms.AddRange(resourceId.Trim().Split(",").Select(id => new SopsGcpKmsKeyGroup() { ResourceId = id }));
                             break;
                         }
                     case SopsKeyType.HashicorpVault:
                         {
                             var url = await logger.AskAsync(Properties.Resources.InitializeCommandHashicorpVaultQuestion, cancellationToken);
-                            keyGroup.Vault ??= new List<string>();
+                            keyGroup.Vault ??= [];
                             keyGroup.Vault.AddRange(url.Trim().Split(","));
                             break;
                         }
                     case SopsKeyType.Age:
                         {
                             var publicKey = await logger.AskAsync(Properties.Resources.InitializeCommandAgePublicKeyQuestion, cancellationToken);
-                            keyGroup.Age ??= new List<string>();
+                            keyGroup.Age ??= [];
                             keyGroup.Age.AddRange(publicKey.Trim().Split(","));
                             break;
                         }
@@ -150,7 +150,7 @@ internal class InitializeCommand : CliCommand
                     case SopsKeyType.Pgp:
                         {
                             var publicKey = await logger.AskAsync(Properties.Resources.InitializeCommandPgpPublicKeyQuestion, cancellationToken);
-                            keyGroup.Pgp ??= new List<string>();
+                            keyGroup.Pgp ??= [];
                             keyGroup.Pgp.AddRange(publicKey.Trim().Split(","));
                             break;
                         }
@@ -159,7 +159,7 @@ internal class InitializeCommand : CliCommand
                 }
             } while (await logger.ConfirmAsync(Properties.Resources.InitializeCommandMoreKeysToKeyGroupQuestion, cancellationToken));
 
-            sopsCreationRule.KeyGroups ??= new List<SopsKeyGroup>();
+            sopsCreationRule.KeyGroups ??= [];
             sopsCreationRule.KeyGroups.Add(keyGroup);
         } while (await logger.ConfirmAsync(Properties.Resources.InitializeCommandMoreKeyGroupsQuestion, cancellationToken));
     }

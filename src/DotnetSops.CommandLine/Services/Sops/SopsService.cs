@@ -11,17 +11,17 @@ internal class SopsService : ISopsService
 
     public async Task EncryptAsync(FileInfo inputFilePath, FileInfo outoutFilePath, CancellationToken cancellationToken = default)
     {
-        await ExecuteAsync(new string[] { "--output", outoutFilePath.FullName, "--encrypt", inputFilePath.FullName }, cancellationToken);
+        await ExecuteAsync(["--output", outoutFilePath.FullName, "--encrypt", inputFilePath.FullName], cancellationToken);
     }
 
     public async Task DecryptAsync(FileInfo inputFilePath, FileInfo outoutFilePath, CancellationToken cancellationToken = default)
     {
-        await ExecuteAsync(new string[] { "--output", outoutFilePath.FullName, "--decrypt", inputFilePath.FullName }, cancellationToken);
+        await ExecuteAsync(["--output", outoutFilePath.FullName, "--decrypt", inputFilePath.FullName], cancellationToken);
     }
 
     public async Task RunCommandWithSecretsEnvironmentAsync(string command, FileInfo inputFilePath, CancellationToken cancellationToken = default)
     {
-        await ExecuteAsync(new string[] { "exec-env", inputFilePath.FullName, command }, cancellationToken);
+        await ExecuteAsync(["exec-env", inputFilePath.FullName, command], cancellationToken);
     }
 
     public SopsService(ILogger logger, ISopsPathService sopsPathService)

@@ -89,7 +89,7 @@ public class EncryptCommandTests : IDisposable
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(outputPath));
 
-        var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(File.ReadAllText(outputPath))!;
+        var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(await File.ReadAllTextAsync(outputPath))!;
         Assert.StartsWith("ENC[", encryptedSecretContent.TestKey, StringComparison.InvariantCulture);
         Assert.Single(encryptedSecretContent.Sops.Age!);
         Assert.Equal($"""
@@ -133,7 +133,7 @@ public class EncryptCommandTests : IDisposable
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(outputPath));
 
-        var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(File.ReadAllText(outputPath))!;
+        var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(await File.ReadAllTextAsync(outputPath))!;
         Assert.StartsWith("ENC[", encryptedSecretContent.TestKey, StringComparison.InvariantCulture);
         Assert.Equal(2, encryptedSecretContent.Sops.Age?.Count);
     }
@@ -180,7 +180,7 @@ public class EncryptCommandTests : IDisposable
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(outputPath));
 
-        var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(File.ReadAllText(outputPath))!;
+        var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(await File.ReadAllTextAsync(outputPath))!;
         Assert.StartsWith("ENC[", encryptedSecretContent.TestKey, StringComparison.InvariantCulture);
         Assert.Equal(3, encryptedSecretContent.Sops.KeyGroups?.Count);
         Assert.Single(encryptedSecretContent.Sops.KeyGroups![0].Age!);
@@ -275,7 +275,7 @@ public class EncryptCommandTests : IDisposable
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(outputPath));
 
-        var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(File.ReadAllText(outputPath))!;
+        var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(await File.ReadAllTextAsync(outputPath))!;
         Assert.StartsWith("ENC[", encryptedSecretContent.TestKey, StringComparison.InvariantCulture);
         Assert.Single(encryptedSecretContent.Sops.Age!);
     }

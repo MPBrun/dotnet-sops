@@ -30,7 +30,7 @@ public class FileBomServiceTests : IDisposable
         await File.AppendAllTextAsync(filePath.FullName, "content", new UTF8Encoding(encoderShouldEmitUTF8Identifier: true));
 
         var fileContentBefore = await File.ReadAllBytesAsync(filePath.FullName);
-        Assert.Equal(new byte[] { 0xEF, 0xBB, 0xBF }, fileContentBefore.Take(3).ToArray());
+        Assert.Equal([0xEF, 0xBB, 0xBF], fileContentBefore.Take(3).ToArray());
         Assert.Equal(10, fileContentBefore.Length);
 
         // Act
@@ -38,7 +38,7 @@ public class FileBomServiceTests : IDisposable
 
         // Assert
         var fileContentAfter = await File.ReadAllBytesAsync(filePath.FullName);
-        Assert.NotEqual(new byte[] { 0xEF, 0xBB, 0xBF }, fileContentAfter.Take(3).ToArray());
+        Assert.NotEqual([0xEF, 0xBB, 0xBF], fileContentAfter.Take(3).ToArray());
         Assert.Equal(7, fileContentAfter.Length);
     }
 
@@ -52,7 +52,7 @@ public class FileBomServiceTests : IDisposable
         await File.AppendAllTextAsync(filePath.FullName, "content", new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
 
         var fileContentBefore = await File.ReadAllBytesAsync(filePath.FullName);
-        Assert.NotEqual(new byte[] { 0xEF, 0xBB, 0xBF }, fileContentBefore.Take(3).ToArray());
+        Assert.NotEqual([0xEF, 0xBB, 0xBF], fileContentBefore.Take(3).ToArray());
         Assert.Equal(7, fileContentBefore.Length);
 
         // Assert that file are not updated, by ensuring that the same file only can be read
@@ -63,7 +63,7 @@ public class FileBomServiceTests : IDisposable
 
         // Assert
         var fileContentAfter = await File.ReadAllBytesAsync(filePath.FullName);
-        Assert.NotEqual(new byte[] { 0xEF, 0xBB, 0xBF }, fileContentAfter.Take(3).ToArray());
+        Assert.NotEqual([0xEF, 0xBB, 0xBF], fileContentAfter.Take(3).ToArray());
         Assert.Equal(7, fileContentAfter.Length);
     }
 }

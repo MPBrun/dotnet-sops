@@ -1,5 +1,6 @@
 <Project>
   <PropertyGroup>
+    <LangVersion>latest</LangVersion>
     <AnalysisLevel>latest-All</AnalysisLevel>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
