@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using DotnetSops.CommandLine.Services.PlatformInformation;
 
 namespace DotnetSops.CommandLine.Tests.Services.PlatformInformation;
+
 public class PlatformInformationTests
 {
     [Fact]

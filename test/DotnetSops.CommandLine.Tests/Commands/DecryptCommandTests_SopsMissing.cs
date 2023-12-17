@@ -26,7 +26,9 @@ public class DecryptCommandTests_SopsMissing : IDisposable
 
     public DecryptCommandTests_SopsMissing()
     {
-        _originalPathEnviromentVariableValue = Environment.GetEnvironmentVariable(PathEnvironmentVariableName);
+        _originalPathEnviromentVariableValue = Environment.GetEnvironmentVariable(
+            PathEnvironmentVariableName
+        );
 
         var sopsPathService = Substitute.For<ISopsPathService>();
         sopsPathService.GetDotnetSopsUserDirectory().Returns("");
@@ -34,7 +36,12 @@ public class DecryptCommandTests_SopsMissing : IDisposable
         _serviceProvider = new ServiceCollection()
             .AddSingleton<ISopsService, SopsService>()
             .AddSingleton(sopsPathService)
-            .AddSingleton<IUserSecretsService>(sp => new UserSecretsServiceStub(_uniqueCurrentDirectoryFixture.TestDirectory.FullName))
+            .AddSingleton<IUserSecretsService>(
+                sp =>
+                    new UserSecretsServiceStub(
+                        _uniqueCurrentDirectoryFixture.TestDirectory.FullName
+                    )
+            )
             .AddSingleton<IFileBomService, FileBomService>()
             .AddSingleton<IPlatformInformationService, PlatformInformationService>()
             .AddSingleton<IProjectInfoService, ProjectInfoService>()
@@ -45,7 +52,10 @@ public class DecryptCommandTests_SopsMissing : IDisposable
     protected virtual void Dispose(bool disposing)
     {
         _uniqueCurrentDirectoryFixture.Dispose();
-        Environment.SetEnvironmentVariable(PathEnvironmentVariableName, _originalPathEnviromentVariableValue);
+        Environment.SetEnvironmentVariable(
+            PathEnvironmentVariableName,
+            _originalPathEnviromentVariableValue
+        );
     }
 
     public void Dispose()
@@ -74,12 +84,16 @@ public class DecryptCommandTests_SopsMissing : IDisposable
 
         // Assert
         Assert.Equal(1, exitCode);
-        Assert.Equal("""
+        Assert.Equal(
+            """
             SOPS executable could not be found on the PATH.
 
             You can download it by executing the following command:
               dotnet sops download-sops
 
-            """, _logger.Error.Output, ignoreLineEndingDifferences: true);
+            """,
+            _logger.Error.Output,
+            ignoreLineEndingDifferences: true
+        );
     }
 }

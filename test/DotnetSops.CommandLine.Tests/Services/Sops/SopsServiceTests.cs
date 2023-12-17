@@ -39,20 +39,19 @@ public class SopsServiceTests : IDisposable
         var logger = Substitute.For<ILogger>();
         var sopsService = new SopsService(logger, _sopsPathService);
         var fileName = new FileInfo("secrets.json");
-        var jsonContent = new
-        {
-            add = "Add",
-            foo = "Rem"
-        };
+        var jsonContent = new { add = "Add", foo = "Rem" };
         var content = JsonSerializer.Serialize(jsonContent);
         await File.WriteAllTextAsync(fileName.FullName, content);
 
         // Sops config
-        await File.WriteAllTextAsync(".sops.yaml", """
+        await File.WriteAllTextAsync(
+            ".sops.yaml",
+            """
             creation_rules:
               - path_regex: .*.json
                 age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """);
+            """
+        );
 
         var encrypedFile = new FileInfo("encrypted.json");
 
@@ -66,8 +65,16 @@ public class SopsServiceTests : IDisposable
         var jsonResult = JsonSerializer.Deserialize<Dictionary<string, object>>(result);
         Assert.NotNull(jsonResult);
 
-        Assert.StartsWith("ENC", (jsonResult["add"] as JsonElement?)?.GetString(), StringComparison.Ordinal);
-        Assert.StartsWith("ENC", (jsonResult["foo"] as JsonElement?)?.GetString(), StringComparison.Ordinal);
+        Assert.StartsWith(
+            "ENC",
+            (jsonResult["add"] as JsonElement?)?.GetString(),
+            StringComparison.Ordinal
+        );
+        Assert.StartsWith(
+            "ENC",
+            (jsonResult["foo"] as JsonElement?)?.GetString(),
+            StringComparison.Ordinal
+        );
         Assert.NotNull(jsonResult["sops"]);
     }
 
@@ -78,23 +85,25 @@ public class SopsServiceTests : IDisposable
         var logger = Substitute.For<ILogger>();
         var sopsService = new SopsService(logger, _sopsPathService);
         var fileName = new FileInfo("secrets.json");
-        var jsonContent = new
-        {
-            add = "Add",
-            foo = "Rem"
-        };
+        var jsonContent = new { add = "Add", foo = "Rem" };
         var content = JsonSerializer.Serialize(jsonContent);
         await File.WriteAllTextAsync(fileName.FullName, content);
 
         // Provide age secret key for unit test purpose
-        Environment.SetEnvironmentVariable("SOPS_AGE_KEY", "AGE-SECRET-KEY-10HA9FMZENQKN8DXGZPRWZ7YK5R83AYK4FQVZ8Y5LPAV3430HXW7QZAFV9Z");
+        Environment.SetEnvironmentVariable(
+            "SOPS_AGE_KEY",
+            "AGE-SECRET-KEY-10HA9FMZENQKN8DXGZPRWZ7YK5R83AYK4FQVZ8Y5LPAV3430HXW7QZAFV9Z"
+        );
 
         // Sops config
-        await File.WriteAllTextAsync(".sops.yaml", """
+        await File.WriteAllTextAsync(
+            ".sops.yaml",
+            """
             creation_rules:
                - path_regex: .*.json
                  age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """);
+            """
+        );
 
         var encrypedFile = new FileInfo("encrypted.json");
         await sopsService.EncryptAsync(fileName, encrypedFile);
@@ -122,29 +131,33 @@ public class SopsServiceTests : IDisposable
         var logger = Substitute.For<ILogger>();
         var sopsService = new SopsService(logger, _sopsPathService);
         var fileName = new FileInfo("secrets.json");
-        var jsonContent = new
-        {
-            add = "Add",
-            foo = "Rem"
-        };
+        var jsonContent = new { add = "Add", foo = "Rem" };
         var content = JsonSerializer.Serialize(jsonContent);
         await File.WriteAllTextAsync(fileName.FullName, content);
 
         // Provide age secret key for unit test purpose
-        Environment.SetEnvironmentVariable("SOPS_AGE_KEY", "AGE-SECRET-KEY-10HA9FMZENQKN8DXGZPRWZ7YK5R83AYK4FQVZ8Y5LPAV3430HXW7QZAFV9Z");
+        Environment.SetEnvironmentVariable(
+            "SOPS_AGE_KEY",
+            "AGE-SECRET-KEY-10HA9FMZENQKN8DXGZPRWZ7YK5R83AYK4FQVZ8Y5LPAV3430HXW7QZAFV9Z"
+        );
 
         // Sops config
-        await File.WriteAllTextAsync(".sops.yaml", """
+        await File.WriteAllTextAsync(
+            ".sops.yaml",
+            """
             creation_rules:
                - path_regex: .*.json
                  age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """);
+            """
+        );
 
         var encrypedFile = new FileInfo("encrypted.json");
         await sopsService.EncryptAsync(fileName, encrypedFile);
 
         // dotnet is cross platform code that can write environment variable to file
-        await File.WriteAllTextAsync("Project.csproj", """
+        await File.WriteAllTextAsync(
+            "Project.csproj",
+            """
             <Project Sdk="Microsoft.NET.Sdk">
 
               <PropertyGroup>
@@ -155,12 +168,16 @@ public class SopsServiceTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """);
+            """
+        );
 
-        await File.WriteAllTextAsync("Program.cs", """
+        await File.WriteAllTextAsync(
+            "Program.cs",
+            """
             await File.AppendAllTextAsync("decrypted.txt", Environment.GetEnvironmentVariable("foo"));
             await File.AppendAllTextAsync("decrypted.txt", Environment.GetEnvironmentVariable("add"));
-            """);
+            """
+        );
 
         var command = "dotnet run";
 
@@ -180,20 +197,19 @@ public class SopsServiceTests : IDisposable
         var logger = Substitute.For<ILogger>();
         var sopsService = new SopsService(logger, _sopsPathService);
         var fileName = new FileInfo("secrets.json");
-        var jsonContent = new
-        {
-            add = "Add",
-            foo = "Rem"
-        };
+        var jsonContent = new { add = "Add", foo = "Rem" };
         var content = JsonSerializer.Serialize(jsonContent);
         await File.WriteAllTextAsync(fileName.FullName, content);
 
         // Sops config
-        await File.WriteAllTextAsync(".sops.yaml", """
+        await File.WriteAllTextAsync(
+            ".sops.yaml",
+            """
             creation_rules:
               - path_regex: .*.json
                 age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """);
+            """
+        );
 
         var encrypedFile = new FileInfo("encrypted.json");
 

@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using DotnetSops.CommandLine.Services.PlatformInformation;
 
 namespace DotnetSops.CommandLine.Services.Sops;
+
 internal class SopsDownloadService : ISopsDownloadService
 {
     private const string Version = "v3.8.1";
@@ -11,7 +12,12 @@ internal class SopsDownloadService : ISopsDownloadService
     private readonly ISopsPathService _sopsPathService;
     private readonly ILogger _logger;
 
-    public SopsDownloadService(IPlatformInformationService platformInformation, HttpClient httpClient, ISopsPathService sopsPathService, ILogger logger)
+    public SopsDownloadService(
+        IPlatformInformationService platformInformation,
+        HttpClient httpClient,
+        ISopsPathService sopsPathService,
+        ILogger logger
+    )
     {
         _platformInformation = platformInformation;
         _httpClient = httpClient;
@@ -25,21 +31,26 @@ internal class SopsDownloadService : ISopsDownloadService
 
         // Download sops
         var platformFile = release.ReleaseFileName;
-        var url = new Uri($"https://github.com/getsops/sops/releases/download/{Version}/{platformFile}");
+        var url = new Uri(
+            $"https://github.com/getsops/sops/releases/download/{Version}/{platformFile}"
+        );
 
         _logger.LogDebug($"Download SOPS from '{url}'");
 
         var response = await _httpClient.GetAsync(url, cancellationToken);
         if (response.StatusCode != System.Net.HttpStatusCode.OK)
         {
-            throw new SopsDownloadException(LocalizationResources.SopsDownloadHttpFailed((int)response.StatusCode, url));
+            throw new SopsDownloadException(
+                LocalizationResources.SopsDownloadHttpFailed((int)response.StatusCode, url)
+            );
         }
 
         // Get content
         var content = await response.Content.ReadAsByteArrayAsync(cancellationToken);
 
         // Calculate file hash
-        var hash = BitConverter.ToString(SHA256.HashData(content))
+        var hash = BitConverter
+            .ToString(SHA256.HashData(content))
             .Replace("-", "", StringComparison.OrdinalIgnoreCase);
 
 #pragma warning disable CA1308 // Normalize strings to uppercase
@@ -50,7 +61,9 @@ internal class SopsDownloadService : ISopsDownloadService
         // Verify content hash
         if (!hash.Equals(release.Sha256Checksum, StringComparison.OrdinalIgnoreCase))
         {
-            throw new SopsDownloadException(LocalizationResources.SopsDownloadSha256Failed(release.Sha256Checksum, hash));
+            throw new SopsDownloadException(
+                LocalizationResources.SopsDownloadSha256Failed(release.Sha256Checksum, hash)
+            );
         }
 
         // Save content to disk
@@ -60,7 +73,10 @@ internal class SopsDownloadService : ISopsDownloadService
         await File.WriteAllBytesAsync(destinationFileName, content, cancellationToken);
         if (!OperatingSystem.IsWindows())
         {
-            File.SetUnixFileMode(destinationFileName, File.GetUnixFileMode(destinationFileName) | UnixFileMode.UserExecute);
+            File.SetUnixFileMode(
+                destinationFileName,
+                File.GetUnixFileMode(destinationFileName) | UnixFileMode.UserExecute
+            );
         }
     }
 
@@ -80,24 +96,30 @@ internal class SopsDownloadService : ISopsDownloadService
         {
             return _platformInformation.ProcessArchitecture switch
             {
-                Architecture.Arm64 => new SopsReleaseFileInfo()
-                {
-                    ReleaseFileName = $"sops-{Version}.darwin.arm64",
-                    ExecutableFileName = "sops",
-                    Sha256Checksum = "b5d172960c135c7b8cd9719cee94283bccdf5c046c7563391eee8dd4882d6573",
-                },
-                Architecture.X64 => new SopsReleaseFileInfo()
-                {
-                    ReleaseFileName = $"sops-{Version}.darwin.amd64",
-                    ExecutableFileName = "sops",
-                    Sha256Checksum = "aa3e79c1ff7a923d380b95b01fb0bc84ae1f5209b0a149b3f4c1936037792330",
-                },
-                Architecture.X86 => new SopsReleaseFileInfo()
-                {
-                    ReleaseFileName = $"sops-{Version}.darwin",
-                    ExecutableFileName = "sops",
-                    Sha256Checksum = "41aab990705bab9497fe9ee410aa6d43e04de2054c765015ebe84ef07c2f3704",
-                },
+                Architecture.Arm64
+                    => new SopsReleaseFileInfo()
+                    {
+                        ReleaseFileName = $"sops-{Version}.darwin.arm64",
+                        ExecutableFileName = "sops",
+                        Sha256Checksum =
+                            "b5d172960c135c7b8cd9719cee94283bccdf5c046c7563391eee8dd4882d6573",
+                    },
+                Architecture.X64
+                    => new SopsReleaseFileInfo()
+                    {
+                        ReleaseFileName = $"sops-{Version}.darwin.amd64",
+                        ExecutableFileName = "sops",
+                        Sha256Checksum =
+                            "aa3e79c1ff7a923d380b95b01fb0bc84ae1f5209b0a149b3f4c1936037792330",
+                    },
+                Architecture.X86
+                    => new SopsReleaseFileInfo()
+                    {
+                        ReleaseFileName = $"sops-{Version}.darwin",
+                        ExecutableFileName = "sops",
+                        Sha256Checksum =
+                            "41aab990705bab9497fe9ee410aa6d43e04de2054c765015ebe84ef07c2f3704",
+                    },
                 Architecture.Arm => throw new NotSupportedException(),
                 Architecture.Wasm => throw new NotSupportedException(),
                 Architecture.S390x => throw new NotSupportedException(),
@@ -111,18 +133,22 @@ internal class SopsDownloadService : ISopsDownloadService
         {
             return _platformInformation.ProcessArchitecture switch
             {
-                Architecture.Arm64 => new SopsReleaseFileInfo()
-                {
-                    ReleaseFileName = $"sops-{Version}.linux.arm64",
-                    ExecutableFileName = "sops",
-                    Sha256Checksum = "15b8e90ca80dc23125cd2925731035fdef20c749ba259df477d1dd103a06d621",
-                },
-                Architecture.X64 => new SopsReleaseFileInfo()
-                {
-                    ReleaseFileName = $"sops-{Version}.linux.amd64",
-                    ExecutableFileName = "sops",
-                    Sha256Checksum = "d6bf07fb61972127c9e0d622523124c2d81caf9f7971fb123228961021811697",
-                },
+                Architecture.Arm64
+                    => new SopsReleaseFileInfo()
+                    {
+                        ReleaseFileName = $"sops-{Version}.linux.arm64",
+                        ExecutableFileName = "sops",
+                        Sha256Checksum =
+                            "15b8e90ca80dc23125cd2925731035fdef20c749ba259df477d1dd103a06d621",
+                    },
+                Architecture.X64
+                    => new SopsReleaseFileInfo()
+                    {
+                        ReleaseFileName = $"sops-{Version}.linux.amd64",
+                        ExecutableFileName = "sops",
+                        Sha256Checksum =
+                            "d6bf07fb61972127c9e0d622523124c2d81caf9f7971fb123228961021811697",
+                    },
                 Architecture.X86 => throw new NotSupportedException(),
                 Architecture.Arm => throw new NotSupportedException(),
                 Architecture.Wasm => throw new NotSupportedException(),

@@ -4,6 +4,7 @@ using DotnetSops.CommandLine.Services.Sops;
 using NSubstitute;
 
 namespace DotnetSops.CommandLine.Tests.Fixtures;
+
 public class SopsFixture : IAsyncLifetime
 {
     internal ISopsPathService SopsPathService { get; private set; } = default!;
@@ -24,7 +25,12 @@ public class SopsFixture : IAsyncLifetime
         SopsPathService = Substitute.For<ISopsPathService>();
         SopsPathService.GetDotnetSopsUserDirectory().Returns(fixtureDir);
 
-        var service = new SopsDownloadService(platformInformation, httpClient, SopsPathService, logger);
+        var service = new SopsDownloadService(
+            platformInformation,
+            httpClient,
+            SopsPathService,
+            logger
+        );
         await service.DownloadAsync();
     }
 }

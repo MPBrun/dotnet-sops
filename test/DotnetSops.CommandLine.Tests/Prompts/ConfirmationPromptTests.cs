@@ -2,6 +2,7 @@ using DotnetSops.CommandLine.Prompts;
 using Spectre.Console.Testing;
 
 namespace DotnetSops.CommandLine.Tests.Prompts;
+
 public class ConfirmationPromptTests
 {
     [Fact]
@@ -65,11 +66,15 @@ public class ConfirmationPromptTests
 
         // Assert
         Assert.True(result);
-        Assert.Equal("""
+        Assert.Equal(
+            """
             Are you ok? [y/n] (n): q
             Please select one of the available options
             Are you ok? [y/n] (n): y
 
-            """, ansiConsole.Output, ignoreLineEndingDifferences: true);
+            """,
+            ansiConsole.Output,
+            ignoreLineEndingDifferences: true
+        );
     }
 }

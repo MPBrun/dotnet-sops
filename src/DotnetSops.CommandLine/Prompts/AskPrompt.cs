@@ -1,6 +1,7 @@
 using Spectre.Console;
 
 namespace DotnetSops.CommandLine.Prompts;
+
 internal class AskPrompt : IPrompt<string>
 {
     private readonly string _prompt;
@@ -26,8 +27,6 @@ internal class AskPrompt : IPrompt<string>
 
     private TextPrompt<string> CreatePrompt()
     {
-        return new TextPrompt<string>(_prompt)
-            .ShowDefaultValue()
-            .PromptStyle(PromptStyle);
+        return new TextPrompt<string>(_prompt).ShowDefaultValue().PromptStyle(PromptStyle);
     }
 }

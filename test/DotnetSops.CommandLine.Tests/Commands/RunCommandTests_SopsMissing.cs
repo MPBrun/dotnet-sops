@@ -21,7 +21,9 @@ public class RunCommandTests_SopsMissing : IDisposable
 
     public RunCommandTests_SopsMissing()
     {
-        _originalPathEnviromentVariableValue = Environment.GetEnvironmentVariable(PathEnvironmentVariableName);
+        _originalPathEnviromentVariableValue = Environment.GetEnvironmentVariable(
+            PathEnvironmentVariableName
+        );
 
         var sopsPathService = Substitute.For<ISopsPathService>();
         sopsPathService.GetDotnetSopsUserDirectory().Returns("");
@@ -36,7 +38,10 @@ public class RunCommandTests_SopsMissing : IDisposable
     protected virtual void Dispose(bool disposing)
     {
         _uniqueCurrentDirectoryFixture.Dispose();
-        Environment.SetEnvironmentVariable(PathEnvironmentVariableName, _originalPathEnviromentVariableValue);
+        Environment.SetEnvironmentVariable(
+            PathEnvironmentVariableName,
+            _originalPathEnviromentVariableValue
+        );
     }
 
     public void Dispose()
@@ -58,16 +63,22 @@ public class RunCommandTests_SopsMissing : IDisposable
         var config = new CliConfiguration(command);
 
         // Act
-        var exitCode = await config.InvokeAsync($"arg1 arg2 arg3 --configuration Release --file {inputPath}");
+        var exitCode = await config.InvokeAsync(
+            $"arg1 arg2 arg3 --configuration Release --file {inputPath}"
+        );
 
         // Assert
         Assert.Equal(1, exitCode);
-        Assert.Equal("""
+        Assert.Equal(
+            """
             SOPS executable could not be found on the PATH.
 
             You can download it by executing the following command:
               dotnet sops download-sops
 
-            """, _logger.Error.Output, ignoreLineEndingDifferences: true);
+            """,
+            _logger.Error.Output,
+            ignoreLineEndingDifferences: true
+        );
     }
 }

@@ -8,7 +8,9 @@ public class UniqueCurrentDirectoryFixture : IDisposable
 
     public UniqueCurrentDirectoryFixture()
     {
-        TestDirectory = Directory.CreateDirectory(Path.Combine(OriginalCurretDirectory, "unittest", Guid.NewGuid().ToString()));
+        TestDirectory = Directory.CreateDirectory(
+            Path.Combine(OriginalCurretDirectory, "unittest", Guid.NewGuid().ToString())
+        );
         Directory.SetCurrentDirectory(TestDirectory.FullName);
     }
 

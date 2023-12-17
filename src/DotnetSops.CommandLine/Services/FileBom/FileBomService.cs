@@ -1,9 +1,13 @@
 namespace DotnetSops.CommandLine.Services.FileBom;
+
 internal class FileBomService : IFileBomService
 {
     public static readonly byte[] Bom = [0xEF, 0xBB, 0xBF];
 
-    public async Task RemoveBomFromFileAsync(FileInfo file, CancellationToken cancellationToken = default)
+    public async Task RemoveBomFromFileAsync(
+        FileInfo file,
+        CancellationToken cancellationToken = default
+    )
     {
         var isBomFile = await IsBomFileAsync(file, cancellationToken);
         if (isBomFile)
@@ -14,7 +18,10 @@ internal class FileBomService : IFileBomService
         }
     }
 
-    private static async Task<bool> IsBomFileAsync(FileInfo file, CancellationToken cancellationToken = default)
+    private static async Task<bool> IsBomFileAsync(
+        FileInfo file,
+        CancellationToken cancellationToken = default
+    )
     {
         using var stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.Read);
         var buffer = new byte[3].AsMemory();

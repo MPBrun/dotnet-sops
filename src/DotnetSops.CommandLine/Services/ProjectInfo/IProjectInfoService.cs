@@ -1,4 +1,5 @@
 namespace DotnetSops.CommandLine.Services.ProjectInfo;
+
 internal interface IProjectInfoService
 {
     /// <summary>

@@ -3,13 +3,15 @@ using DotnetSops.CommandLine.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DotnetSops.CommandLine.Commands;
+
 internal class RootDotnetSopsCommand : CliRootCommand
 {
-    private readonly CliOption<bool> _verboseOption = new("--verbose")
-    {
-        Recursive = true,
-        Description = Properties.Resources.RootDotnetSopsCommandVerboseOptionDescription,
-    };
+    private readonly CliOption<bool> _verboseOption =
+        new("--verbose")
+        {
+            Recursive = true,
+            Description = Properties.Resources.RootDotnetSopsCommandVerboseOptionDescription,
+        };
 
     public RootDotnetSopsCommand(IServiceProvider serviceProvider)
         : base(Properties.Resources.RootCommandDescription)

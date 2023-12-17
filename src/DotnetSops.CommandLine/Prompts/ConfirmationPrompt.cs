@@ -1,6 +1,7 @@
 using Spectre.Console;
 
 namespace DotnetSops.CommandLine.Prompts;
+
 internal class ConfirmationPrompt : IPrompt<bool>
 {
     private readonly string _prompt;
@@ -9,7 +10,8 @@ internal class ConfirmationPrompt : IPrompt<bool>
 
     public char No { get; set; } = 'n';
 
-    public string InvalidChoiceMessage { get; set; } = "[red]Please select one of the available options[/]";
+    public string InvalidChoiceMessage { get; set; } =
+        "[red]Please select one of the available options[/]";
 
     public string PromptStyle { get; set; } = "blue";
 

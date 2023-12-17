@@ -13,21 +13,24 @@ internal class DecryptCommand : CliCommand
 
     private readonly IServiceProvider _serviceProvider;
 
-    private readonly CliOption<FileInfo?> _projectFileOption = new("--project", "-p")
-    {
-        Description = Properties.Resources.DecryptCommandProjectOptionDescription,
-    };
+    private readonly CliOption<FileInfo?> _projectFileOption =
+        new("--project", "-p")
+        {
+            Description = Properties.Resources.DecryptCommandProjectOptionDescription,
+        };
 
-    private readonly CliOption<string?> _userSecretsIdOption = new("--id")
-    {
-        Description = Properties.Resources.DecryptCommandSecretsIdOptionDescription,
-    };
+    private readonly CliOption<string?> _userSecretsIdOption =
+        new("--id")
+        {
+            Description = Properties.Resources.DecryptCommandSecretsIdOptionDescription,
+        };
 
-    private readonly CliOption<FileInfo> _inputFileOption = new("--file")
-    {
-        Description = Properties.Resources.DecryptCommandFileOptionDescription,
-        DefaultValueFactory = _ => new FileInfo("secrets.json")
-    };
+    private readonly CliOption<FileInfo> _inputFileOption =
+        new("--file")
+        {
+            Description = Properties.Resources.DecryptCommandFileOptionDescription,
+            DefaultValueFactory = _ => new FileInfo("secrets.json")
+        };
 
     public DecryptCommand(IServiceProvider serviceProvider)
         : base(CommandName, Properties.Resources.DecryptCommandDescription)
@@ -38,21 +41,33 @@ internal class DecryptCommand : CliCommand
 
         _serviceProvider = serviceProvider;
 
-        SetAction((parseResult, cancellationToken) =>
-        {
-            return ExecuteAsync(
-                parseResult.GetValue(_projectFileOption),
-                parseResult.GetValue(_userSecretsIdOption),
-                parseResult.GetValue(_inputFileOption)!,
-                _serviceProvider.GetRequiredService<ILogger>(),
-                _serviceProvider.GetRequiredService<IProjectInfoService>(),
-                _serviceProvider.GetRequiredService<ISopsService>(),
-                _serviceProvider.GetRequiredService<IUserSecretsService>(),
-                cancellationToken);
-        });
+        SetAction(
+            (parseResult, cancellationToken) =>
+            {
+                return ExecuteAsync(
+                    parseResult.GetValue(_projectFileOption),
+                    parseResult.GetValue(_userSecretsIdOption),
+                    parseResult.GetValue(_inputFileOption)!,
+                    _serviceProvider.GetRequiredService<ILogger>(),
+                    _serviceProvider.GetRequiredService<IProjectInfoService>(),
+                    _serviceProvider.GetRequiredService<ISopsService>(),
+                    _serviceProvider.GetRequiredService<IUserSecretsService>(),
+                    cancellationToken
+                );
+            }
+        );
     }
 
-    private static async Task<int> ExecuteAsync(FileInfo? projectFile, string? userSecretId, FileInfo inputFile, ILogger logger, IProjectInfoService projectInfoService, ISopsService sopsService, IUserSecretsService userSecretsService, CancellationToken cancellationToken)
+    private static async Task<int> ExecuteAsync(
+        FileInfo? projectFile,
+        string? userSecretId,
+        FileInfo inputFile,
+        ILogger logger,
+        IProjectInfoService projectInfoService,
+        ISopsService sopsService,
+        IUserSecretsService userSecretsService,
+        CancellationToken cancellationToken
+    )
     {
         logger.LogDebug($"Using input file '{inputFile}'");
 
@@ -94,7 +109,9 @@ internal class DecryptCommand : CliCommand
         {
             await sopsService.DecryptAsync(inputFile, outputFile, cancellationToken);
 
-            logger.LogSuccess(LocalizationResources.DecryptCommandSuccess(inputFile.Name, userSecretId));
+            logger.LogSuccess(
+                LocalizationResources.DecryptCommandSuccess(inputFile.Name, userSecretId)
+            );
 
             return 0;
         }

@@ -33,7 +33,12 @@ public class EncryptCommandTests : IDisposable
         _serviceProvider = new ServiceCollection()
             .AddSingleton<ISopsService, SopsService>()
             .AddSingleton(sopsFixture.SopsPathService)
-            .AddSingleton<IUserSecretsService>(sp => new UserSecretsServiceStub(_uniqueCurrentDirectoryFixture.TestDirectory.FullName))
+            .AddSingleton<IUserSecretsService>(
+                sp =>
+                    new UserSecretsServiceStub(
+                        _uniqueCurrentDirectoryFixture.TestDirectory.FullName
+                    )
+            )
             .AddSingleton<IFileBomService, FileBomService>()
             .AddSingleton<ISopsDownloadService, SopsDownloadService>()
             .AddSingleton<IPlatformInformationService, PlatformInformationService>()
@@ -64,19 +69,23 @@ public class EncryptCommandTests : IDisposable
 
         // user secret
         var filePath = _userSecretsService.GetSecretsPathFromSecretsId(id);
-        var secrets = new TestSecretCotent
-        {
-            TestKey = "test value"
-        };
-        await File.AppendAllTextAsync(filePath.FullName, JsonSerializer.Serialize(secrets), new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)); //dotnet user secrets save files with bom
+        var secrets = new TestSecretCotent { TestKey = "test value" };
+        await File.AppendAllTextAsync(
+            filePath.FullName,
+            JsonSerializer.Serialize(secrets),
+            new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)
+        ); //dotnet user secrets save files with bom
 
         // Sops config
         var sopsConfigPath = ".sops.yaml";
-        await File.WriteAllTextAsync(sopsConfigPath, """
+        await File.WriteAllTextAsync(
+            sopsConfigPath,
+            """
             creation_rules:
               - path_regex: secrets.json
                 age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """);
+            """
+        );
 
         var outputPath = "secrets.json";
 
@@ -89,13 +98,23 @@ public class EncryptCommandTests : IDisposable
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(outputPath));
 
-        var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(await File.ReadAllTextAsync(outputPath))!;
-        Assert.StartsWith("ENC[", encryptedSecretContent.TestKey, StringComparison.InvariantCulture);
+        var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(
+            await File.ReadAllTextAsync(outputPath)
+        )!;
+        Assert.StartsWith(
+            "ENC[",
+            encryptedSecretContent.TestKey,
+            StringComparison.InvariantCulture
+        );
         Assert.Single(encryptedSecretContent.Sops.Age!);
-        Assert.Equal($"""
+        Assert.Equal(
+            $"""
             User secret with ID '{id}' successfully encrypted to '{new FileInfo(outputPath).FullName}'.
 
-            """, _logger.Out.Output, ignoreLineEndingDifferences: true);
+            """,
+            _logger.Out.Output,
+            ignoreLineEndingDifferences: true
+        );
         Assert.Equal("", _logger.Error.Output, ignoreLineEndingDifferences: true);
     }
 
@@ -108,19 +127,23 @@ public class EncryptCommandTests : IDisposable
 
         // user secret
         var filePath = _userSecretsService.GetSecretsPathFromSecretsId(id);
-        var secrets = new TestSecretCotent
-        {
-            TestKey = "test value"
-        };
-        await File.AppendAllTextAsync(filePath.FullName, JsonSerializer.Serialize(secrets), new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)); //dotnet user secrets save files with bom
+        var secrets = new TestSecretCotent { TestKey = "test value" };
+        await File.AppendAllTextAsync(
+            filePath.FullName,
+            JsonSerializer.Serialize(secrets),
+            new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)
+        ); //dotnet user secrets save files with bom
 
         // Sops config
         var sopsConfigPath = ".sops.yaml";
-        await File.WriteAllTextAsync(sopsConfigPath, """
+        await File.WriteAllTextAsync(
+            sopsConfigPath,
+            """
             creation_rules:
               - path_regex: secrets.json
                 age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8,age1y8lprkvcf2m0s2pnh866gjj4dtrazqz84kna7y3ndej0pku6ms6s84yf04
-            """);
+            """
+        );
 
         var outputPath = "secrets.json";
 
@@ -133,8 +156,14 @@ public class EncryptCommandTests : IDisposable
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(outputPath));
 
-        var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(await File.ReadAllTextAsync(outputPath))!;
-        Assert.StartsWith("ENC[", encryptedSecretContent.TestKey, StringComparison.InvariantCulture);
+        var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(
+            await File.ReadAllTextAsync(outputPath)
+        )!;
+        Assert.StartsWith(
+            "ENC[",
+            encryptedSecretContent.TestKey,
+            StringComparison.InvariantCulture
+        );
         Assert.Equal(2, encryptedSecretContent.Sops.Age?.Count);
     }
 
@@ -147,15 +176,18 @@ public class EncryptCommandTests : IDisposable
 
         // user secret
         var filePath = _userSecretsService.GetSecretsPathFromSecretsId(id);
-        var secrets = new TestSecretCotent
-        {
-            TestKey = "test value"
-        };
-        await File.AppendAllTextAsync(filePath.FullName, JsonSerializer.Serialize(secrets), new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)); //dotnet user secrets save files with bom
+        var secrets = new TestSecretCotent { TestKey = "test value" };
+        await File.AppendAllTextAsync(
+            filePath.FullName,
+            JsonSerializer.Serialize(secrets),
+            new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)
+        ); //dotnet user secrets save files with bom
 
         // Sops config
         var sopsConfigPath = ".sops.yaml";
-        await File.WriteAllTextAsync(sopsConfigPath, """
+        await File.WriteAllTextAsync(
+            sopsConfigPath,
+            """
             creation_rules:
             - path_regex: secrets.json
               shamir_threshold: 2
@@ -167,7 +199,8 @@ public class EncryptCommandTests : IDisposable
                     - age10l04egantyrujnu4ll0unhxkd6m4krardf4kqnfg4uqcczyawcts9pgtlm
                 - age:
                     - age1kg6yjfq8ce9k7u4yjnd3jsp5hkkghxmc65raafrkxlcrtlmz8u7qv57ehh
-            """);
+            """
+        );
 
         var outputPath = "secrets.json";
 
@@ -180,8 +213,14 @@ public class EncryptCommandTests : IDisposable
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(outputPath));
 
-        var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(await File.ReadAllTextAsync(outputPath))!;
-        Assert.StartsWith("ENC[", encryptedSecretContent.TestKey, StringComparison.InvariantCulture);
+        var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(
+            await File.ReadAllTextAsync(outputPath)
+        )!;
+        Assert.StartsWith(
+            "ENC[",
+            encryptedSecretContent.TestKey,
+            StringComparison.InvariantCulture
+        );
         Assert.Equal(3, encryptedSecretContent.Sops.KeyGroups?.Count);
         Assert.Single(encryptedSecretContent.Sops.KeyGroups![0].Age!);
         Assert.Equal(2, encryptedSecretContent.Sops.KeyGroups![1].Age!.Count);
@@ -198,19 +237,23 @@ public class EncryptCommandTests : IDisposable
 
         // user secret
         var filePath = _userSecretsService.GetSecretsPathFromSecretsId(id);
-        var secrets = new TestSecretCotent
-        {
-            TestKey = "test value"
-        };
-        await File.AppendAllTextAsync(filePath.FullName, JsonSerializer.Serialize(secrets), new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)); //dotnet user secrets save files with bom
+        var secrets = new TestSecretCotent { TestKey = "test value" };
+        await File.AppendAllTextAsync(
+            filePath.FullName,
+            JsonSerializer.Serialize(secrets),
+            new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)
+        ); //dotnet user secrets save files with bom
 
         // Sops config
         var sopsConfigPath = ".sops.yaml";
-        await File.WriteAllTextAsync(sopsConfigPath, """
+        await File.WriteAllTextAsync(
+            sopsConfigPath,
+            """
             creation_rules:
               - path_regex: secrets.json
                 age: invalid
-            """);
+            """
+        );
 
         var outputPath = "secrets.json";
 
@@ -221,10 +264,14 @@ public class EncryptCommandTests : IDisposable
 
         // Assert
         Assert.Equal(1, exitCode);
-        Assert.Equal("""
+        Assert.Equal(
+            """
             Executing SOPS failed.
 
-            """, _logger.Error.Output, ignoreLineEndingDifferences: true);
+            """,
+            _logger.Error.Output,
+            ignoreLineEndingDifferences: true
+        );
     }
 
     [Fact]
@@ -234,7 +281,9 @@ public class EncryptCommandTests : IDisposable
         var command = new EncryptCommand(_serviceProvider);
         var id = $"unittest-{Guid.NewGuid()}";
 
-        await File.WriteAllTextAsync("Project.csproj", $"""
+        await File.WriteAllTextAsync(
+            "Project.csproj",
+            $"""
             <Project Sdk="Microsoft.NET.Sdk">
 
               <PropertyGroup>
@@ -246,23 +295,28 @@ public class EncryptCommandTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """);
+            """
+        );
 
         // user secret
         var filePath = _userSecretsService.GetSecretsPathFromSecretsId(id);
-        var secrets = new TestSecretCotent
-        {
-            TestKey = "test value"
-        };
-        await File.AppendAllTextAsync(filePath.FullName, JsonSerializer.Serialize(secrets), new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)); //dotnet user secrets save files with bom
+        var secrets = new TestSecretCotent { TestKey = "test value" };
+        await File.AppendAllTextAsync(
+            filePath.FullName,
+            JsonSerializer.Serialize(secrets),
+            new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)
+        ); //dotnet user secrets save files with bom
 
         // Sops config
         var sopsConfigPath = ".sops.yaml";
-        await File.WriteAllTextAsync(sopsConfigPath, """
+        await File.WriteAllTextAsync(
+            sopsConfigPath,
+            """
             creation_rules:
               - path_regex: secrets.json
                 age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """);
+            """
+        );
 
         var outputPath = "secrets.json";
 
@@ -275,8 +329,14 @@ public class EncryptCommandTests : IDisposable
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(outputPath));
 
-        var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(await File.ReadAllTextAsync(outputPath))!;
-        Assert.StartsWith("ENC[", encryptedSecretContent.TestKey, StringComparison.InvariantCulture);
+        var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(
+            await File.ReadAllTextAsync(outputPath)
+        )!;
+        Assert.StartsWith(
+            "ENC[",
+            encryptedSecretContent.TestKey,
+            StringComparison.InvariantCulture
+        );
         Assert.Single(encryptedSecretContent.Sops.Age!);
     }
 
@@ -296,13 +356,17 @@ public class EncryptCommandTests : IDisposable
 
         // Assert
         Assert.Equal(1, exitCode);
-        Assert.Equal($"""
+        Assert.Equal(
+            $"""
             User secrets file '{_userSecretsService.GetSecretsPathFromSecretsId(id)}' does not exist.
 
             You have no secrets created. You can add secrets by running this command:
               dotnet user-secrets set [name] [value]
 
-            """, _logger.Error.Output, ignoreLineEndingDifferences: true);
+            """,
+            _logger.Error.Output,
+            ignoreLineEndingDifferences: true
+        );
     }
 
     [Fact]
@@ -312,7 +376,9 @@ public class EncryptCommandTests : IDisposable
         var command = new EncryptCommand(_serviceProvider);
 
         // user secret
-        await File.WriteAllTextAsync("Project.csproj", $"""
+        await File.WriteAllTextAsync(
+            "Project.csproj",
+            $"""
             <Project Sdk="Microsoft.NET.Sdk">
 
               <PropertyGroup>
@@ -323,7 +389,8 @@ public class EncryptCommandTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """);
+            """
+        );
 
         var config = new CliConfiguration(command);
 
@@ -332,7 +399,8 @@ public class EncryptCommandTests : IDisposable
 
         // Assert
         Assert.Equal(1, exitCode);
-        Assert.Equal($"""
+        Assert.Equal(
+            $"""
             Could not find the global property 'UserSecretsId' in MSBuild project '{Path.Join(Directory.GetCurrentDirectory(), "Project.csproj")}'.
 
             Ensure this property is set in the project or use the '--id' command-line option.
@@ -340,7 +408,10 @@ public class EncryptCommandTests : IDisposable
             The 'UserSecretsId' property can be created by running this command:
               dotnet user-secrets init
 
-            """, _logger.Error.Output, ignoreLineEndingDifferences: true);
+            """,
+            _logger.Error.Output,
+            ignoreLineEndingDifferences: true
+        );
     }
 
     [Fact]
@@ -384,7 +455,8 @@ public class EncryptCommandTests : IDisposable
 
         // Assert
         Assert.Equal(0, exitCode);
-        Assert.Equal("""
+        Assert.Equal(
+            """
             Description:
               Encrypt existing .NET User Secrets
 
@@ -399,6 +471,9 @@ public class EncryptCommandTests : IDisposable
               --verbose       Enable verbose logging output
 
 
-            """, output.ToString().RemoveHelpWrapNewLines(), ignoreLineEndingDifferences: true);
+            """,
+            output.ToString().RemoveHelpWrapNewLines(),
+            ignoreLineEndingDifferences: true
+        );
     }
 }

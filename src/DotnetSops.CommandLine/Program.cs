@@ -21,19 +21,23 @@ var serviceProvider = new ServiceCollection()
     .AddSingleton(_ => new HttpClient())
     .AddSingleton<ILogger>(_ =>
     {
-        var errorConsole = AnsiConsole.Create(new AnsiConsoleSettings()
-        {
-            Ansi = AnsiSupport.Detect,
-            ColorSystem = ColorSystemSupport.Detect,
-            Out = new AnsiConsoleOutput(Console.Error),
-        });
+        var errorConsole = AnsiConsole.Create(
+            new AnsiConsoleSettings()
+            {
+                Ansi = AnsiSupport.Detect,
+                ColorSystem = ColorSystemSupport.Detect,
+                Out = new AnsiConsoleOutput(Console.Error),
+            }
+        );
 
-        var outConsole = AnsiConsole.Create(new AnsiConsoleSettings()
-        {
-            Ansi = AnsiSupport.Detect,
-            ColorSystem = ColorSystemSupport.Detect,
-            Out = new AnsiConsoleOutput(Console.Out),
-        });
+        var outConsole = AnsiConsole.Create(
+            new AnsiConsoleSettings()
+            {
+                Ansi = AnsiSupport.Detect,
+                ColorSystem = ColorSystemSupport.Detect,
+                Out = new AnsiConsoleOutput(Console.Out),
+            }
+        );
 
         return new Logger(outConsole, errorConsole);
     })

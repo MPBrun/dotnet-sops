@@ -1,6 +1,7 @@
 using Spectre.Console;
 
 namespace DotnetSops.CommandLine.Services;
+
 internal class Logger : ILogger
 {
     private readonly IAnsiConsole _outConsole;
@@ -61,17 +62,27 @@ internal class Logger : ILogger
 
     public async Task<string> AskAsync(string question, CancellationToken cancellationToken)
     {
-        return await new Prompts.AskPrompt($"[green]?[/] {question}")
-            .ShowAsync(_errorConsole, cancellationToken);
+        return await new Prompts.AskPrompt($"[green]?[/] {question}").ShowAsync(
+            _errorConsole,
+            cancellationToken
+        );
     }
 
     public async Task<bool> ConfirmAsync(string question, CancellationToken cancellationToken)
     {
-        return await new Prompts.ConfirmationPrompt($"[green]?[/] {question}")
-            .ShowAsync(_errorConsole, cancellationToken);
+        return await new Prompts.ConfirmationPrompt($"[green]?[/] {question}").ShowAsync(
+            _errorConsole,
+            cancellationToken
+        );
     }
 
-    public async Task<T> SelectAsync<T>(string question, T[] choices, Func<T, string> converter, CancellationToken cancellationToken) where T : notnull
+    public async Task<T> SelectAsync<T>(
+        string question,
+        T[] choices,
+        Func<T, string> converter,
+        CancellationToken cancellationToken
+    )
+        where T : notnull
     {
         var selected = await new SelectionPrompt<T>()
             .Title($"[green]?[/] {question}")
@@ -80,7 +91,9 @@ internal class Logger : ILogger
             .AddChoices(choices)
             .ShowAsync(_errorConsole, cancellationToken);
 
-        _errorConsole.MarkupLineInterpolated($"[green]?[/] {question} [blue]{converter(selected)}[/]");
+        _errorConsole.MarkupLineInterpolated(
+            $"[green]?[/] {question} [blue]{converter(selected)}[/]"
+        );
 
         return selected;
     }

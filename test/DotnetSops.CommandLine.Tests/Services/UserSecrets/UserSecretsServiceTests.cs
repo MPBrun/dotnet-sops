@@ -2,6 +2,7 @@ using DotnetSops.CommandLine.Services.UserSecrets;
 using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace DotnetSops.CommandLine.Tests.Services.UserSecrets;
+
 public class UserSecretsServiceTests
 {
     [Fact]

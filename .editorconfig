@@ -7,6 +7,8 @@ root = true
 
 # Don't use tabs for indentation.
 [*]
+spelling_languages = en-us
+max_line_length = 100
 indent_style = space
 # (Please don't specify an indent_size here; that has too many unintended consequences.)
 
@@ -221,7 +223,7 @@ csharp_new_line_between_query_expression_clauses = true
 csharp_indent_block_contents = true
 csharp_indent_braces = false
 csharp_indent_case_contents = true
-csharp_indent_case_contents_when_block = true
+csharp_indent_case_contents_when_block = false
 csharp_indent_switch_labels = true
 csharp_indent_labels = flush_left
 
@@ -230,7 +232,7 @@ csharp_style_allow_embedded_statements_on_same_line_experimental = false:warning
 csharp_style_allow_blank_lines_between_consecutive_braces_experimental = false:warning
 csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental = false:warning
 csharp_style_allow_blank_line_after_token_in_conditional_expression_experimental = false:warning
-csharp_style_allow_blank_line_after_token_in_arrow_expression_clause_experimental = false:warning
+csharp_style_allow_blank_line_after_token_in_arrow_expression_clause_experimental = true:warning
 
 # Prefer "var" everywhere
 csharp_style_var_for_built_in_types = true:warning

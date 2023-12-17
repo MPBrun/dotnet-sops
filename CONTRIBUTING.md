@@ -23,9 +23,17 @@ Please take a moment to review this Contributing Guide before you get started. I
 
 Make sure you have the following prerequisites installed before you start contributing:
 
-- [.NET SDK 7.x](https://dotnet.microsoft.com/download) that are defined in [global.json](global.json)
+- [.NET SDK 8.x](https://dotnet.microsoft.com/download) that are defined in [global.json](global.json)
 
 ### Development
+
+#### Restore tools
+
+Install required dotnet tools by running the following command:
+
+```bash
+dotnet tool restore
+```
 
 #### Build
 
@@ -51,6 +59,7 @@ Lint of code can be checked by the following command:
 
 ```bash
 dotnet format --verify-no-changes
+dotnet csharpier . --check
 ```
 
 All rules are defined by [.editorconfig](.editorconfig) file

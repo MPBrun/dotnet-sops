@@ -2,6 +2,7 @@ using DotnetSops.CommandLine.Services;
 using Spectre.Console.Testing;
 
 namespace DotnetSops.CommandLine.Tests.Services;
+
 public class LoggerTests : IDisposable
 {
     private readonly TestConsole _out;
@@ -90,10 +91,7 @@ public class LoggerTests : IDisposable
     public void LogDebug_VerboseEnabled_WriteNothing()
     {
         // Arrange
-        var logger = new Logger(_out, _error)
-        {
-            Verbose = true
-        };
+        var logger = new Logger(_out, _error) { Verbose = true };
 
         // Act
         logger.LogDebug("some text");
@@ -107,10 +105,7 @@ public class LoggerTests : IDisposable
     public void LogWarning_WriteValue()
     {
         // Arrange
-        var logger = new Logger(_out, _error)
-        {
-            Verbose = true
-        };
+        var logger = new Logger(_out, _error) { Verbose = true };
 
         // Act
         logger.LogWarning("some text");
@@ -124,10 +119,7 @@ public class LoggerTests : IDisposable
     public void LogError_WriteValue()
     {
         // Arrange
-        var logger = new Logger(_out, _error)
-        {
-            Verbose = true
-        };
+        var logger = new Logger(_out, _error) { Verbose = true };
 
         // Act
         logger.LogError("some text");
@@ -141,10 +133,7 @@ public class LoggerTests : IDisposable
     public void LogSuccess_WriteValueToOut()
     {
         // Arrange
-        var logger = new Logger(_out, _error)
-        {
-            Verbose = true
-        };
+        var logger = new Logger(_out, _error) { Verbose = true };
 
         // Act
         logger.LogSuccess("some text");
@@ -158,10 +147,7 @@ public class LoggerTests : IDisposable
     public async Task AskAsync_Prompts()
     {
         // Arrange
-        var logger = new Logger(_out, _error)
-        {
-            Verbose = true
-        };
+        var logger = new Logger(_out, _error) { Verbose = true };
 
         _error.Input.PushTextWithEnter("42");
 
@@ -178,10 +164,7 @@ public class LoggerTests : IDisposable
     public async Task ConfirmAsync_Prompts()
     {
         // Arrange
-        var logger = new Logger(_out, _error)
-        {
-            Verbose = true
-        };
+        var logger = new Logger(_out, _error) { Verbose = true };
 
         _error.Input.PushTextWithEnter("y");
 
@@ -198,10 +181,7 @@ public class LoggerTests : IDisposable
     public async Task SelectAsync_Prompts()
     {
         // Arrange
-        var logger = new Logger(_out, _error)
-        {
-            Verbose = true
-        };
+        var logger = new Logger(_out, _error) { Verbose = true };
 
         _error.Input.PushKey(ConsoleKey.DownArrow);
         _error.Input.PushKey(ConsoleKey.Enter);
@@ -209,11 +189,17 @@ public class LoggerTests : IDisposable
         var choices = new[] { "Red", "Green", "Blue" };
 
         // Act
-        var result = await logger.SelectAsync("What is your favorite color?", choices, (choice) => choice, CancellationToken.None);
+        var result = await logger.SelectAsync(
+            "What is your favorite color?",
+            choices,
+            (choice) => choice,
+            CancellationToken.None
+        );
 
         // Assert
         Assert.Equal("Green", result);
-        Assert.Equal("""
+        Assert.Equal(
+            """
             ? What is your favorite color?
                                           
             > Red                         
@@ -224,7 +210,10 @@ public class LoggerTests : IDisposable
             > Green                       
               Blue                        ? What is your favorite color? Green
 
-            """, _error.Output, ignoreLineEndingDifferences: true);
+            """,
+            _error.Output,
+            ignoreLineEndingDifferences: true
+        );
         Assert.Equal("", _out.Output);
     }
 
@@ -232,10 +221,7 @@ public class LoggerTests : IDisposable
     public async Task SelectAsync_PromptWraps()
     {
         // Arrange
-        var logger = new Logger(_out, _error)
-        {
-            Verbose = true
-        };
+        var logger = new Logger(_out, _error) { Verbose = true };
 
         _error.Input.PushKey(ConsoleKey.DownArrow);
         _error.Input.PushKey(ConsoleKey.DownArrow);
@@ -246,11 +232,17 @@ public class LoggerTests : IDisposable
         var choices = new[] { "Red", "Green", "Blue" };
 
         // Act
-        var result = await logger.SelectAsync("What is your favorite color?", choices, (choice) => choice, CancellationToken.None);
+        var result = await logger.SelectAsync(
+            "What is your favorite color?",
+            choices,
+            (choice) => choice,
+            CancellationToken.None
+        );
 
         // Assert
         Assert.Equal("Green", result);
-        Assert.Equal("""
+        Assert.Equal(
+            """
             ? What is your favorite color?
                                           
             > Red                         
@@ -273,7 +265,10 @@ public class LoggerTests : IDisposable
             > Green                       
               Blue                        ? What is your favorite color? Green
 
-            """, _error.Output, ignoreLineEndingDifferences: true);
+            """,
+            _error.Output,
+            ignoreLineEndingDifferences: true
+        );
         Assert.Equal("", _out.Output);
     }
 }

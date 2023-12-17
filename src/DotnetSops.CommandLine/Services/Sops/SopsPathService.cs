@@ -1,4 +1,5 @@
 namespace DotnetSops.CommandLine.Services.Sops;
+
 internal class SopsPathService : ISopsPathService
 {
     public string GetDotnetSopsUserDirectory()

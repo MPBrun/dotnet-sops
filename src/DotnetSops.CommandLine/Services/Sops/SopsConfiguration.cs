@@ -1,4 +1,5 @@
 namespace DotnetSops.CommandLine.Services.Sops;
+
 internal class SopsConfiguration
 {
     public required List<SopsCreationRule> CreationRules { get; init; }

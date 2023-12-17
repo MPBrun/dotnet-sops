@@ -30,7 +30,9 @@ public class EncryptCommandTests_SopsMissing : IDisposable
 
     public EncryptCommandTests_SopsMissing()
     {
-        _originalPathEnviromentVariableValue = Environment.GetEnvironmentVariable(PathEnvironmentVariableName);
+        _originalPathEnviromentVariableValue = Environment.GetEnvironmentVariable(
+            PathEnvironmentVariableName
+        );
 
         var sopsPathService = Substitute.For<ISopsPathService>();
         sopsPathService.GetDotnetSopsUserDirectory().Returns("");
@@ -38,7 +40,12 @@ public class EncryptCommandTests_SopsMissing : IDisposable
         _serviceProvider = new ServiceCollection()
             .AddSingleton<ISopsService, SopsService>()
             .AddSingleton(sopsPathService)
-            .AddSingleton<IUserSecretsService>(sp => new UserSecretsServiceStub(_uniqueCurrentDirectoryFixture.TestDirectory.FullName))
+            .AddSingleton<IUserSecretsService>(
+                sp =>
+                    new UserSecretsServiceStub(
+                        _uniqueCurrentDirectoryFixture.TestDirectory.FullName
+                    )
+            )
             .AddSingleton<IFileBomService, FileBomService>()
             .AddSingleton<IPlatformInformationService, PlatformInformationService>()
             .AddSingleton<IProjectInfoService, ProjectInfoService>()
@@ -51,7 +58,10 @@ public class EncryptCommandTests_SopsMissing : IDisposable
     protected virtual void Dispose(bool disposing)
     {
         _uniqueCurrentDirectoryFixture.Dispose();
-        Environment.SetEnvironmentVariable(PathEnvironmentVariableName, _originalPathEnviromentVariableValue);
+        Environment.SetEnvironmentVariable(
+            PathEnvironmentVariableName,
+            _originalPathEnviromentVariableValue
+        );
     }
 
     public void Dispose()
@@ -71,11 +81,12 @@ public class EncryptCommandTests_SopsMissing : IDisposable
 
         // user secret
         var filePath = _userSecretsService.GetSecretsPathFromSecretsId(id);
-        var secrets = new TestSecretCotent
-        {
-            TestKey = "test value"
-        };
-        await File.AppendAllTextAsync(filePath.FullName, JsonSerializer.Serialize(secrets), new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)); //dotnet user secrets save files with bom
+        var secrets = new TestSecretCotent { TestKey = "test value" };
+        await File.AppendAllTextAsync(
+            filePath.FullName,
+            JsonSerializer.Serialize(secrets),
+            new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)
+        ); //dotnet user secrets save files with bom
 
         var outputPath = "secrets.json";
 
@@ -86,12 +97,16 @@ public class EncryptCommandTests_SopsMissing : IDisposable
 
         // Assert
         Assert.Equal(1, exitCode);
-        Assert.Equal("""
+        Assert.Equal(
+            """
             SOPS executable could not be found on the PATH.
 
             You can download it by executing the following command:
               dotnet sops download-sops
 
-            """, _logger.Error.Output, ignoreLineEndingDifferences: true);
+            """,
+            _logger.Error.Output,
+            ignoreLineEndingDifferences: true
+        );
     }
 }
