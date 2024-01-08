@@ -59,16 +59,24 @@ public class RunCommandTests : IDisposable
         var command = new RunCommand(_serviceProvider);
 
         // Provide age secret key for unit test purpose
-        Environment.SetEnvironmentVariable("SOPS_AGE_KEY", "AGE-SECRET-KEY-10HA9FMZENQKN8DXGZPRWZ7YK5R83AYK4FQVZ8Y5LPAV3430HXW7QZAFV9Z");
+        Environment.SetEnvironmentVariable(
+            "SOPS_AGE_KEY",
+            "AGE-SECRET-KEY-10HA9FMZENQKN8DXGZPRWZ7YK5R83AYK4FQVZ8Y5LPAV3430HXW7QZAFV9Z"
+        );
 
         // Sops config
-        await File.WriteAllTextAsync(".sops.yaml", """
+        await File.WriteAllTextAsync(
+            ".sops.yaml",
+            """
             creation_rules:
               - path_regex: secrets.json
                 age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """);
+            """
+        );
 
-        await File.WriteAllTextAsync("secrets.json", /*lang=json,strict*/ """
+        await File.WriteAllTextAsync(
+            "secrets.json", /*lang=json,strict*/
+            """
             {
                 "TestKey": "ENC[AES256_GCM,data:L3MRIGiBVhqFcA==,iv:+57aY2xTo6lwwVaUF2ifbvgs5uPT0xsmwPFlWRexFrg=,tag:b3v7JRAhLxZRCgblwGOZvg==,type:str]",
                 "sops": {
@@ -89,9 +97,12 @@ public class RunCommandTests : IDisposable
                     "version": "3.7.3"
                 }
             }
-            """);
+            """
+        );
 
-        await File.WriteAllTextAsync("Project.csproj", """
+        await File.WriteAllTextAsync(
+            "Project.csproj",
+            """
             <Project Sdk="Microsoft.NET.Sdk">
 
               <PropertyGroup>
@@ -102,9 +113,12 @@ public class RunCommandTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """);
+            """
+        );
 
-        await File.WriteAllTextAsync("Program.cs", """
+        await File.WriteAllTextAsync(
+            "Program.cs",
+            """
             // Return 0 if environment variable is equal expected
             var valid = true;
             #if DEBUG
@@ -115,14 +129,18 @@ public class RunCommandTests : IDisposable
             valid &= args[1] == "arg2";
             valid &= args[2] == "arg3";
             return valid ? 0 : 1;
-            """);
+
+            """
+        );
 
         var inputPath = "secrets.json";
 
         var config = new CliConfiguration(command);
 
         // Act
-        var exitCode = await config.InvokeAsync($"arg1 arg2 arg3 --configuration Release --file {inputPath}");
+        var exitCode = await config.InvokeAsync(
+            $"arg1 arg2 arg3 --configuration Release --file {inputPath}"
+        );
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -135,18 +153,26 @@ public class RunCommandTests : IDisposable
         var command = new RunCommand(_serviceProvider);
 
         // Sops config
-        await File.WriteAllTextAsync(".sops.yaml", """
+        await File.WriteAllTextAsync(
+            ".sops.yaml",
+            """
             creation_rules:
               - path_regex: secrets.json
                 age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """);
+            """
+        );
 
         // Set SOPS_AGE_KEY_FILE to a empty keys file
-        var keysFilePath = Path.Join(_uniqueCurrentDirectoryFixture.TestDirectory.FullName, "keys.txt");
+        var keysFilePath = Path.Join(
+            _uniqueCurrentDirectoryFixture.TestDirectory.FullName,
+            "keys.txt"
+        );
         await File.Create(keysFilePath).DisposeAsync();
         Environment.SetEnvironmentVariable("SOPS_AGE_KEY_FILE", keysFilePath);
 
-        await File.WriteAllTextAsync("secrets.json", /*lang=json,strict*/ """
+        await File.WriteAllTextAsync(
+            "secrets.json", /*lang=json,strict*/
+            """
             {
                 "TestKey": "ENC[AES256_GCM,data:L3MRIGiBVhqFcA==,iv:+57aY2xTo6lwwVaUF2ifbvgs5uPT0xsmwPFlWRexFrg=,tag:b3v7JRAhLxZRCgblwGOZvg==,type:str]",
                 "sops": {
@@ -167,7 +193,8 @@ public class RunCommandTests : IDisposable
                     "version": "3.7.3"
                 }
             }
-            """);
+            """
+        );
 
         var inputPath = "secrets.json";
 
@@ -178,10 +205,14 @@ public class RunCommandTests : IDisposable
 
         // Assert
         Assert.Equal(128, exitCode);
-        Assert.Equal("""
+        Assert.Equal(
+            """
             Executing SOPS failed.
 
-            """, _logger.Error.Output, ignoreLineEndingDifferences: true);
+            """,
+            _logger.Error.Output,
+            ignoreLineEndingDifferences: true
+        );
     }
 
     [Theory]
@@ -203,7 +234,8 @@ public class RunCommandTests : IDisposable
 
         // Assert
         Assert.Equal(0, exitCode);
-        Assert.Equal("""
+        Assert.Equal(
+            """
             Description:
               Execute 'dotnet run' with decrypted secrets inserted into the environment
 
@@ -219,6 +251,9 @@ public class RunCommandTests : IDisposable
               --verbose       Enable verbose logging output
 
 
-            """, output.ToString().RemoveHelpWrapNewLines(), ignoreLineEndingDifferences: true);
+            """,
+            output.ToString().RemoveHelpWrapNewLines(),
+            ignoreLineEndingDifferences: true
+        );
     }
 }

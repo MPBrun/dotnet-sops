@@ -1,4 +1,5 @@
 namespace DotnetSops.CommandLine.Services.Sops;
+
 internal class SopsReleaseFileInfo
 {
     public required string ReleaseFileName { get; init; }

@@ -32,7 +32,12 @@ public class DecryptCommandTests : IDisposable
         _serviceProvider = new ServiceCollection()
             .AddSingleton<ISopsService, SopsService>()
             .AddSingleton(sopsFixture.SopsPathService)
-            .AddSingleton<IUserSecretsService>(sp => new UserSecretsServiceStub(_uniqueCurrentDirectoryFixture.TestDirectory.FullName))
+            .AddSingleton<IUserSecretsService>(
+                sp =>
+                    new UserSecretsServiceStub(
+                        _uniqueCurrentDirectoryFixture.TestDirectory.FullName
+                    )
+            )
             .AddSingleton<IFileBomService, FileBomService>()
             .AddSingleton<IPlatformInformationService, PlatformInformationService>()
             .AddSingleton<IProjectInfoService, ProjectInfoService>()
@@ -66,16 +71,24 @@ public class DecryptCommandTests : IDisposable
         var filePath = _userSecretsService.GetSecretsPathFromSecretsId(id);
 
         // Provide age secret key for unit test purpose
-        Environment.SetEnvironmentVariable("SOPS_AGE_KEY", "AGE-SECRET-KEY-10HA9FMZENQKN8DXGZPRWZ7YK5R83AYK4FQVZ8Y5LPAV3430HXW7QZAFV9Z");
+        Environment.SetEnvironmentVariable(
+            "SOPS_AGE_KEY",
+            "AGE-SECRET-KEY-10HA9FMZENQKN8DXGZPRWZ7YK5R83AYK4FQVZ8Y5LPAV3430HXW7QZAFV9Z"
+        );
 
         // Sops config
-        await File.WriteAllTextAsync(".sops.yaml", """
+        await File.WriteAllTextAsync(
+            ".sops.yaml",
+            """
             creation_rules:
               - path_regex: secrets.json
                 age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """);
+            """
+        );
 
-        await File.WriteAllTextAsync("secrets.json", /*lang=json,strict*/ """
+        await File.WriteAllTextAsync(
+            "secrets.json", /*lang=json,strict*/
+            """
             {
                 "TestKey": "ENC[AES256_GCM,data:L3MRIGiBVhqFcA==,iv:+57aY2xTo6lwwVaUF2ifbvgs5uPT0xsmwPFlWRexFrg=,tag:b3v7JRAhLxZRCgblwGOZvg==,type:str]",
                 "sops": {
@@ -96,7 +109,8 @@ public class DecryptCommandTests : IDisposable
                     "version": "3.7.3"
                 }
             }
-            """);
+            """
+        );
 
         var inputPath = "secrets.json";
 
@@ -109,7 +123,9 @@ public class DecryptCommandTests : IDisposable
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(filePath.FullName));
 
-        var secretContent = JsonSerializer.Deserialize<TestSecretCotent>(await File.ReadAllTextAsync(filePath.FullName))!;
+        var secretContent = JsonSerializer.Deserialize<TestSecretCotent>(
+            await File.ReadAllTextAsync(filePath.FullName)
+        )!;
         Assert.Equal("test value", secretContent.TestKey);
     }
 
@@ -121,18 +137,26 @@ public class DecryptCommandTests : IDisposable
         var id = $"unittest-{Guid.NewGuid()}";
 
         // Sops config
-        await File.WriteAllTextAsync(".sops.yaml", """
+        await File.WriteAllTextAsync(
+            ".sops.yaml",
+            """
             creation_rules:
               - path_regex: secrets.json
                 age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """);
+            """
+        );
 
         // Set SOPS_AGE_KEY_FILE to a empty keys file
-        var keysFilePath = Path.Join(_uniqueCurrentDirectoryFixture.TestDirectory.FullName, "keys.txt");
+        var keysFilePath = Path.Join(
+            _uniqueCurrentDirectoryFixture.TestDirectory.FullName,
+            "keys.txt"
+        );
         await File.Create(keysFilePath).DisposeAsync();
         Environment.SetEnvironmentVariable("SOPS_AGE_KEY_FILE", keysFilePath);
 
-        await File.WriteAllTextAsync("secrets.json", /*lang=json,strict*/ """
+        await File.WriteAllTextAsync(
+            "secrets.json", /*lang=json,strict*/
+            """
             {
                 "TestKey": "ENC[AES256_GCM,data:L3MRIGiBVhqFcA==,iv:+57aY2xTo6lwwVaUF2ifbvgs5uPT0xsmwPFlWRexFrg=,tag:b3v7JRAhLxZRCgblwGOZvg==,type:str]",
                 "sops": {
@@ -153,7 +177,8 @@ public class DecryptCommandTests : IDisposable
                     "version": "3.7.3"
                 }
             }
-            """);
+            """
+        );
 
         var inputPath = "secrets.json";
 
@@ -164,10 +189,14 @@ public class DecryptCommandTests : IDisposable
 
         // Assert
         Assert.Equal(128, exitCode);
-        Assert.Equal("""
+        Assert.Equal(
+            """
             Executing SOPS failed.
 
-            """, _logger.Error.Output, ignoreLineEndingDifferences: true);
+            """,
+            _logger.Error.Output,
+            ignoreLineEndingDifferences: true
+        );
     }
 
     [Fact]
@@ -186,10 +215,14 @@ public class DecryptCommandTests : IDisposable
 
         // Assert
         Assert.Equal(1, exitCode);
-        Assert.Equal($"""
+        Assert.Equal(
+            $"""
             File '{Path.Join(Directory.GetCurrentDirectory(), inputPath)}' does not exist.
 
-            """, _logger.Error.Output, ignoreLineEndingDifferences: true);
+            """,
+            _logger.Error.Output,
+            ignoreLineEndingDifferences: true
+        );
     }
 
     [Fact]
@@ -203,16 +236,24 @@ public class DecryptCommandTests : IDisposable
         var filePath = _userSecretsService.GetSecretsPathFromSecretsId(id);
 
         // Provide age secret key for unit test purpose
-        Environment.SetEnvironmentVariable("SOPS_AGE_KEY", "AGE-SECRET-KEY-10HA9FMZENQKN8DXGZPRWZ7YK5R83AYK4FQVZ8Y5LPAV3430HXW7QZAFV9Z");
+        Environment.SetEnvironmentVariable(
+            "SOPS_AGE_KEY",
+            "AGE-SECRET-KEY-10HA9FMZENQKN8DXGZPRWZ7YK5R83AYK4FQVZ8Y5LPAV3430HXW7QZAFV9Z"
+        );
 
         // Sops config
-        await File.WriteAllTextAsync(".sops.yaml", """
+        await File.WriteAllTextAsync(
+            ".sops.yaml",
+            """
             creation_rules:
               - path_regex: secrets.json
                 age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """);
+            """
+        );
 
-        await File.WriteAllTextAsync("Project.csproj", $"""
+        await File.WriteAllTextAsync(
+            "Project.csproj",
+            $"""
             <Project Sdk="Microsoft.NET.Sdk">
 
               <PropertyGroup>
@@ -224,9 +265,12 @@ public class DecryptCommandTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """);
+            """
+        );
 
-        await File.WriteAllTextAsync("secrets.json", /*lang=json,strict*/ """
+        await File.WriteAllTextAsync(
+            "secrets.json", /*lang=json,strict*/
+            """
             {
                 "TestKey": "ENC[AES256_GCM,data:L3MRIGiBVhqFcA==,iv:+57aY2xTo6lwwVaUF2ifbvgs5uPT0xsmwPFlWRexFrg=,tag:b3v7JRAhLxZRCgblwGOZvg==,type:str]",
                 "sops": {
@@ -247,7 +291,8 @@ public class DecryptCommandTests : IDisposable
                     "version": "3.7.3"
                 }
             }
-            """);
+            """
+        );
 
         var config = new CliConfiguration(command);
 
@@ -258,12 +303,18 @@ public class DecryptCommandTests : IDisposable
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(filePath.FullName));
 
-        var secretContent = JsonSerializer.Deserialize<TestSecretCotent>(await File.ReadAllTextAsync(filePath.FullName))!;
+        var secretContent = JsonSerializer.Deserialize<TestSecretCotent>(
+            await File.ReadAllTextAsync(filePath.FullName)
+        )!;
         Assert.Equal("test value", secretContent.TestKey);
-        Assert.Equal($"""
+        Assert.Equal(
+            $"""
             'secrets.json' successfully decrypted to user secret with ID '{id}'.
 
-            """, _logger.Out.Output, ignoreLineEndingDifferences: true);
+            """,
+            _logger.Out.Output,
+            ignoreLineEndingDifferences: true
+        );
         Assert.Equal("", _logger.Error.Output, ignoreLineEndingDifferences: true);
     }
 
@@ -274,7 +325,9 @@ public class DecryptCommandTests : IDisposable
         var command = new DecryptCommand(_serviceProvider);
 
         // user secret
-        await File.WriteAllTextAsync("Project.csproj", $"""
+        await File.WriteAllTextAsync(
+            "Project.csproj",
+            $"""
             <Project Sdk="Microsoft.NET.Sdk">
 
               <PropertyGroup>
@@ -285,7 +338,8 @@ public class DecryptCommandTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """);
+            """
+        );
 
         var config = new CliConfiguration(command);
 
@@ -294,7 +348,8 @@ public class DecryptCommandTests : IDisposable
 
         // Assert
         Assert.Equal(1, exitCode);
-        Assert.Equal($"""
+        Assert.Equal(
+            $"""
             Could not find the global property 'UserSecretsId' in MSBuild project '{Path.Join(Directory.GetCurrentDirectory(), "Project.csproj")}'.
 
             Ensure this property is set in the project or use the '--id' command-line option.
@@ -302,7 +357,10 @@ public class DecryptCommandTests : IDisposable
             The 'UserSecretsId' property can be created by running this command:
               dotnet user-secrets init
 
-            """, _logger.Error.Output, ignoreLineEndingDifferences: true);
+            """,
+            _logger.Error.Output,
+            ignoreLineEndingDifferences: true
+        );
     }
 
     [Fact]
@@ -346,7 +404,8 @@ public class DecryptCommandTests : IDisposable
 
         // Assert
         Assert.Equal(0, exitCode);
-        Assert.Equal("""
+        Assert.Equal(
+            """
             Description:
               Decrypt secrets into .NET User Secrets
 
@@ -361,6 +420,9 @@ public class DecryptCommandTests : IDisposable
               --verbose       Enable verbose logging output
 
 
-            """, output.ToString().RemoveHelpWrapNewLines(), ignoreLineEndingDifferences: true);
+            """,
+            output.ToString().RemoveHelpWrapNewLines(),
+            ignoreLineEndingDifferences: true
+        );
     }
 }

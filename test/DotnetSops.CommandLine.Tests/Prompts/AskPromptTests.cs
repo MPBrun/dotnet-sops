@@ -2,6 +2,7 @@ using DotnetSops.CommandLine.Prompts;
 using Spectre.Console.Testing;
 
 namespace DotnetSops.CommandLine.Tests.Prompts;
+
 public class AskPromptTests
 {
     [Fact]

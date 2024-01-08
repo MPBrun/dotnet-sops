@@ -27,7 +27,11 @@ public class FileBomServiceTests : IDisposable
         var service = new FileBomService();
         var filePath = new FileInfo("file.json");
 
-        await File.AppendAllTextAsync(filePath.FullName, "content", new UTF8Encoding(encoderShouldEmitUTF8Identifier: true));
+        await File.AppendAllTextAsync(
+            filePath.FullName,
+            "content",
+            new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)
+        );
 
         var fileContentBefore = await File.ReadAllBytesAsync(filePath.FullName);
         Assert.Equal([0xEF, 0xBB, 0xBF], fileContentBefore.Take(3).ToArray());
@@ -49,7 +53,11 @@ public class FileBomServiceTests : IDisposable
         var service = new FileBomService();
         var filePath = new FileInfo("file.json");
 
-        await File.AppendAllTextAsync(filePath.FullName, "content", new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+        await File.AppendAllTextAsync(
+            filePath.FullName,
+            "content",
+            new UTF8Encoding(encoderShouldEmitUTF8Identifier: false)
+        );
 
         var fileContentBefore = await File.ReadAllBytesAsync(filePath.FullName);
         Assert.NotEqual([0xEF, 0xBB, 0xBF], fileContentBefore.Take(3).ToArray());

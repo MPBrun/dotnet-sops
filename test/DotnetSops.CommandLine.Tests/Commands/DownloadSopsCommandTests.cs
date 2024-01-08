@@ -26,9 +26,9 @@ public class DownloadSopsCommandTests : IDisposable
         _mockSopsDownloadService = Substitute.For<ISopsDownloadService>();
 
         _serviceProvider = new ServiceCollection()
-                .AddSingleton(_mockSopsDownloadService)
-                .AddSingleton<ILogger>(_logger)
-                .BuildServiceProvider();
+            .AddSingleton(_mockSopsDownloadService)
+            .AddSingleton<ILogger>(_logger)
+            .BuildServiceProvider();
     }
 
     protected virtual void Dispose(bool disposing)
@@ -55,7 +55,11 @@ public class DownloadSopsCommandTests : IDisposable
 
         // Assert
         Assert.Equal(0, exitCode);
-        Assert.StartsWith("Downloading SOPS from https://github.com/getsops/sops", _logger.Error.Output, StringComparison.InvariantCulture);
+        Assert.StartsWith(
+            "Downloading SOPS from https://github.com/getsops/sops",
+            _logger.Error.Output,
+            StringComparison.InvariantCulture
+        );
         Assert.Equal("SOPS has been successfully downloaded.\n", _logger.Out.Output);
     }
 
@@ -67,15 +71,27 @@ public class DownloadSopsCommandTests : IDisposable
 
         var config = new CliConfiguration(command);
 
-        _mockSopsDownloadService.DownloadAsync().ThrowsAsyncForAnyArgs(new SopsExecutionException("Expcetion message") { ExitCode = 1 });
+        _mockSopsDownloadService
+            .DownloadAsync()
+            .ThrowsAsyncForAnyArgs(
+                new SopsExecutionException("Expcetion message") { ExitCode = 1 }
+            );
 
         // Act
         var exitCode = await config.InvokeAsync("");
 
         // Assert
         Assert.Equal(1, exitCode);
-        Assert.StartsWith("Downloading SOPS from https://github.com/getsops/sops", _logger.Error.Output, StringComparison.InvariantCulture);
-        Assert.EndsWith("Expcetion message\n", _logger.Error.Output, StringComparison.InvariantCulture);
+        Assert.StartsWith(
+            "Downloading SOPS from https://github.com/getsops/sops",
+            _logger.Error.Output,
+            StringComparison.InvariantCulture
+        );
+        Assert.EndsWith(
+            "Expcetion message\n",
+            _logger.Error.Output,
+            StringComparison.InvariantCulture
+        );
     }
 
     [Theory]
@@ -97,7 +113,8 @@ public class DownloadSopsCommandTests : IDisposable
 
         // Assert
         Assert.Equal(0, exitCode);
-        Assert.Equal("""
+        Assert.Equal(
+            """
             Description:
               Download SOPS from https://github.com/getsops/sops
 
@@ -109,6 +126,9 @@ public class DownloadSopsCommandTests : IDisposable
               --verbose       Enable verbose logging output
 
 
-            """, output.ToString().RemoveHelpWrapNewLines(), ignoreLineEndingDifferences: true);
+            """,
+            output.ToString().RemoveHelpWrapNewLines(),
+            ignoreLineEndingDifferences: true
+        );
     }
 }

@@ -9,17 +9,35 @@ internal class SopsService : ISopsService
     private readonly ILogger _logger;
     private readonly ISopsPathService _sopsPathService;
 
-    public async Task EncryptAsync(FileInfo inputFilePath, FileInfo outoutFilePath, CancellationToken cancellationToken = default)
+    public async Task EncryptAsync(
+        FileInfo inputFilePath,
+        FileInfo outoutFilePath,
+        CancellationToken cancellationToken = default
+    )
     {
-        await ExecuteAsync(["--output", outoutFilePath.FullName, "--encrypt", inputFilePath.FullName], cancellationToken);
+        await ExecuteAsync(
+            ["--output", outoutFilePath.FullName, "--encrypt", inputFilePath.FullName],
+            cancellationToken
+        );
     }
 
-    public async Task DecryptAsync(FileInfo inputFilePath, FileInfo outoutFilePath, CancellationToken cancellationToken = default)
+    public async Task DecryptAsync(
+        FileInfo inputFilePath,
+        FileInfo outoutFilePath,
+        CancellationToken cancellationToken = default
+    )
     {
-        await ExecuteAsync(["--output", outoutFilePath.FullName, "--decrypt", inputFilePath.FullName], cancellationToken);
+        await ExecuteAsync(
+            ["--output", outoutFilePath.FullName, "--decrypt", inputFilePath.FullName],
+            cancellationToken
+        );
     }
 
-    public async Task RunCommandWithSecretsEnvironmentAsync(string command, FileInfo inputFilePath, CancellationToken cancellationToken = default)
+    public async Task RunCommandWithSecretsEnvironmentAsync(
+        string command,
+        FileInfo inputFilePath,
+        CancellationToken cancellationToken = default
+    )
     {
         await ExecuteAsync(["exec-env", inputFilePath.FullName, command], cancellationToken);
     }
@@ -30,7 +48,10 @@ internal class SopsService : ISopsService
         _sopsPathService = sopsPathService;
     }
 
-    private async Task ExecuteAsync(string[] arguments, CancellationToken cancellationToken = default)
+    private async Task ExecuteAsync(
+        string[] arguments,
+        CancellationToken cancellationToken = default
+    )
     {
         var processStartInfo = new ProcessStartInfo()
         {
@@ -40,8 +61,13 @@ internal class SopsService : ISopsService
 
         // Add SOPS user directory to path for the process
         var originalPath = Environment.GetEnvironmentVariable(PathEnvironmentVariableName);
-        var newPath = $"{originalPath}{Path.PathSeparator}{_sopsPathService.GetDotnetSopsUserDirectory()}";
-        Environment.SetEnvironmentVariable(PathEnvironmentVariableName, newPath, EnvironmentVariableTarget.Process);
+        var newPath =
+            $"{originalPath}{Path.PathSeparator}{_sopsPathService.GetDotnetSopsUserDirectory()}";
+        Environment.SetEnvironmentVariable(
+            PathEnvironmentVariableName,
+            newPath,
+            EnvironmentVariableTarget.Process
+        );
 
         foreach (var argument in arguments)
         {
@@ -50,9 +76,13 @@ internal class SopsService : ISopsService
 
         try
         {
-            _logger.LogDebug($"Executing sops with arguments: {string.Join(" ", processStartInfo.ArgumentList)}");
+            _logger.LogDebug(
+                $"Executing sops with arguments: {string.Join(" ", processStartInfo.ArgumentList)}"
+            );
 
-            using var process = Process.Start(processStartInfo) ?? throw new SopsMissingException(Properties.Resources.SopsRunFailed);
+            using var process =
+                Process.Start(processStartInfo)
+                ?? throw new SopsMissingException(Properties.Resources.SopsRunFailed);
             await process.WaitForExitAsync(cancellationToken);
             if (process.ExitCode != 0)
             {
@@ -71,7 +101,11 @@ internal class SopsService : ISopsService
             if (originalPath != null)
             {
                 // Reset path for the process
-                Environment.SetEnvironmentVariable(PathEnvironmentVariableName, originalPath, EnvironmentVariableTarget.Process);
+                Environment.SetEnvironmentVariable(
+                    PathEnvironmentVariableName,
+                    originalPath,
+                    EnvironmentVariableTarget.Process
+                );
             }
         }
     }

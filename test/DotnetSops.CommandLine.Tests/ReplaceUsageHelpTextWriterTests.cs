@@ -1,6 +1,7 @@
 using NSubstitute;
 
 namespace DotnetSops.CommandLine.Tests;
+
 public class ReplaceUsageHelpTextWriterTests
 {
     [Fact]
@@ -68,7 +69,10 @@ public class ReplaceUsageHelpTextWriterTests
     {
         // Arrange
         var textWriter = Substitute.For<TextWriter>();
-        using var replaceUsageHelpTextWriter = new ReplaceUsageHelpTextWriter(textWriter, "search-value");
+        using var replaceUsageHelpTextWriter = new ReplaceUsageHelpTextWriter(
+            textWriter,
+            "search-value"
+        );
 
         // Act
         replaceUsageHelpTextWriter.WriteLine("some text search-value after");
@@ -94,8 +98,16 @@ public class ReplaceUsageHelpTextWriterTests
     }
 
     [Fact]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "VSTHRD103:Call async methods when in an async method", Justification = "Test case")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1849:Call async methods when in an async method", Justification = "Test case")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Usage",
+        "VSTHRD103:Call async methods when in an async method",
+        Justification = "Test case"
+    )]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Performance",
+        "CA1849:Call async methods when in an async method",
+        Justification = "Test case"
+    )]
     public async Task DisposeAsync_DisposeAsyncTextWriter()
     {
         // Arrange

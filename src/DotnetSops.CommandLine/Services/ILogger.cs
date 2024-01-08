@@ -1,6 +1,7 @@
 using Spectre.Console;
 
 namespace DotnetSops.CommandLine.Services;
+
 internal interface ILogger
 {
     public bool Verbose { get; set; }
@@ -23,5 +24,11 @@ internal interface ILogger
 
     Task<bool> ConfirmAsync(string question, CancellationToken cancellationToken);
 
-    Task<T> SelectAsync<T>(string question, T[] choices, Func<T, string> converter, CancellationToken cancellationToken) where T : notnull;
+    Task<T> SelectAsync<T>(
+        string question,
+        T[] choices,
+        Func<T, string> converter,
+        CancellationToken cancellationToken
+    )
+        where T : notnull;
 }

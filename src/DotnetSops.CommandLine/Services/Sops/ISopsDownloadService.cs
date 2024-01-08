@@ -1,4 +1,5 @@
 namespace DotnetSops.CommandLine.Services.Sops;
+
 internal interface ISopsDownloadService
 {
     /// <summary>

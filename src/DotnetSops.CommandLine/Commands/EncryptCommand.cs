@@ -14,21 +14,24 @@ internal class EncryptCommand : CliCommand
 
     private readonly IServiceProvider _serviceProvider;
 
-    private readonly CliOption<FileInfo?> _projectFileOption = new("--project", "-p")
-    {
-        Description = Properties.Resources.EncryptCommandProjectOptionDescription,
-    };
+    private readonly CliOption<FileInfo?> _projectFileOption =
+        new("--project", "-p")
+        {
+            Description = Properties.Resources.EncryptCommandProjectOptionDescription,
+        };
 
-    private readonly CliOption<string> _userSecretsIdOption = new("--id")
-    {
-        Description = Properties.Resources.EncryptCommandSecretsIdOptionDescription,
-    };
+    private readonly CliOption<string> _userSecretsIdOption =
+        new("--id")
+        {
+            Description = Properties.Resources.EncryptCommandSecretsIdOptionDescription,
+        };
 
-    private readonly CliOption<FileInfo> _outputFileOption = new("--file")
-    {
-        Description = Properties.Resources.EncryptCommandFileOptionDescription,
-        DefaultValueFactory = (_) => new FileInfo("secrets.json"),
-    };
+    private readonly CliOption<FileInfo> _outputFileOption =
+        new("--file")
+        {
+            Description = Properties.Resources.EncryptCommandFileOptionDescription,
+            DefaultValueFactory = (_) => new FileInfo("secrets.json"),
+        };
 
     public EncryptCommand(IServiceProvider serviceProvider)
         : base(CommandName, Properties.Resources.EncryptCommandDescription)
@@ -39,22 +42,35 @@ internal class EncryptCommand : CliCommand
         Add(_userSecretsIdOption);
         Add(_outputFileOption);
 
-        SetAction((parseResult, cancellationToken) =>
-        {
-            return ExecuteAsync(
-                parseResult.GetValue(_projectFileOption),
-                parseResult.GetValue(_userSecretsIdOption),
-                parseResult.GetValue(_outputFileOption)!,
-                _serviceProvider.GetRequiredService<ILogger>(),
-                _serviceProvider.GetRequiredService<IProjectInfoService>(),
-                _serviceProvider.GetRequiredService<ISopsService>(),
-                _serviceProvider.GetRequiredService<IUserSecretsService>(),
-                _serviceProvider.GetRequiredService<IFileBomService>(),
-                cancellationToken);
-        });
+        SetAction(
+            (parseResult, cancellationToken) =>
+            {
+                return ExecuteAsync(
+                    parseResult.GetValue(_projectFileOption),
+                    parseResult.GetValue(_userSecretsIdOption),
+                    parseResult.GetValue(_outputFileOption)!,
+                    _serviceProvider.GetRequiredService<ILogger>(),
+                    _serviceProvider.GetRequiredService<IProjectInfoService>(),
+                    _serviceProvider.GetRequiredService<ISopsService>(),
+                    _serviceProvider.GetRequiredService<IUserSecretsService>(),
+                    _serviceProvider.GetRequiredService<IFileBomService>(),
+                    cancellationToken
+                );
+            }
+        );
     }
 
-    private static async Task<int> ExecuteAsync(FileInfo? projectFile, string? userSecretId, FileInfo outputFile, ILogger logger, IProjectInfoService projectInfoService, ISopsService sopsService, IUserSecretsService userSecretsService, IFileBomService fileBomService, CancellationToken cancellationToken)
+    private static async Task<int> ExecuteAsync(
+        FileInfo? projectFile,
+        string? userSecretId,
+        FileInfo outputFile,
+        ILogger logger,
+        IProjectInfoService projectInfoService,
+        ISopsService sopsService,
+        IUserSecretsService userSecretsService,
+        IFileBomService fileBomService,
+        CancellationToken cancellationToken
+    )
     {
         logger.LogDebug($"Using output file '{outputFile}'");
 
@@ -96,7 +112,9 @@ internal class EncryptCommand : CliCommand
         {
             await sopsService.EncryptAsync(inputFile, outputFile, cancellationToken);
 
-            logger.LogSuccess(LocalizationResources.EncryptCommandSuccess(userSecretId, outputFile.FullName));
+            logger.LogSuccess(
+                LocalizationResources.EncryptCommandSuccess(userSecretId, outputFile.FullName)
+            );
 
             return 0;
         }

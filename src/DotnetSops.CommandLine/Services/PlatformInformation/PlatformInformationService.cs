@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 
 namespace DotnetSops.CommandLine.Services.PlatformInformation;
+
 internal class PlatformInformationService : IPlatformInformationService
 {
     public Architecture ProcessArchitecture => RuntimeInformation.ProcessArchitecture;

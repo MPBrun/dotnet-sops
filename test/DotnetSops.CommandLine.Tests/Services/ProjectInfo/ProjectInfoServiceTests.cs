@@ -27,7 +27,9 @@ public class ProjectInfoServiceTests : IDisposable
 
         var file = new FileInfo("Project.csproj");
 
-        await File.WriteAllTextAsync(file.FullName, """
+        await File.WriteAllTextAsync(
+            file.FullName,
+            """
             <Project Sdk="Microsoft.NET.Sdk">
 
               <PropertyGroup>
@@ -39,7 +41,8 @@ public class ProjectInfoServiceTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """);
+            """
+        );
 
         // Act
         var userSecretId = projectInfoService.FindUserSecretId(file);
@@ -54,7 +57,9 @@ public class ProjectInfoServiceTests : IDisposable
         // Arrange
         var projectInfoService = new ProjectInfoService();
 
-        await File.WriteAllTextAsync("Project.csproj", """
+        await File.WriteAllTextAsync(
+            "Project.csproj",
+            """
             <Project Sdk="Microsoft.NET.Sdk">
 
               <PropertyGroup>
@@ -66,7 +71,8 @@ public class ProjectInfoServiceTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """);
+            """
+        );
 
         // Act
         var userSecretId = projectInfoService.FindUserSecretId(null);
@@ -81,7 +87,9 @@ public class ProjectInfoServiceTests : IDisposable
         // Arrange
         var projectInfoService = new ProjectInfoService();
 
-        await File.WriteAllTextAsync("Project.csproj", """
+        await File.WriteAllTextAsync(
+            "Project.csproj",
+            """
             <Project Sdk="Microsoft.NET.Sdk">
 
               <PropertyGroup>
@@ -93,9 +101,12 @@ public class ProjectInfoServiceTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """);
+            """
+        );
 
-        await File.WriteAllTextAsync("Project.vbproj", """
+        await File.WriteAllTextAsync(
+            "Project.vbproj",
+            """
             <Project Sdk="Microsoft.NET.Sdk">
 
               <PropertyGroup>
@@ -107,12 +118,21 @@ public class ProjectInfoServiceTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """);
+            """
+        );
 
         // Act / Assert
-        var exception = Assert.Throws<ProjectInfoSearchException>(() => projectInfoService.FindUserSecretId(null));
-        Assert.Equal($"Multiple MSBuild project files found in '{Directory.GetCurrentDirectory()}'.", exception.Message);
-        Assert.Equal("Specify which project to use with the [yellow]'--project'[/] option.", exception.Suggestion);
+        var exception = Assert.Throws<ProjectInfoSearchException>(
+            () => projectInfoService.FindUserSecretId(null)
+        );
+        Assert.Equal(
+            $"Multiple MSBuild project files found in '{Directory.GetCurrentDirectory()}'.",
+            exception.Message
+        );
+        Assert.Equal(
+            "Specify which project to use with the [yellow]'--project'[/] option.",
+            exception.Suggestion
+        );
     }
 
     [Fact]
@@ -121,7 +141,9 @@ public class ProjectInfoServiceTests : IDisposable
         // Arrange
         var projectInfoService = new ProjectInfoService();
 
-        await File.WriteAllTextAsync("Project.csproj", """
+        await File.WriteAllTextAsync(
+            "Project.csproj",
+            """
             <Project Sdk="Microsoft.NET.Sdk">
 
               <PropertyGroup>
@@ -133,16 +155,20 @@ public class ProjectInfoServiceTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """);
+            """
+        );
 
-        await File.WriteAllTextAsync("Project.xproj", """
+        await File.WriteAllTextAsync(
+            "Project.xproj",
+            """
             <Project Sdk="Microsoft.NET.Sdk">
 
               <PropertyGroup>
               </PropertyGroup>
 
             </Project>
-            """);
+            """
+        );
 
         // Act
         var userSecretId = projectInfoService.FindUserSecretId(null);
@@ -158,9 +184,17 @@ public class ProjectInfoServiceTests : IDisposable
         var projectInfoService = new ProjectInfoService();
 
         // Act / Assert
-        var exception = Assert.Throws<ProjectInfoSearchException>(() => projectInfoService.FindUserSecretId(null));
-        Assert.Equal($"Could not find a MSBuild project file in '{Directory.GetCurrentDirectory()}'.", exception.Message);
-        Assert.Equal("Specify which project to use with the [yellow]'--project'[/] option or use the [yellow]'--id'[/] option.", exception.Suggestion);
+        var exception = Assert.Throws<ProjectInfoSearchException>(
+            () => projectInfoService.FindUserSecretId(null)
+        );
+        Assert.Equal(
+            $"Could not find a MSBuild project file in '{Directory.GetCurrentDirectory()}'.",
+            exception.Message
+        );
+        Assert.Equal(
+            "Specify which project to use with the [yellow]'--project'[/] option or use the [yellow]'--id'[/] option.",
+            exception.Suggestion
+        );
     }
 
     [Fact]
@@ -171,7 +205,9 @@ public class ProjectInfoServiceTests : IDisposable
 
         var file = new FileInfo("Project.csproj");
 
-        await File.WriteAllTextAsync(file.FullName, """
+        await File.WriteAllTextAsync(
+            file.FullName,
+            """
             <Project Sdk="Microsoft.NET.Sdk">
 
               <PropertyGroup>
@@ -182,17 +218,26 @@ public class ProjectInfoServiceTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """);
+            """
+        );
 
         // Act / Assert
-        var exception = Assert.Throws<ProjectInfoSearchException>(() => projectInfoService.FindUserSecretId(file));
-        Assert.Equal($"Could not find the global property 'UserSecretsId' in MSBuild project '{file.FullName}'.", exception.Message);
-        Assert.Equal("""
+        var exception = Assert.Throws<ProjectInfoSearchException>(
+            () => projectInfoService.FindUserSecretId(file)
+        );
+        Assert.Equal(
+            $"Could not find the global property 'UserSecretsId' in MSBuild project '{file.FullName}'.",
+            exception.Message
+        );
+        Assert.Equal(
+            """
                     Ensure this property is set in the project or use the [yellow]'--id'[/] command-line option.
 
                     The 'UserSecretsId' property can be created by running this command:
                       [yellow]dotnet user-secrets init[/]
-                    """, exception.Suggestion);
+                    """,
+            exception.Suggestion
+        );
     }
 
     [Fact]
@@ -203,7 +248,9 @@ public class ProjectInfoServiceTests : IDisposable
 
         var file = new FileInfo("Project.csproj");
 
-        await File.WriteAllTextAsync(file.FullName, """
+        await File.WriteAllTextAsync(
+            file.FullName,
+            """
             <Project Sdk="Microsoft.NET.Sdk">
 
               <PropertyGroup>
@@ -214,10 +261,13 @@ public class ProjectInfoServiceTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """);
+            """
+        );
 
         // Act / Assert
-        var exception = Assert.Throws<ProjectInfoSearchException>(() => projectInfoService.FindUserSecretId(file));
+        var exception = Assert.Throws<ProjectInfoSearchException>(
+            () => projectInfoService.FindUserSecretId(file)
+        );
         Assert.Equal($"Could not load the MSBuild project '{file.FullName}'.", exception.Message);
         Assert.Null(exception.Suggestion);
     }
@@ -231,7 +281,9 @@ public class ProjectInfoServiceTests : IDisposable
         var file = new FileInfo("Project.csproj");
 
         // Act / Assert
-        var exception = Assert.Throws<ProjectInfoSearchException>(() => projectInfoService.FindUserSecretId(file));
+        var exception = Assert.Throws<ProjectInfoSearchException>(
+            () => projectInfoService.FindUserSecretId(file)
+        );
         Assert.Equal($"File '{file.FullName}' does not exist.", exception.Message);
         Assert.Null(exception.Suggestion);
     }

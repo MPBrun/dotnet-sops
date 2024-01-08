@@ -11,7 +11,11 @@ internal interface ISopsService
     /// <returns></returns>
     /// <exception cref="SopsMissingException"></exception>
     /// <exception cref="SopsExecutionException"></exception>
-    Task EncryptAsync(FileInfo inputFilePath, FileInfo outoutFilePath, CancellationToken cancellationToken = default);
+    Task EncryptAsync(
+        FileInfo inputFilePath,
+        FileInfo outoutFilePath,
+        CancellationToken cancellationToken = default
+    );
 
     /// <summary>
     /// Decrypt file
@@ -22,7 +26,11 @@ internal interface ISopsService
     /// <returns></returns>
     /// <exception cref="SopsMissingException"></exception>
     /// <exception cref="SopsExecutionException"></exception>
-    Task DecryptAsync(FileInfo inputFilePath, FileInfo outoutFilePath, CancellationToken cancellationToken = default);
+    Task DecryptAsync(
+        FileInfo inputFilePath,
+        FileInfo outoutFilePath,
+        CancellationToken cancellationToken = default
+    );
 
     /// <summary>
     /// Run command with secrets as environment variables
@@ -33,5 +41,9 @@ internal interface ISopsService
     /// <returns></returns>
     /// <exception cref="SopsMissingException"></exception>
     /// <exception cref="SopsExecutionException"></exception>
-    Task RunCommandWithSecretsEnvironmentAsync(string command, FileInfo inputFilePath, CancellationToken cancellationToken = default);
+    Task RunCommandWithSecretsEnvironmentAsync(
+        string command,
+        FileInfo inputFilePath,
+        CancellationToken cancellationToken = default
+    );
 }

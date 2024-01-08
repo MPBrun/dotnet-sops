@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Testing;
 
 namespace DotnetSops.CommandLine.Tests.Commands;
+
 public partial class RootDotnetSopsCommandTests
 {
     private readonly LoggerMock _logger = new(new TestConsole(), new TestConsole());
@@ -44,10 +45,7 @@ public partial class RootDotnetSopsCommandTests
         // Arrange
         var command = new RootDotnetSopsCommand(_serviceProvider);
         var output = new StringWriter();
-        var config = new CliConfiguration(command)
-        {
-            Output = output
-        };
+        var config = new CliConfiguration(command) { Output = output };
 
         // Act
         var exitCode = await config.InvokeAsync("--version");
@@ -63,10 +61,7 @@ public partial class RootDotnetSopsCommandTests
         // Arrange
         var command = new RootDotnetSopsCommand(_serviceProvider);
         var output = new StringWriter();
-        var config = new CliConfiguration(command)
-        {
-            Output = output
-        };
+        var config = new CliConfiguration(command) { Output = output };
 
         // Act
         await config.InvokeAsync("init");
@@ -81,10 +76,7 @@ public partial class RootDotnetSopsCommandTests
         // Arrange
         var command = new RootDotnetSopsCommand(_serviceProvider);
         var output = new StringWriter();
-        var config = new CliConfiguration(command)
-        {
-            Output = output
-        };
+        var config = new CliConfiguration(command) { Output = output };
 
         // Act
         await config.InvokeAsync("init --verbose");
@@ -112,7 +104,8 @@ public partial class RootDotnetSopsCommandTests
 
         // Assert
         Assert.Equal(0, exitCode);
-        Assert.Equal("""
+        Assert.Equal(
+            """
             Description:
               Encrypt and share secrets with the user-secrets tool, utilizing SOPS for encryption and decryption. Encrypted secrets can be shared with other team members who can decrypt them if they have access.
               
@@ -134,6 +127,9 @@ public partial class RootDotnetSopsCommandTests
               download-sops          Download SOPS from https://github.com/getsops/sops
 
 
-            """, output.ToString().RemoveHelpWrapNewLines(), ignoreLineEndingDifferences: true);
+            """,
+            output.ToString().RemoveHelpWrapNewLines(),
+            ignoreLineEndingDifferences: true
+        );
     }
 }

@@ -14,6 +14,12 @@ public class SopsPathServiceTests
         var path = sopsPathService.GetDotnetSopsUserDirectory();
 
         // Assert
-        Assert.Equal(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "dotnet-sops"), path);
+        Assert.Equal(
+            Path.Join(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "dotnet-sops"
+            ),
+            path
+        );
     }
 }

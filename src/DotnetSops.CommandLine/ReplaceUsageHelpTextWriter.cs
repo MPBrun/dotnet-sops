@@ -27,7 +27,9 @@ internal class ReplaceUsageHelpTextWriter : TextWriter
 
     public override void Write(string? value)
     {
-        _textWriter.Write(value?.Replace(_searchValue, Replacement, StringComparison.InvariantCulture));
+        _textWriter.Write(
+            value?.Replace(_searchValue, Replacement, StringComparison.InvariantCulture)
+        );
     }
 
     public override void Write(char value)
@@ -42,7 +44,9 @@ internal class ReplaceUsageHelpTextWriter : TextWriter
 
     public override void WriteLine(string? value)
     {
-        _textWriter.WriteLine(value?.Replace(_searchValue, Replacement, StringComparison.InvariantCulture));
+        _textWriter.WriteLine(
+            value?.Replace(_searchValue, Replacement, StringComparison.InvariantCulture)
+        );
     }
 
     public override void WriteLine(object? value)

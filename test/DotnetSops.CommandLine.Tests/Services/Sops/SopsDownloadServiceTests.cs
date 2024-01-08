@@ -31,7 +31,12 @@ public class SopsDownloadServiceTests : IDisposable
     [InlineData(false, true, false, Architecture.X64)]
     [InlineData(false, false, true, Architecture.Arm64)]
     [InlineData(false, false, true, Architecture.X64)]
-    public async Task DownloadAsync_ValidOperationSystems_Success(bool windows, bool macos, bool linux, Architecture architecture)
+    public async Task DownloadAsync_ValidOperationSystems_Success(
+        bool windows,
+        bool macos,
+        bool linux,
+        Architecture architecture
+    )
     {
         // Arrange
         using var httpClient = new HttpClient();
@@ -46,7 +51,12 @@ public class SopsDownloadServiceTests : IDisposable
 
         var mockLogger = Substitute.For<ILogger>();
 
-        var service = new SopsDownloadService(mockPlatformInformation, httpClient, sopsPathService, mockLogger);
+        var service = new SopsDownloadService(
+            mockPlatformInformation,
+            httpClient,
+            sopsPathService,
+            mockLogger
+        );
 
         // Act / Assert
         await service.DownloadAsync();
@@ -68,7 +78,12 @@ public class SopsDownloadServiceTests : IDisposable
     [InlineData(false, false, true, Architecture.LoongArch64)]
     [InlineData(false, false, true, Architecture.Armv6)]
     [InlineData(false, false, true, Architecture.Ppc64le)]
-    public async Task DownloadAsync_InvalidOperatingSystemAndArchitecture_Throws(bool windows, bool macos, bool linux, Architecture architecture)
+    public async Task DownloadAsync_InvalidOperatingSystemAndArchitecture_Throws(
+        bool windows,
+        bool macos,
+        bool linux,
+        Architecture architecture
+    )
     {
         // Arrange
         using var httpClient = new HttpClient();
@@ -83,7 +98,12 @@ public class SopsDownloadServiceTests : IDisposable
 
         var mockLogger = Substitute.For<ILogger>();
 
-        var service = new SopsDownloadService(mockPlatformInformation, httpClient, sopsPathService, mockLogger);
+        var service = new SopsDownloadService(
+            mockPlatformInformation,
+            httpClient,
+            sopsPathService,
+            mockLogger
+        );
 
         // Act / Assert
         await Assert.ThrowsAsync<NotSupportedException>(() => service.DownloadAsync());
@@ -99,10 +119,17 @@ public class SopsDownloadServiceTests : IDisposable
         var sopsPathService = new SopsPathService();
         var mockLogger = Substitute.For<ILogger>();
 
-        var service = new SopsDownloadService(mockPlatformInformation, httpClient, sopsPathService, mockLogger);
+        var service = new SopsDownloadService(
+            mockPlatformInformation,
+            httpClient,
+            sopsPathService,
+            mockLogger
+        );
 
         // Act / Assert
-        var exception = await Assert.ThrowsAsync<NotSupportedException>(() => service.DownloadAsync());
+        var exception = await Assert.ThrowsAsync<NotSupportedException>(
+            () => service.DownloadAsync()
+        );
         Assert.Equal("This operating system is not supported.", exception.Message);
     }
 
@@ -124,21 +151,34 @@ public class SopsDownloadServiceTests : IDisposable
             Content = new StringContent("Invalid content")
         };
         mockHttpClientHandler
-            .ProtectedMethod<Task<HttpResponseMessage>>("SendAsync", Arg.Any<HttpRequestMessage>(), Arg.Any<CancellationToken>())
+            .ProtectedMethod<Task<HttpResponseMessage>>(
+                "SendAsync",
+                Arg.Any<HttpRequestMessage>(),
+                Arg.Any<CancellationToken>()
+            )
             .Returns(result);
         using var httpClient = new HttpClient(mockHttpClientHandler);
 
-        var service = new SopsDownloadService(mockPlatformInformation, httpClient, sopsPathService, mockLogger);
+        var service = new SopsDownloadService(
+            mockPlatformInformation,
+            httpClient,
+            sopsPathService,
+            mockLogger
+        );
 
         // Act / Assert
-        var exception = await Assert.ThrowsAsync<SopsDownloadException>(() => service.DownloadAsync());
+        var exception = await Assert.ThrowsAsync<SopsDownloadException>(
+            () => service.DownloadAsync()
+        );
         Assert.Equal(
             """
             SHA256 of SOPS executable did not match.
 
             Expected: fe1f6299294b47ceda565e1091e843ee3f3db58764901d4298eb00558189e25f
             Actual:   1cd34f3b9a3a52a0317abf2b2518511d79a18c6ac469d15617c96e18099037b3
-            """, exception.Message);
+            """,
+            exception.Message
+        );
     }
 
     [Fact]
@@ -158,20 +198,33 @@ public class SopsDownloadServiceTests : IDisposable
             StatusCode = System.Net.HttpStatusCode.NotFound,
         };
         mockHttpClientHandler
-            .ProtectedMethod<Task<HttpResponseMessage>>("SendAsync", Arg.Any<HttpRequestMessage>(), Arg.Any<CancellationToken>())
+            .ProtectedMethod<Task<HttpResponseMessage>>(
+                "SendAsync",
+                Arg.Any<HttpRequestMessage>(),
+                Arg.Any<CancellationToken>()
+            )
             .Returns(result);
         using var httpClient = new HttpClient(mockHttpClientHandler);
 
-        var service = new SopsDownloadService(mockPlatformInformation, httpClient, sopsPathService, mockLogger);
+        var service = new SopsDownloadService(
+            mockPlatformInformation,
+            httpClient,
+            sopsPathService,
+            mockLogger
+        );
 
         // Act / Assert
-        var exception = await Assert.ThrowsAsync<SopsDownloadException>(() => service.DownloadAsync());
+        var exception = await Assert.ThrowsAsync<SopsDownloadException>(
+            () => service.DownloadAsync()
+        );
         Assert.Equal(
             """
             Failed to download SOPS.
 
             HTTP status code: 404
             URL: https://github.com/getsops/sops/releases/download/v3.8.1/sops-v3.8.1.exe
-            """, exception.Message);
+            """,
+            exception.Message
+        );
     }
 }

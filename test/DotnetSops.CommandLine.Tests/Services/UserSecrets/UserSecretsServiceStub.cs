@@ -1,6 +1,7 @@
 using DotnetSops.CommandLine.Services.UserSecrets;
 
 namespace DotnetSops.CommandLine.Tests.Services.UserSecrets;
+
 internal sealed class UserSecretsServiceStub : IUserSecretsService
 {
     private readonly string _rootDir;

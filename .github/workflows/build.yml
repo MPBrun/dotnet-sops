@@ -29,6 +29,9 @@ jobs:
 
     - name: Restore
       run: dotnet restore
+      
+    - name: Restore tools
+      run: dotnet tool restore
 
     - name: Find version number
       id: version
@@ -41,8 +44,11 @@ jobs:
           echo "VERSION=0.0.0-alpha.${{ github.run_number }}" >> $GITHUB_OUTPUT;
         fi
 
-    - name: Format
+    - name: Lint - format
       run: dotnet format --no-restore --verify-no-changes
+
+    - name: Lint - csharpier
+      run: dotnet csharpier . --check
       
     - name: Build
       run: dotnet build --configuration Release -p:Version=${{ steps.version.outputs.VERSION }}

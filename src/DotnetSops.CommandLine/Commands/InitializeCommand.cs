@@ -6,6 +6,7 @@ using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
 namespace DotnetSops.CommandLine.Commands;
+
 internal class InitializeCommand : CliCommand
 {
     public const string CommandName = "init";
@@ -17,12 +18,15 @@ internal class InitializeCommand : CliCommand
     {
         _serviceProvider = serviceProvider;
 
-        SetAction((parseResult, cancellationToken) =>
-        {
-            return ExecuteAsync(
-                _serviceProvider.GetRequiredService<ILogger>(),
-                cancellationToken);
-        });
+        SetAction(
+            (parseResult, cancellationToken) =>
+            {
+                return ExecuteAsync(
+                    _serviceProvider.GetRequiredService<ILogger>(),
+                    cancellationToken
+                );
+            }
+        );
     }
 
     private static async Task<int> ExecuteAsync(ILogger logger, CancellationToken cancellationToken)
@@ -33,7 +37,10 @@ internal class InitializeCommand : CliCommand
         var alreadyExist = File.Exists(".sops.yaml");
         if (alreadyExist)
         {
-            var generate = await logger.ConfirmAsync(Properties.Resources.InitializeCommandConfigAlreadyExistQuestion, cancellationToken);
+            var generate = await logger.ConfirmAsync(
+                Properties.Resources.InitializeCommandConfigAlreadyExistQuestion,
+                cancellationToken
+            );
             if (!generate)
             {
                 return 0;
@@ -61,21 +68,18 @@ internal class InitializeCommand : CliCommand
         return 0;
     }
 
-    private static async Task<SopsConfiguration> PromptSopsConfigurationAsync(ILogger logger, CancellationToken cancellationToken)
+    private static async Task<SopsConfiguration> PromptSopsConfigurationAsync(
+        ILogger logger,
+        CancellationToken cancellationToken
+    )
     {
-        var sopsCreationRule = new SopsCreationRule()
-        {
-            PathRegex = "secrets.json",
-        };
-        var sopsConfiguration = new SopsConfiguration()
-        {
-            CreationRules =
-            [
-                sopsCreationRule
-            ]
-        };
+        var sopsCreationRule = new SopsCreationRule() { PathRegex = "secrets.json", };
+        var sopsConfiguration = new SopsConfiguration() { CreationRules = [sopsCreationRule] };
 
-        var useKeyGroups = await logger.ConfirmAsync(Properties.Resources.InitializeCommandUseKeyGroupsQuestion, cancellationToken);
+        var useKeyGroups = await logger.ConfirmAsync(
+            Properties.Resources.InitializeCommandUseKeyGroupsQuestion,
+            cancellationToken
+        );
         if (useKeyGroups)
         {
             await PromptKeyGroupsKeysAsync(logger, sopsCreationRule, cancellationToken);
@@ -88,7 +92,11 @@ internal class InitializeCommand : CliCommand
         return sopsConfiguration;
     }
 
-    private static async Task PromptKeyGroupsKeysAsync(ILogger logger, SopsCreationRule sopsCreationRule, CancellationToken cancellationToken)
+    private static async Task PromptKeyGroupsKeysAsync(
+        ILogger logger,
+        SopsCreationRule sopsCreationRule,
+        CancellationToken cancellationToken
+    )
     {
         do
         {
@@ -99,72 +107,119 @@ internal class InitializeCommand : CliCommand
                 switch (keyType)
                 {
                     case SopsKeyType.AzureKeyVault:
+                    {
+                        logger.LogInformation(
+                            Properties.Resources.InitializeCommandAzureKeyVaultFormat
+                        );
+                        var keyVaultName = await logger.AskAsync(
+                            Properties.Resources.InitializeCommandAzureKeyVaultNameQuestion,
+                            cancellationToken
+                        );
+                        var keyName = await logger.AskAsync(
+                            Properties.Resources.InitializeCommandAzureKeyVaultKeyQuestion,
+                            cancellationToken
+                        );
+                        var keyVersion = await logger.AskAsync(
+                            Properties.Resources.InitializeCommandAzureKeyVaultVersionQuestion,
+                            cancellationToken
+                        );
+
+                        var azureKeyVaultKey = new SopsAzureKeyVaultKeyGroup()
                         {
-                            logger.LogInformation(Properties.Resources.InitializeCommandAzureKeyVaultFormat);
-                            var keyVaultName = await logger.AskAsync(Properties.Resources.InitializeCommandAzureKeyVaultNameQuestion, cancellationToken);
-                            var keyName = await logger.AskAsync(Properties.Resources.InitializeCommandAzureKeyVaultKeyQuestion, cancellationToken);
-                            var keyVersion = await logger.AskAsync(Properties.Resources.InitializeCommandAzureKeyVaultVersionQuestion, cancellationToken);
+                            VaultUrl = $"https://{keyVaultName.Trim()}.vault.azure.net/",
+                            Key = keyName.Trim(),
+                            Version = keyVersion.Trim(),
+                        };
 
-                            var azureKeyVaultKey = new SopsAzureKeyVaultKeyGroup()
-                            {
-                                VaultUrl = $"https://{keyVaultName.Trim()}.vault.azure.net/",
-                                Key = keyName.Trim(),
-                                Version = keyVersion.Trim(),
-                            };
-
-                            keyGroup.AzureKeyvault ??= [];
-                            keyGroup.AzureKeyvault.Add(azureKeyVaultKey);
-                            break;
-                        }
+                        keyGroup.AzureKeyvault ??= [];
+                        keyGroup.AzureKeyvault.Add(azureKeyVaultKey);
+                        break;
+                    }
                     case SopsKeyType.AwsKms:
-                        {
-                            logger.LogInformation(Properties.Resources.InitializeCommandAwsKmsFormat);
-                            var arn = await logger.AskAsync(Properties.Resources.InitializeCommandAwsKmsQuestion, cancellationToken);
-                            keyGroup.Kms ??= [];
-                            keyGroup.Kms.AddRange(arn.Trim().Split(",").Select(id => new SopsKmsKeyGroup() { Arn = id }));
-                            break;
-                        }
+                    {
+                        logger.LogInformation(Properties.Resources.InitializeCommandAwsKmsFormat);
+                        var arn = await logger.AskAsync(
+                            Properties.Resources.InitializeCommandAwsKmsQuestion,
+                            cancellationToken
+                        );
+                        keyGroup.Kms ??= [];
+                        keyGroup.Kms.AddRange(
+                            arn.Trim().Split(",").Select(id => new SopsKmsKeyGroup() { Arn = id })
+                        );
+                        break;
+                    }
                     case SopsKeyType.GcpKms:
-                        {
-                            logger.LogInformation(Properties.Resources.InitializeCommandGcpKmsFormat);
-                            var resourceId = await logger.AskAsync(Properties.Resources.InitializeCommandGcpKmsQuestion, cancellationToken);
-                            keyGroup.GcpKms ??= [];
-                            keyGroup.GcpKms.AddRange(resourceId.Trim().Split(",").Select(id => new SopsGcpKmsKeyGroup() { ResourceId = id }));
-                            break;
-                        }
+                    {
+                        logger.LogInformation(Properties.Resources.InitializeCommandGcpKmsFormat);
+                        var resourceId = await logger.AskAsync(
+                            Properties.Resources.InitializeCommandGcpKmsQuestion,
+                            cancellationToken
+                        );
+                        keyGroup.GcpKms ??= [];
+                        keyGroup.GcpKms.AddRange(
+                            resourceId
+                                .Trim()
+                                .Split(",")
+                                .Select(id => new SopsGcpKmsKeyGroup() { ResourceId = id })
+                        );
+                        break;
+                    }
                     case SopsKeyType.HashicorpVault:
-                        {
-                            var url = await logger.AskAsync(Properties.Resources.InitializeCommandHashicorpVaultQuestion, cancellationToken);
-                            keyGroup.Vault ??= [];
-                            keyGroup.Vault.AddRange(url.Trim().Split(","));
-                            break;
-                        }
+                    {
+                        var url = await logger.AskAsync(
+                            Properties.Resources.InitializeCommandHashicorpVaultQuestion,
+                            cancellationToken
+                        );
+                        keyGroup.Vault ??= [];
+                        keyGroup.Vault.AddRange(url.Trim().Split(","));
+                        break;
+                    }
                     case SopsKeyType.Age:
-                        {
-                            var publicKey = await logger.AskAsync(Properties.Resources.InitializeCommandAgePublicKeyQuestion, cancellationToken);
-                            keyGroup.Age ??= [];
-                            keyGroup.Age.AddRange(publicKey.Trim().Split(","));
-                            break;
-                        }
+                    {
+                        var publicKey = await logger.AskAsync(
+                            Properties.Resources.InitializeCommandAgePublicKeyQuestion,
+                            cancellationToken
+                        );
+                        keyGroup.Age ??= [];
+                        keyGroup.Age.AddRange(publicKey.Trim().Split(","));
+                        break;
+                    }
 
                     case SopsKeyType.Pgp:
-                        {
-                            var publicKey = await logger.AskAsync(Properties.Resources.InitializeCommandPgpPublicKeyQuestion, cancellationToken);
-                            keyGroup.Pgp ??= [];
-                            keyGroup.Pgp.AddRange(publicKey.Trim().Split(","));
-                            break;
-                        }
+                    {
+                        var publicKey = await logger.AskAsync(
+                            Properties.Resources.InitializeCommandPgpPublicKeyQuestion,
+                            cancellationToken
+                        );
+                        keyGroup.Pgp ??= [];
+                        keyGroup.Pgp.AddRange(publicKey.Trim().Split(","));
+                        break;
+                    }
                     default:
                         break;
                 }
-            } while (await logger.ConfirmAsync(Properties.Resources.InitializeCommandMoreKeysToKeyGroupQuestion, cancellationToken));
+            } while (
+                await logger.ConfirmAsync(
+                    Properties.Resources.InitializeCommandMoreKeysToKeyGroupQuestion,
+                    cancellationToken
+                )
+            );
 
             sopsCreationRule.KeyGroups ??= [];
             sopsCreationRule.KeyGroups.Add(keyGroup);
-        } while (await logger.ConfirmAsync(Properties.Resources.InitializeCommandMoreKeyGroupsQuestion, cancellationToken));
+        } while (
+            await logger.ConfirmAsync(
+                Properties.Resources.InitializeCommandMoreKeyGroupsQuestion,
+                cancellationToken
+            )
+        );
     }
 
-    private static async Task PromptSimpleKeysAsync(ILogger logger, SopsCreationRule sopsCreationRule, CancellationToken cancellationToken)
+    private static async Task PromptSimpleKeysAsync(
+        ILogger logger,
+        SopsCreationRule sopsCreationRule,
+        CancellationToken cancellationToken
+    )
     {
         do
         {
@@ -172,58 +227,86 @@ internal class InitializeCommand : CliCommand
             switch (keyType)
             {
                 case SopsKeyType.AzureKeyVault:
-                    {
-                        logger.LogInformation(Properties.Resources.InitializeCommandAzureKeyVaultIdentifierFormat);
-                        var keyIdentifier = await logger.AskAsync(Properties.Resources.InitializeCommandAzureKeyIdentifierQuestion, cancellationToken);
+                {
+                    logger.LogInformation(
+                        Properties.Resources.InitializeCommandAzureKeyVaultIdentifierFormat
+                    );
+                    var keyIdentifier = await logger.AskAsync(
+                        Properties.Resources.InitializeCommandAzureKeyIdentifierQuestion,
+                        cancellationToken
+                    );
 
-                        sopsCreationRule.AzureKeyvault += ("," + keyIdentifier).Trim(' ', ',');
-                        break;
-                    }
+                    sopsCreationRule.AzureKeyvault += ("," + keyIdentifier).Trim(' ', ',');
+                    break;
+                }
                 case SopsKeyType.AwsKms:
-                    {
-                        logger.LogInformation(Properties.Resources.InitializeCommandAwsKmsFormat);
-                        var arn = await logger.AskAsync(Properties.Resources.InitializeCommandAwsKmsQuestion, cancellationToken);
+                {
+                    logger.LogInformation(Properties.Resources.InitializeCommandAwsKmsFormat);
+                    var arn = await logger.AskAsync(
+                        Properties.Resources.InitializeCommandAwsKmsQuestion,
+                        cancellationToken
+                    );
 
-                        sopsCreationRule.Kms += ("," + arn).Trim(' ', ',');
-                        break;
-                    }
+                    sopsCreationRule.Kms += ("," + arn).Trim(' ', ',');
+                    break;
+                }
                 case SopsKeyType.GcpKms:
-                    {
-                        logger.LogInformation(Properties.Resources.InitializeCommandGcpKmsFormat);
-                        var resourceId = await logger.AskAsync(Properties.Resources.InitializeCommandGcpKmsQuestion, cancellationToken);
+                {
+                    logger.LogInformation(Properties.Resources.InitializeCommandGcpKmsFormat);
+                    var resourceId = await logger.AskAsync(
+                        Properties.Resources.InitializeCommandGcpKmsQuestion,
+                        cancellationToken
+                    );
 
-                        sopsCreationRule.GcpKms += ("," + resourceId).Trim(' ', ',');
-                        break;
-                    }
+                    sopsCreationRule.GcpKms += ("," + resourceId).Trim(' ', ',');
+                    break;
+                }
                 case SopsKeyType.HashicorpVault:
-                    {
-                        var url = await logger.AskAsync(Properties.Resources.InitializeCommandHashicorpVaultQuestion, cancellationToken);
+                {
+                    var url = await logger.AskAsync(
+                        Properties.Resources.InitializeCommandHashicorpVaultQuestion,
+                        cancellationToken
+                    );
 
-                        sopsCreationRule.HcVaultTransitUri += ("," + url).Trim(' ', ',');
-                        break;
-                    }
+                    sopsCreationRule.HcVaultTransitUri += ("," + url).Trim(' ', ',');
+                    break;
+                }
                 case SopsKeyType.Age:
-                    {
-                        var publicKey = await logger.AskAsync(Properties.Resources.InitializeCommandAgePublicKeyQuestion, cancellationToken);
+                {
+                    var publicKey = await logger.AskAsync(
+                        Properties.Resources.InitializeCommandAgePublicKeyQuestion,
+                        cancellationToken
+                    );
 
-                        sopsCreationRule.Age += ("," + publicKey).Trim(' ', ',');
-                        break;
-                    }
+                    sopsCreationRule.Age += ("," + publicKey).Trim(' ', ',');
+                    break;
+                }
 
                 case SopsKeyType.Pgp:
-                    {
-                        var publicKey = await logger.AskAsync(Properties.Resources.InitializeCommandPgpPublicKeyQuestion, cancellationToken);
+                {
+                    var publicKey = await logger.AskAsync(
+                        Properties.Resources.InitializeCommandPgpPublicKeyQuestion,
+                        cancellationToken
+                    );
 
-                        sopsCreationRule.Pgp += ("," + publicKey).Trim(' ', ',');
-                        break;
-                    }
+                    sopsCreationRule.Pgp += ("," + publicKey).Trim(' ', ',');
+                    break;
+                }
                 default:
                     break;
             }
-        } while (await logger.ConfirmAsync(Properties.Resources.InitializeCommandMoreKeysQuestion, cancellationToken));
+        } while (
+            await logger.ConfirmAsync(
+                Properties.Resources.InitializeCommandMoreKeysQuestion,
+                cancellationToken
+            )
+        );
     }
 
-    private static async Task<SopsKeyType> PromptKeyTypeAsync(ILogger logger, CancellationToken cancellationToken)
+    private static async Task<SopsKeyType> PromptKeyTypeAsync(
+        ILogger logger,
+        CancellationToken cancellationToken
+    )
     {
         static string KeyTypeConverter(SopsKeyType keyType)
         {
@@ -249,6 +332,11 @@ internal class InitializeCommand : CliCommand
             SopsKeyType.Pgp
         };
 
-        return await logger.SelectAsync(Properties.Resources.InitializeCommandKeyTypeQuestion, keyChoices, KeyTypeConverter, cancellationToken);
+        return await logger.SelectAsync(
+            Properties.Resources.InitializeCommandKeyTypeQuestion,
+            keyChoices,
+            KeyTypeConverter,
+            cancellationToken
+        );
     }
 }

@@ -1,4 +1,5 @@
 namespace DotnetSops.CommandLine.Tests.Extensions;
+
 internal static class HelpBuilderStringExtensions
 {
     /// <summary>
@@ -9,8 +10,16 @@ internal static class HelpBuilderStringExtensions
     public static string RemoveHelpWrapNewLines(this string value)
     {
         return value
-            .Replace($"  {Environment.NewLine}  ", $"###{Environment.NewLine}###", StringComparison.InvariantCulture) // Add marker for newlines to keep
+            .Replace(
+                $"  {Environment.NewLine}  ",
+                $"###{Environment.NewLine}###",
+                StringComparison.InvariantCulture
+            ) // Add marker for newlines to keep
             .Replace($" {Environment.NewLine}  ", " ", StringComparison.InvariantCulture) // Replace newlines starting with a single space
-            .Replace($"###{Environment.NewLine}###", $"  {Environment.NewLine}  ", StringComparison.InvariantCulture); // Replace marker again
+            .Replace(
+                $"###{Environment.NewLine}###",
+                $"  {Environment.NewLine}  ",
+                StringComparison.InvariantCulture
+            ); // Replace marker again
     }
 }

@@ -14,13 +14,18 @@ public class SopsServiceTests_SopsMissing : IDisposable
 
     public SopsServiceTests_SopsMissing()
     {
-        _originalPathEnviromentVariableValue = Environment.GetEnvironmentVariable(PathEnvironmentVariableName);
+        _originalPathEnviromentVariableValue = Environment.GetEnvironmentVariable(
+            PathEnvironmentVariableName
+        );
     }
 
     protected virtual void Dispose(bool disposing)
     {
         _uniqueCurrentDirectoryFixture.Dispose();
-        Environment.SetEnvironmentVariable(PathEnvironmentVariableName, _originalPathEnviromentVariableValue);
+        Environment.SetEnvironmentVariable(
+            PathEnvironmentVariableName,
+            _originalPathEnviromentVariableValue
+        );
     }
 
     public void Dispose()
@@ -42,7 +47,9 @@ public class SopsServiceTests_SopsMissing : IDisposable
         var encrypedFile = new FileInfo("encrypted.json");
 
         // Act / Assert
-        var exception = await Assert.ThrowsAsync<SopsMissingException>(() => sopsService.EncryptAsync(fileName, encrypedFile));
+        var exception = await Assert.ThrowsAsync<SopsMissingException>(
+            () => sopsService.EncryptAsync(fileName, encrypedFile)
+        );
         Assert.Equal("SOPS executable could not be found on the PATH.", exception.Message);
     }
 }

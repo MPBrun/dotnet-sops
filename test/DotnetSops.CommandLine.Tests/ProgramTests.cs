@@ -1,4 +1,5 @@
 namespace DotnetSops.CommandLine.Tests;
+
 public class ProgramTests
 {
     private static readonly string[] s_parameters = ["download-sops"];
