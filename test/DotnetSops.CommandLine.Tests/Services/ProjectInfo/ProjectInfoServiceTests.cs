@@ -231,11 +231,11 @@ public class ProjectInfoServiceTests : IDisposable
         );
         Assert.Equal(
             """
-                    Ensure this property is set in the project or use the [yellow]'--id'[/] command-line option.
+            Ensure this property is set in the project or use the [yellow]'--id'[/] command-line option.
 
-                    The 'UserSecretsId' property can be created by running this command:
-                      [yellow]dotnet user-secrets init[/]
-                    """,
+            The 'UserSecretsId' property can be created by running this command:
+              [yellow]dotnet user-secrets init[/]
+            """,
             exception.Suggestion
         );
     }

@@ -70,8 +70,8 @@ public class InitializeCommandTests : IDisposable
               SOPS can be used to encrypt data under multiple keys, so that if any of the keys are available, the data can be decrypted. 
               
               However, SOPS also supports "key groups", which require access to multiple keys in order to decrypt.
-            
-            
+
+
             ? Are you sure you want to overwrite the existing .sops.yaml? [y/n] (n): n
 
             """,
@@ -146,7 +146,7 @@ public class InitializeCommandTests : IDisposable
 
             You can now encrypt your .NET User Secrets by running:
               dotnet sops encrypt
-            
+
             """,
             _logger.Error.Output.ReplaceLineEndings(),
             StringComparison.InvariantCulture
@@ -236,7 +236,7 @@ public class InitializeCommandTests : IDisposable
 
             You can now encrypt your .NET User Secrets by running:
               dotnet sops encrypt
-            
+
             """,
             _logger.Error.Output.ReplaceLineEndings(),
             StringComparison.InvariantCulture
@@ -327,7 +327,7 @@ public class InitializeCommandTests : IDisposable
 
             You can now encrypt your .NET User Secrets by running:
               dotnet sops encrypt
-            
+
             """,
             _logger.Error.Output.ReplaceLineEndings(),
             StringComparison.InvariantCulture
@@ -416,7 +416,7 @@ public class InitializeCommandTests : IDisposable
 
             You can now encrypt your .NET User Secrets by running:
               dotnet sops encrypt
-            
+
             """,
             _logger.Error.Output.ReplaceLineEndings(),
             StringComparison.InvariantCulture
@@ -503,10 +503,10 @@ public class InitializeCommandTests : IDisposable
             creation_rules:
               - path_regex: secrets.json
                 age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            
+
             You can now encrypt your .NET User Secrets by running:
               dotnet sops encrypt
-            
+
             """,
             _logger.Error.Output.ReplaceLineEndings(),
             StringComparison.InvariantCulture
@@ -592,10 +592,10 @@ public class InitializeCommandTests : IDisposable
             creation_rules:
               - path_regex: secrets.json
                 pgp: 123123
-            
+
             You can now encrypt your .NET User Secrets by running:
               dotnet sops encrypt
-            
+
             """,
             _logger.Error.Output.ReplaceLineEndings(),
             StringComparison.InvariantCulture
@@ -701,7 +701,7 @@ public class InitializeCommandTests : IDisposable
 
             You can now encrypt your .NET User Secrets by running:
               dotnet sops encrypt
-            
+
             """,
             _logger.Error.Output.ReplaceLineEndings(),
             StringComparison.InvariantCulture
@@ -805,7 +805,7 @@ public class InitializeCommandTests : IDisposable
 
             You can now encrypt your .NET User Secrets by running:
               dotnet sops encrypt
-            
+
             """,
             _logger.Error.Output.ReplaceLineEndings(),
             StringComparison.InvariantCulture
@@ -908,7 +908,7 @@ public class InitializeCommandTests : IDisposable
 
             You can now encrypt your .NET User Secrets by running:
               dotnet sops encrypt
-            
+
             """,
             _logger.Error.Output.ReplaceLineEndings(),
             StringComparison.InvariantCulture
@@ -1098,10 +1098,10 @@ public class InitializeCommandTests : IDisposable
                 key_groups:
                   - age:
                       - age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            
+
             You can now encrypt your .NET User Secrets by running:
               dotnet sops encrypt
-            
+
             """,
             _logger.Error.Output.ReplaceLineEndings(),
             StringComparison.InvariantCulture
@@ -1189,10 +1189,10 @@ public class InitializeCommandTests : IDisposable
                 key_groups:
                   - pgp:
                       - 123123
-            
+
             You can now encrypt your .NET User Secrets by running:
               dotnet sops encrypt
-            
+
             """,
             _logger.Error.Output.ReplaceLineEndings(),
             StringComparison.InvariantCulture

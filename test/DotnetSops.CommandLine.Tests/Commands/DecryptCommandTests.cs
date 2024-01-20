@@ -32,12 +32,9 @@ public class DecryptCommandTests : IDisposable
         _serviceProvider = new ServiceCollection()
             .AddSingleton<ISopsService, SopsService>()
             .AddSingleton(sopsFixture.SopsPathService)
-            .AddSingleton<IUserSecretsService>(
-                sp =>
-                    new UserSecretsServiceStub(
-                        _uniqueCurrentDirectoryFixture.TestDirectory.FullName
-                    )
-            )
+            .AddSingleton<IUserSecretsService>(sp => new UserSecretsServiceStub(
+                _uniqueCurrentDirectoryFixture.TestDirectory.FullName
+            ))
             .AddSingleton<IFileBomService, FileBomService>()
             .AddSingleton<IPlatformInformationService, PlatformInformationService>()
             .AddSingleton<IProjectInfoService, ProjectInfoService>()
@@ -218,7 +215,7 @@ public class DecryptCommandTests : IDisposable
         Assert.Equal(
             $"""
             File '{Path.Join(Directory.GetCurrentDirectory(), inputPath)}' does not exist.
-
+            
             """,
             _logger.Error.Output,
             ignoreLineEndingDifferences: true
@@ -310,7 +307,7 @@ public class DecryptCommandTests : IDisposable
         Assert.Equal(
             $"""
             'secrets.json' successfully decrypted to user secret with ID '{id}'.
-
+            
             """,
             _logger.Out.Output,
             ignoreLineEndingDifferences: true
@@ -350,13 +347,16 @@ public class DecryptCommandTests : IDisposable
         Assert.Equal(1, exitCode);
         Assert.Equal(
             $"""
-            Could not find the global property 'UserSecretsId' in MSBuild project '{Path.Join(Directory.GetCurrentDirectory(), "Project.csproj")}'.
+            Could not find the global property 'UserSecretsId' in MSBuild project '{Path.Join(
+                Directory.GetCurrentDirectory(),
+                "Project.csproj"
+            )}'.
 
             Ensure this property is set in the project or use the '--id' command-line option.
 
             The 'UserSecretsId' property can be created by running this command:
               dotnet user-secrets init
-
+            
             """,
             _logger.Error.Output,
             ignoreLineEndingDifferences: true

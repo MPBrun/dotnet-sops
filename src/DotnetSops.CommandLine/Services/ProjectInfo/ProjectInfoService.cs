@@ -12,8 +12,8 @@ internal class ProjectInfoService : IProjectInfoService
             var currentDirectory = Directory.GetCurrentDirectory();
             var projectFiles = Directory
                 .EnumerateFiles(currentDirectory, "*.*proj", SearchOption.TopDirectoryOnly)
-                .Where(
-                    f => !".xproj".Equals(Path.GetExtension(f), StringComparison.OrdinalIgnoreCase)
+                .Where(f =>
+                    !".xproj".Equals(Path.GetExtension(f), StringComparison.OrdinalIgnoreCase)
                 )
                 .Select(file => new FileInfo(file))
                 .ToList();
