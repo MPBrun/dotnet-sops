@@ -36,12 +36,9 @@ public class DecryptCommandTests_SopsMissing : IDisposable
         _serviceProvider = new ServiceCollection()
             .AddSingleton<ISopsService, SopsService>()
             .AddSingleton(sopsPathService)
-            .AddSingleton<IUserSecretsService>(
-                sp =>
-                    new UserSecretsServiceStub(
-                        _uniqueCurrentDirectoryFixture.TestDirectory.FullName
-                    )
-            )
+            .AddSingleton<IUserSecretsService>(sp => new UserSecretsServiceStub(
+                _uniqueCurrentDirectoryFixture.TestDirectory.FullName
+            ))
             .AddSingleton<IFileBomService, FileBomService>()
             .AddSingleton<IPlatformInformationService, PlatformInformationService>()
             .AddSingleton<IProjectInfoService, ProjectInfoService>()

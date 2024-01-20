@@ -33,12 +33,9 @@ public class EncryptCommandTests : IDisposable
         _serviceProvider = new ServiceCollection()
             .AddSingleton<ISopsService, SopsService>()
             .AddSingleton(sopsFixture.SopsPathService)
-            .AddSingleton<IUserSecretsService>(
-                sp =>
-                    new UserSecretsServiceStub(
-                        _uniqueCurrentDirectoryFixture.TestDirectory.FullName
-                    )
-            )
+            .AddSingleton<IUserSecretsService>(sp => new UserSecretsServiceStub(
+                _uniqueCurrentDirectoryFixture.TestDirectory.FullName
+            ))
             .AddSingleton<IFileBomService, FileBomService>()
             .AddSingleton<ISopsDownloadService, SopsDownloadService>()
             .AddSingleton<IPlatformInformationService, PlatformInformationService>()
@@ -109,8 +106,10 @@ public class EncryptCommandTests : IDisposable
         Assert.Single(encryptedSecretContent.Sops.Age!);
         Assert.Equal(
             $"""
-            User secret with ID '{id}' successfully encrypted to '{new FileInfo(outputPath).FullName}'.
-
+            User secret with ID '{id}' successfully encrypted to '{new FileInfo(
+                outputPath
+            ).FullName}'.
+            
             """,
             _logger.Out.Output,
             ignoreLineEndingDifferences: true
@@ -358,11 +357,13 @@ public class EncryptCommandTests : IDisposable
         Assert.Equal(1, exitCode);
         Assert.Equal(
             $"""
-            User secrets file '{_userSecretsService.GetSecretsPathFromSecretsId(id)}' does not exist.
+            User secrets file '{_userSecretsService.GetSecretsPathFromSecretsId(
+                id
+            )}' does not exist.
 
             You have no secrets created. You can add secrets by running this command:
               dotnet user-secrets set [name] [value]
-
+            
             """,
             _logger.Error.Output,
             ignoreLineEndingDifferences: true
@@ -401,13 +402,16 @@ public class EncryptCommandTests : IDisposable
         Assert.Equal(1, exitCode);
         Assert.Equal(
             $"""
-            Could not find the global property 'UserSecretsId' in MSBuild project '{Path.Join(Directory.GetCurrentDirectory(), "Project.csproj")}'.
+            Could not find the global property 'UserSecretsId' in MSBuild project '{Path.Join(
+                Directory.GetCurrentDirectory(),
+                "Project.csproj"
+            )}'.
 
             Ensure this property is set in the project or use the '--id' command-line option.
 
             The 'UserSecretsId' property can be created by running this command:
               dotnet user-secrets init
-
+            
             """,
             _logger.Error.Output,
             ignoreLineEndingDifferences: true
