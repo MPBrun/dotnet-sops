@@ -7,6 +7,14 @@
   "ignorePresets": [
     ":ignoreModulesAndTests"
   ],
+  "packageRules": [
+    {
+      "groupName": "CSharpier",
+      "matchSourceUrls": [
+        "https://github.com/belav/csharpier"
+      ]
+    }
+  ],
   "customManagers": [
     {
       "customType": "regex",
