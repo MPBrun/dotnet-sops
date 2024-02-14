@@ -8,7 +8,7 @@ public class ProgramTests
     public void EntryPoint_CanExecuteValidCommand()
     {
         var entryPoint = typeof(Program).Assembly.EntryPoint!;
-        var exitCode = entryPoint.Invoke(null, new object[] { s_parameters });
+        var exitCode = entryPoint.Invoke(null, [s_parameters]);
 
         Assert.Equal(0, exitCode);
     }
