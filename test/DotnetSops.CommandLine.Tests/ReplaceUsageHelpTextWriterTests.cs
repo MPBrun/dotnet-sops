@@ -98,16 +98,6 @@ public class ReplaceUsageHelpTextWriterTests
     }
 
     [Fact]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Usage",
-        "VSTHRD103:Call async methods when in an async method",
-        Justification = "Test case"
-    )]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Performance",
-        "CA1849:Call async methods when in an async method",
-        Justification = "Test case"
-    )]
     public async Task DisposeAsync_DisposeAsyncTextWriter()
     {
         // Arrange
@@ -118,7 +108,6 @@ public class ReplaceUsageHelpTextWriterTests
         }
 
         // Assert
-        textWriter.Received().Dispose();
         await textWriter.Received().DisposeAsync();
     }
 
