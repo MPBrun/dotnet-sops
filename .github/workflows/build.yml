@@ -57,7 +57,7 @@ jobs:
       run: dotnet test --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage" --logger "trx;LogFileName=test-results.trx"
 
     - name: Test Report
-      uses: phoenix-actions/test-reporting@324c51f0cea38b773386b2e7623fda46e826c895 # v14
+      uses: phoenix-actions/test-reporting@f957cd93fc2d848d556fa0d03c57bc79127b6b5e # v15
       if: always()
       with:
         name: Test results (${{ matrix.os }})
