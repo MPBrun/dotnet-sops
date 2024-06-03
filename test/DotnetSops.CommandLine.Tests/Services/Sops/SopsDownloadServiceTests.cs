@@ -71,6 +71,9 @@ public class SopsDownloadServiceTests : IDisposable
     [InlineData(false, true, false, Architecture.LoongArch64)]
     [InlineData(false, true, false, Architecture.Armv6)]
     [InlineData(false, true, false, Architecture.Ppc64le)]
+#if NET9_0_OR_GREATER
+    [InlineData(false, true, false, Architecture.RiscV64)]
+#endif
     [InlineData(false, false, true, Architecture.X86)]
     [InlineData(false, false, true, Architecture.Arm)]
     [InlineData(false, false, true, Architecture.Wasm)]
@@ -78,6 +81,9 @@ public class SopsDownloadServiceTests : IDisposable
     [InlineData(false, false, true, Architecture.LoongArch64)]
     [InlineData(false, false, true, Architecture.Armv6)]
     [InlineData(false, false, true, Architecture.Ppc64le)]
+#if NET9_0_OR_GREATER
+    [InlineData(false, false, true, Architecture.RiscV64)]
+#endif
     public async Task DownloadAsync_InvalidOperatingSystemAndArchitecture_Throws(
         bool windows,
         bool macos,
