@@ -68,7 +68,7 @@ internal class SopsDownloadService : ISopsDownloadService
 
         // Save content to disk
         var localSopsDirectory = _sopsPathService.GetDotnetSopsUserDirectory();
-        Directory.CreateDirectory(localSopsDirectory);
+        _ = Directory.CreateDirectory(localSopsDirectory);
         var destinationFileName = Path.Join(localSopsDirectory, release.ExecutableFileName);
         await File.WriteAllBytesAsync(destinationFileName, content, cancellationToken);
         if (!OperatingSystem.IsWindows())

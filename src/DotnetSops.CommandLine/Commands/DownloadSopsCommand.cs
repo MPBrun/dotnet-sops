@@ -18,13 +18,11 @@ internal class DownloadSopsCommand : CliCommand
 
         SetAction(
             (parseResult, cancellationToken) =>
-            {
-                return ExecuteAsync(
+                ExecuteAsync(
                     _serviceProvider.GetRequiredService<ILogger>(),
                     _serviceProvider.GetRequiredService<ISopsDownloadService>(),
                     cancellationToken
-                );
-            }
+                )
         );
     }
 
@@ -42,10 +40,7 @@ internal class DownloadSopsCommand : CliCommand
                 .Status()
                 .StartAsync(
                     Properties.Resources.DownloadSopsLoader,
-                    async (ctx) =>
-                    {
-                        await sopsDownloadService.DownloadAsync(cancellationToken);
-                    }
+                    async (ctx) => await sopsDownloadService.DownloadAsync(cancellationToken)
                 );
 
             logger.LogSuccess(Properties.Resources.DownloadSopsCommandSuccess);

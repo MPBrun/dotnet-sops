@@ -34,15 +34,13 @@ internal class RunCommand : CliCommand
 
         SetAction(
             (parseResult, cancellationToken) =>
-            {
-                return ExecuteAsync(
+                ExecuteAsync(
                     parseResult.GetValue(_runArguments),
                     parseResult.GetValue(_inputFileOption)!,
                     _serviceProvider.GetRequiredService<ILogger>(),
                     _serviceProvider.GetRequiredService<ISopsService>(),
                     cancellationToken
-                );
-            }
+                )
         );
     }
 

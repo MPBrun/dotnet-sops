@@ -44,8 +44,7 @@ internal class EncryptCommand : CliCommand
 
         SetAction(
             (parseResult, cancellationToken) =>
-            {
-                return ExecuteAsync(
+                ExecuteAsync(
                     parseResult.GetValue(_projectFileOption),
                     parseResult.GetValue(_userSecretsIdOption),
                     parseResult.GetValue(_outputFileOption)!,
@@ -55,8 +54,7 @@ internal class EncryptCommand : CliCommand
                     _serviceProvider.GetRequiredService<IUserSecretsService>(),
                     _serviceProvider.GetRequiredService<IFileBomService>(),
                     cancellationToken
-                );
-            }
+                )
         );
     }
 
