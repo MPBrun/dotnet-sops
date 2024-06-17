@@ -43,8 +43,7 @@ internal class DecryptCommand : CliCommand
 
         SetAction(
             (parseResult, cancellationToken) =>
-            {
-                return ExecuteAsync(
+                ExecuteAsync(
                     parseResult.GetValue(_projectFileOption),
                     parseResult.GetValue(_userSecretsIdOption),
                     parseResult.GetValue(_inputFileOption)!,
@@ -53,8 +52,7 @@ internal class DecryptCommand : CliCommand
                     _serviceProvider.GetRequiredService<ISopsService>(),
                     _serviceProvider.GetRequiredService<IUserSecretsService>(),
                     cancellationToken
-                );
-            }
+                )
         );
     }
 
@@ -102,7 +100,7 @@ internal class DecryptCommand : CliCommand
 
         if (outputFile.Directory != null)
         {
-            Directory.CreateDirectory(outputFile.Directory.FullName);
+            _ = Directory.CreateDirectory(outputFile.Directory.FullName);
         }
 
         try

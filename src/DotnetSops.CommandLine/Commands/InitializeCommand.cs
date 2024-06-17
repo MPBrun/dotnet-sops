@@ -20,12 +20,7 @@ internal class InitializeCommand : CliCommand
 
         SetAction(
             (parseResult, cancellationToken) =>
-            {
-                return ExecuteAsync(
-                    _serviceProvider.GetRequiredService<ILogger>(),
-                    cancellationToken
-                );
-            }
+                ExecuteAsync(_serviceProvider.GetRequiredService<ILogger>(), cancellationToken)
         );
     }
 
