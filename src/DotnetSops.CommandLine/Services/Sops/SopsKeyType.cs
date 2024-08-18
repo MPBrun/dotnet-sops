@@ -7,5 +7,5 @@ internal enum SopsKeyType
     GcpKms,
     HashicorpVault,
     Age,
-    Pgp
+    Pgp,
 }

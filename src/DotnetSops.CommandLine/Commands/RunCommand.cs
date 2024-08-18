@@ -15,7 +15,7 @@ internal class RunCommand : CliCommand
         new("--file")
         {
             Description = Properties.Resources.RunCommandFileOptionDescription,
-            DefaultValueFactory = _ => new FileInfo("secrets.json")
+            DefaultValueFactory = _ => new FileInfo("secrets.json"),
         };
 
     private readonly CliArgument<string[]> _runArguments =

@@ -68,7 +68,7 @@ internal class InitializeCommand : CliCommand
         CancellationToken cancellationToken
     )
     {
-        var sopsCreationRule = new SopsCreationRule() { PathRegex = "secrets.json", };
+        var sopsCreationRule = new SopsCreationRule() { PathRegex = "secrets.json" };
         var sopsConfiguration = new SopsConfiguration() { CreationRules = [sopsCreationRule] };
 
         var useKeyGroups = await logger.ConfirmAsync(
@@ -324,7 +324,7 @@ internal class InitializeCommand : CliCommand
             SopsKeyType.GcpKms,
             SopsKeyType.HashicorpVault,
             SopsKeyType.Age,
-            SopsKeyType.Pgp
+            SopsKeyType.Pgp,
         };
 
         return await logger.SelectAsync(

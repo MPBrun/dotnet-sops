@@ -88,7 +88,7 @@ internal class SopsService : ISopsService
             {
                 throw new SopsExecutionException(Properties.Resources.SopsRunFailedWithError)
                 {
-                    ExitCode = process.ExitCode
+                    ExitCode = process.ExitCode,
                 };
             }
         }
