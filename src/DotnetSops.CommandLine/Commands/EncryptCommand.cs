@@ -21,10 +21,7 @@ internal class EncryptCommand : CliCommand
         };
 
     private readonly CliOption<string> _userSecretsIdOption =
-        new("--id")
-        {
-            Description = Properties.Resources.EncryptCommandSecretsIdOptionDescription,
-        };
+        new("--id") { Description = Properties.Resources.EncryptCommandSecretsIdOptionDescription };
 
     private readonly CliOption<FileInfo> _outputFileOption =
         new("--file")

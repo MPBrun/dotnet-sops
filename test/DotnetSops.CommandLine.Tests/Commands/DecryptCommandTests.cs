@@ -396,7 +396,7 @@ public class DecryptCommandTests : IDisposable
         var output = new StringWriter();
         var config = new CliConfiguration(command)
         {
-            Output = new ReplaceUsageHelpTextWriter(output, "testhost")
+            Output = new ReplaceUsageHelpTextWriter(output, "testhost"),
         };
 
         // Act

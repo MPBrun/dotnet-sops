@@ -148,7 +148,7 @@ public class SopsDownloadServiceTests : IDisposable
         using var result = new HttpResponseMessage()
         {
             StatusCode = System.Net.HttpStatusCode.OK,
-            Content = new StringContent("Invalid content")
+            Content = new StringContent("Invalid content"),
         };
         mockHttpClientHandler
             .ProtectedMethod<Task<HttpResponseMessage>>(

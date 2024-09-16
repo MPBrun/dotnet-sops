@@ -23,7 +23,7 @@ internal class ProjectInfoService : IProjectInfoService
                     LocalizationResources.ProjectInfoServiceMultipleFoundError(currentDirectory)
                 )
                 {
-                    Suggestion = Properties.Resources.ProjectInfoServiceMultipleFoundSuggestion
+                    Suggestion = Properties.Resources.ProjectInfoServiceMultipleFoundSuggestion,
                 };
             }
             projectFile =
@@ -32,7 +32,7 @@ internal class ProjectInfoService : IProjectInfoService
                         LocalizationResources.ProjectInfoServiceNotFoundError(currentDirectory)
                     )
                     {
-                        Suggestion = Properties.Resources.ProjectInfoServiceNotFoundSuggestion
+                        Suggestion = Properties.Resources.ProjectInfoServiceNotFoundSuggestion,
                     }
                     : projectFiles[0];
         }
@@ -63,7 +63,7 @@ internal class ProjectInfoService : IProjectInfoService
                 {
                     Suggestion = Properties
                         .Resources
-                        .ProjectInfoServiceUserSecretIdNotFoundSuggestion
+                        .ProjectInfoServiceUserSecretIdNotFoundSuggestion,
                 }
                 : userSecretId;
         }

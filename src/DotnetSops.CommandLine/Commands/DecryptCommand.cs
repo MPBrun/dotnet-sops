@@ -20,16 +20,13 @@ internal class DecryptCommand : CliCommand
         };
 
     private readonly CliOption<string?> _userSecretsIdOption =
-        new("--id")
-        {
-            Description = Properties.Resources.DecryptCommandSecretsIdOptionDescription,
-        };
+        new("--id") { Description = Properties.Resources.DecryptCommandSecretsIdOptionDescription };
 
     private readonly CliOption<FileInfo> _inputFileOption =
         new("--file")
         {
             Description = Properties.Resources.DecryptCommandFileOptionDescription,
-            DefaultValueFactory = _ => new FileInfo("secrets.json")
+            DefaultValueFactory = _ => new FileInfo("secrets.json"),
         };
 
     public DecryptCommand(IServiceProvider serviceProvider)
