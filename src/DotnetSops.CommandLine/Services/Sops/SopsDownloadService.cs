@@ -48,15 +48,17 @@ internal class SopsDownloadService : ISopsDownloadService
         // Get content
         var content = await response.Content.ReadAsByteArrayAsync(cancellationToken);
 
+#if NET9_0_OR_GREATER
+        var hash = Convert.ToHexStringLower(SHA256.HashData(content));
+#else
         // Calculate file hash
-        var hash = BitConverter
-            .ToString(SHA256.HashData(content))
-            .Replace("-", "", StringComparison.OrdinalIgnoreCase);
+        var hash = Convert.ToHexString(SHA256.HashData(content));
 
 #pragma warning disable CA1308 // Normalize strings to uppercase
         // Lowercase to follow same format as defined by *.checksums.txt
         hash = hash.ToLowerInvariant();
 #pragma warning restore CA1308 // Normalize strings to uppercase
+#endif
 
         // Verify content hash
         if (!hash.Equals(release.Sha256Checksum, StringComparison.OrdinalIgnoreCase))
@@ -123,6 +125,9 @@ internal class SopsDownloadService : ISopsDownloadService
                 Architecture.LoongArch64 => throw new NotSupportedException(),
                 Architecture.Armv6 => throw new NotSupportedException(),
                 Architecture.Ppc64le => throw new NotSupportedException(),
+#if NET9_0_OR_GREATER
+                Architecture.RiscV64 => throw new NotSupportedException(),
+#endif
                 _ => throw new NotSupportedException(),
             };
         }
@@ -151,6 +156,9 @@ internal class SopsDownloadService : ISopsDownloadService
                 Architecture.LoongArch64 => throw new NotSupportedException(),
                 Architecture.Armv6 => throw new NotSupportedException(),
                 Architecture.Ppc64le => throw new NotSupportedException(),
+#if NET9_0_OR_GREATER
+                Architecture.RiscV64 => throw new NotSupportedException(),
+#endif
                 _ => throw new NotSupportedException(),
             };
         }

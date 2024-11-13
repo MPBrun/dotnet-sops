@@ -34,7 +34,7 @@ public class ProjectInfoServiceTests : IDisposable
 
               <PropertyGroup>
                 <OutputType>Exe</OutputType>
-                <TargetFramework>net7.0</TargetFramework>
+                <TargetFramework>net8.0</TargetFramework>
                 <UserSecretsId>1234</UserSecretsId>
                 <ImplicitUsings>enable</ImplicitUsings>
                 <Nullable>enable</Nullable>
@@ -64,7 +64,7 @@ public class ProjectInfoServiceTests : IDisposable
 
               <PropertyGroup>
                 <OutputType>Exe</OutputType>
-                <TargetFramework>net7.0</TargetFramework>
+                <TargetFramework>net8.0</TargetFramework>
                 <UserSecretsId>1234</UserSecretsId>
                 <ImplicitUsings>enable</ImplicitUsings>
                 <Nullable>enable</Nullable>
@@ -94,7 +94,7 @@ public class ProjectInfoServiceTests : IDisposable
 
               <PropertyGroup>
                 <OutputType>Exe</OutputType>
-                <TargetFramework>net7.0</TargetFramework>
+                <TargetFramework>net8.0</TargetFramework>
                 <UserSecretsId>1234</UserSecretsId>
                 <ImplicitUsings>enable</ImplicitUsings>
                 <Nullable>enable</Nullable>
@@ -111,7 +111,7 @@ public class ProjectInfoServiceTests : IDisposable
 
               <PropertyGroup>
                 <OutputType>Exe</OutputType>
-                <TargetFramework>net7.0</TargetFramework>
+                <TargetFramework>net8.0</TargetFramework>
                 <UserSecretsId>1234</UserSecretsId>
                 <ImplicitUsings>enable</ImplicitUsings>
                 <Nullable>enable</Nullable>
@@ -148,7 +148,7 @@ public class ProjectInfoServiceTests : IDisposable
 
               <PropertyGroup>
                 <OutputType>Exe</OutputType>
-                <TargetFramework>net7.0</TargetFramework>
+                <TargetFramework>net8.0</TargetFramework>
                 <UserSecretsId>1234</UserSecretsId>
                 <ImplicitUsings>enable</ImplicitUsings>
                 <Nullable>enable</Nullable>
@@ -212,7 +212,7 @@ public class ProjectInfoServiceTests : IDisposable
 
               <PropertyGroup>
                 <OutputType>Exe</OutputType>
-                <TargetFramework>net7.0</TargetFramework>
+                <TargetFramework>net8.0</TargetFramework>
                 <ImplicitUsings>enable</ImplicitUsings>
                 <Nullable>enable</Nullable>
               </PropertyGroup>
