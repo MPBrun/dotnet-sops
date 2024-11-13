@@ -174,7 +174,7 @@ public class SopsDownloadServiceTests : IDisposable
             """
             SHA256 of SOPS executable did not match.
 
-            Expected: 2b45084e9e6308fa465eeac2419d497b5b16b66d332af18c03feb3d68e51f52f
+            Expected: 745ab6aa6d6e3fbbb8a3484ec22caf2cbf61b5f70d1416eea5d2a644de722f31
             Actual:   1cd34f3b9a3a52a0317abf2b2518511d79a18c6ac469d15617c96e18099037b3
             """,
             exception.Message
@@ -222,7 +222,7 @@ public class SopsDownloadServiceTests : IDisposable
             Failed to download SOPS.
 
             HTTP status code: 404
-            URL: https://github.com/getsops/sops/releases/download/v3.9.0/sops-v3.9.0.exe
+            URL: https://github.com/getsops/sops/releases/download/v3.9.1/sops-v3.9.1.exe
             """,
             exception.Message
         );
