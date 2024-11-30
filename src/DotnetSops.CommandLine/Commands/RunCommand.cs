@@ -11,18 +11,16 @@ internal class RunCommand : CliCommand
 
     private readonly IServiceProvider _serviceProvider;
 
-    private readonly CliOption<FileInfo> _inputFileOption =
-        new("--file")
-        {
-            Description = Properties.Resources.RunCommandFileOptionDescription,
-            DefaultValueFactory = _ => new FileInfo("secrets.json"),
-        };
+    private readonly CliOption<FileInfo> _inputFileOption = new("--file")
+    {
+        Description = Properties.Resources.RunCommandFileOptionDescription,
+        DefaultValueFactory = _ => new FileInfo("secrets.json"),
+    };
 
-    private readonly CliArgument<string[]> _runArguments =
-        new("dotnetArguments")
-        {
-            Description = Properties.Resources.RunCommandArgumentsDescription,
-        };
+    private readonly CliArgument<string[]> _runArguments = new("dotnetArguments")
+    {
+        Description = Properties.Resources.RunCommandArgumentsDescription,
+    };
 
     public RunCommand(IServiceProvider serviceProvider)
         : base(CommandName, Properties.Resources.RunCommandDescription)
