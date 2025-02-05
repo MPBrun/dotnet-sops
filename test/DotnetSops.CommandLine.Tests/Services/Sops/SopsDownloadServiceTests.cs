@@ -228,7 +228,7 @@ public class SopsDownloadServiceTests : IDisposable
             Failed to download SOPS.
 
             HTTP status code: 404
-            URL: https://github.com/getsops/sops/releases/download/v3.9.1/sops-v3.9.1.exe
+            URL: https://github.com/getsops/sops/releases/download/v3.9.4/sops-v3.9.4.exe
             """,
             exception.Message
         );
