@@ -14,21 +14,21 @@ internal class EncryptCommand : CliCommand
 
     private readonly IServiceProvider _serviceProvider;
 
-    private readonly CliOption<FileInfo?> _projectFileOption =
-        new("--project", "-p")
-        {
-            Description = Properties.Resources.EncryptCommandProjectOptionDescription,
-        };
+    private readonly CliOption<FileInfo?> _projectFileOption = new("--project", "-p")
+    {
+        Description = Properties.Resources.EncryptCommandProjectOptionDescription,
+    };
 
-    private readonly CliOption<string> _userSecretsIdOption =
-        new("--id") { Description = Properties.Resources.EncryptCommandSecretsIdOptionDescription };
+    private readonly CliOption<string> _userSecretsIdOption = new("--id")
+    {
+        Description = Properties.Resources.EncryptCommandSecretsIdOptionDescription,
+    };
 
-    private readonly CliOption<FileInfo> _outputFileOption =
-        new("--file")
-        {
-            Description = Properties.Resources.EncryptCommandFileOptionDescription,
-            DefaultValueFactory = (_) => new FileInfo("secrets.json"),
-        };
+    private readonly CliOption<FileInfo> _outputFileOption = new("--file")
+    {
+        Description = Properties.Resources.EncryptCommandFileOptionDescription,
+        DefaultValueFactory = (_) => new FileInfo("secrets.json"),
+    };
 
     public EncryptCommand(IServiceProvider serviceProvider)
         : base(CommandName, Properties.Resources.EncryptCommandDescription)
