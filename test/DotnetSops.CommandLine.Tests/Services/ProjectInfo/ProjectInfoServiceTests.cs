@@ -41,7 +41,8 @@ public class ProjectInfoServiceTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         // Act
@@ -71,7 +72,8 @@ public class ProjectInfoServiceTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         // Act
@@ -101,7 +103,8 @@ public class ProjectInfoServiceTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         await File.WriteAllTextAsync(
@@ -118,7 +121,8 @@ public class ProjectInfoServiceTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         // Act / Assert
@@ -155,7 +159,8 @@ public class ProjectInfoServiceTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         await File.WriteAllTextAsync(
@@ -167,7 +172,8 @@ public class ProjectInfoServiceTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         // Act
@@ -218,7 +224,8 @@ public class ProjectInfoServiceTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         // Act / Assert
@@ -261,7 +268,8 @@ public class ProjectInfoServiceTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         // Act / Assert

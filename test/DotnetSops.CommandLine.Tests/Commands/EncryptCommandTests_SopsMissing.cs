@@ -82,7 +82,8 @@ public class EncryptCommandTests_SopsMissing : IDisposable
         await File.AppendAllTextAsync(
             filePath.FullName,
             JsonSerializer.Serialize(secrets),
-            new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)
+            new UTF8Encoding(encoderShouldEmitUTF8Identifier: true),
+            TestContext.Current.CancellationToken
         ); //dotnet user secrets save files with bom
 
         var outputPath = "secrets.json";
@@ -90,7 +91,10 @@ public class EncryptCommandTests_SopsMissing : IDisposable
         var config = new CliConfiguration(command);
 
         // Act
-        var exitCode = await config.InvokeAsync($"--id {id} --file {outputPath}");
+        var exitCode = await config.InvokeAsync(
+            $"--id {id} --file {outputPath}",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         Assert.Equal(1, exitCode);

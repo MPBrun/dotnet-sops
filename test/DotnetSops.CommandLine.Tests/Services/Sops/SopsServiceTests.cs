@@ -41,7 +41,11 @@ public class SopsServiceTests : IDisposable
         var fileName = new FileInfo("secrets.json");
         var jsonContent = new { add = "Add", foo = "Rem" };
         var content = JsonSerializer.Serialize(jsonContent);
-        await File.WriteAllTextAsync(fileName.FullName, content);
+        await File.WriteAllTextAsync(
+            fileName.FullName,
+            content,
+            TestContext.Current.CancellationToken
+        );
 
         // Sops config
         await File.WriteAllTextAsync(
@@ -50,16 +54,24 @@ public class SopsServiceTests : IDisposable
             creation_rules:
               - path_regex: .*.json
                 age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         var encrypedFile = new FileInfo("encrypted.json");
 
         // Act
-        await sopsService.EncryptAsync(fileName, encrypedFile);
+        await sopsService.EncryptAsync(
+            fileName,
+            encrypedFile,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
-        var result = await File.ReadAllTextAsync(encrypedFile.FullName);
+        var result = await File.ReadAllTextAsync(
+            encrypedFile.FullName,
+            TestContext.Current.CancellationToken
+        );
         Assert.NotNull(result);
 
         var jsonResult = JsonSerializer.Deserialize<Dictionary<string, object>>(result);
@@ -87,7 +99,11 @@ public class SopsServiceTests : IDisposable
         var fileName = new FileInfo("secrets.json");
         var jsonContent = new { add = "Add", foo = "Rem" };
         var content = JsonSerializer.Serialize(jsonContent);
-        await File.WriteAllTextAsync(fileName.FullName, content);
+        await File.WriteAllTextAsync(
+            fileName.FullName,
+            content,
+            TestContext.Current.CancellationToken
+        );
 
         // Provide age secret key for unit test purpose
         Environment.SetEnvironmentVariable(
@@ -102,19 +118,31 @@ public class SopsServiceTests : IDisposable
             creation_rules:
                - path_regex: .*.json
                  age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         var encrypedFile = new FileInfo("encrypted.json");
-        await sopsService.EncryptAsync(fileName, encrypedFile);
+        await sopsService.EncryptAsync(
+            fileName,
+            encrypedFile,
+            TestContext.Current.CancellationToken
+        );
 
         var decrypedFile = new FileInfo("decrypted.json");
 
         // Act
-        await sopsService.DecryptAsync(encrypedFile, decrypedFile);
+        await sopsService.DecryptAsync(
+            encrypedFile,
+            decrypedFile,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
-        var result = await File.ReadAllTextAsync(decrypedFile.FullName);
+        var result = await File.ReadAllTextAsync(
+            decrypedFile.FullName,
+            TestContext.Current.CancellationToken
+        );
         Assert.NotNull(result);
 
         var jsonResult = JsonSerializer.Deserialize<Dictionary<string, string>>(result);
@@ -133,7 +161,11 @@ public class SopsServiceTests : IDisposable
         var fileName = new FileInfo("secrets.json");
         var jsonContent = new { add = "Add", foo = "Rem" };
         var content = JsonSerializer.Serialize(jsonContent);
-        await File.WriteAllTextAsync(fileName.FullName, content);
+        await File.WriteAllTextAsync(
+            fileName.FullName,
+            content,
+            TestContext.Current.CancellationToken
+        );
 
         // Provide age secret key for unit test purpose
         Environment.SetEnvironmentVariable(
@@ -148,11 +180,16 @@ public class SopsServiceTests : IDisposable
             creation_rules:
                - path_regex: .*.json
                  age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         var encrypedFile = new FileInfo("encrypted.json");
-        await sopsService.EncryptAsync(fileName, encrypedFile);
+        await sopsService.EncryptAsync(
+            fileName,
+            encrypedFile,
+            TestContext.Current.CancellationToken
+        );
 
         // dotnet is cross platform code that can write environment variable to file
         await File.WriteAllTextAsync(
@@ -168,7 +205,8 @@ public class SopsServiceTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         await File.WriteAllTextAsync(
@@ -176,16 +214,24 @@ public class SopsServiceTests : IDisposable
             """
             await File.AppendAllTextAsync("decrypted.txt", Environment.GetEnvironmentVariable("foo"));
             await File.AppendAllTextAsync("decrypted.txt", Environment.GetEnvironmentVariable("add"));
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         var command = "dotnet run";
 
         // Act
-        await sopsService.RunCommandWithSecretsEnvironmentAsync(command, encrypedFile);
+        await sopsService.RunCommandWithSecretsEnvironmentAsync(
+            command,
+            encrypedFile,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
-        var result = await File.ReadAllTextAsync("decrypted.txt");
+        var result = await File.ReadAllTextAsync(
+            "decrypted.txt",
+            TestContext.Current.CancellationToken
+        );
         Assert.NotNull(result);
         Assert.Equal("RemAdd", result);
     }
@@ -199,7 +245,11 @@ public class SopsServiceTests : IDisposable
         var fileName = new FileInfo("secrets.json");
         var jsonContent = new { add = "Add", foo = "Rem" };
         var content = JsonSerializer.Serialize(jsonContent);
-        await File.WriteAllTextAsync(fileName.FullName, content);
+        await File.WriteAllTextAsync(
+            fileName.FullName,
+            content,
+            TestContext.Current.CancellationToken
+        );
 
         // Sops config
         await File.WriteAllTextAsync(
@@ -208,7 +258,8 @@ public class SopsServiceTests : IDisposable
             creation_rules:
               - path_regex: .*.json
                 age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         var encrypedFile = new FileInfo("encrypted.json");
@@ -216,7 +267,11 @@ public class SopsServiceTests : IDisposable
         var pathEnvironmentBefore = Environment.GetEnvironmentVariable("PATH");
 
         // Act
-        await sopsService.EncryptAsync(fileName, encrypedFile);
+        await sopsService.EncryptAsync(
+            fileName,
+            encrypedFile,
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         Assert.Equal(pathEnvironmentBefore, Environment.GetEnvironmentVariable("PATH"));

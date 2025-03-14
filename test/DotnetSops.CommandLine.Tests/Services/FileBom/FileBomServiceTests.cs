@@ -30,18 +30,25 @@ public class FileBomServiceTests : IDisposable
         await File.AppendAllTextAsync(
             filePath.FullName,
             "content",
-            new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)
+            new UTF8Encoding(encoderShouldEmitUTF8Identifier: true),
+            TestContext.Current.CancellationToken
         );
 
-        var fileContentBefore = await File.ReadAllBytesAsync(filePath.FullName);
+        var fileContentBefore = await File.ReadAllBytesAsync(
+            filePath.FullName,
+            TestContext.Current.CancellationToken
+        );
         Assert.Equal([0xEF, 0xBB, 0xBF], fileContentBefore.Take(3).ToArray());
         Assert.Equal(10, fileContentBefore.Length);
 
         // Act
-        await service.RemoveBomFromFileAsync(filePath);
+        await service.RemoveBomFromFileAsync(filePath, TestContext.Current.CancellationToken);
 
         // Assert
-        var fileContentAfter = await File.ReadAllBytesAsync(filePath.FullName);
+        var fileContentAfter = await File.ReadAllBytesAsync(
+            filePath.FullName,
+            TestContext.Current.CancellationToken
+        );
         Assert.NotEqual([0xEF, 0xBB, 0xBF], fileContentAfter.Take(3).ToArray());
         Assert.Equal(7, fileContentAfter.Length);
     }
@@ -56,10 +63,14 @@ public class FileBomServiceTests : IDisposable
         await File.AppendAllTextAsync(
             filePath.FullName,
             "content",
-            new UTF8Encoding(encoderShouldEmitUTF8Identifier: false)
+            new UTF8Encoding(encoderShouldEmitUTF8Identifier: false),
+            TestContext.Current.CancellationToken
         );
 
-        var fileContentBefore = await File.ReadAllBytesAsync(filePath.FullName);
+        var fileContentBefore = await File.ReadAllBytesAsync(
+            filePath.FullName,
+            TestContext.Current.CancellationToken
+        );
         Assert.NotEqual([0xEF, 0xBB, 0xBF], fileContentBefore.Take(3).ToArray());
         Assert.Equal(7, fileContentBefore.Length);
 
@@ -67,10 +78,13 @@ public class FileBomServiceTests : IDisposable
         using var _ = File.Open(filePath.FullName, FileMode.Open, FileAccess.Read, FileShare.Read);
 
         // Act
-        await service.RemoveBomFromFileAsync(filePath);
+        await service.RemoveBomFromFileAsync(filePath, TestContext.Current.CancellationToken);
 
         // Assert
-        var fileContentAfter = await File.ReadAllBytesAsync(filePath.FullName);
+        var fileContentAfter = await File.ReadAllBytesAsync(
+            filePath.FullName,
+            TestContext.Current.CancellationToken
+        );
         Assert.NotEqual([0xEF, 0xBB, 0xBF], fileContentAfter.Take(3).ToArray());
         Assert.Equal(7, fileContentAfter.Length);
     }
