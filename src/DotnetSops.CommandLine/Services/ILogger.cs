@@ -4,7 +4,7 @@ namespace DotnetSops.CommandLine.Services;
 
 internal interface ILogger
 {
-    public bool Verbose { get; set; }
+    bool Verbose { get; set; }
 
     void LogInformation(string? message = default);
 
