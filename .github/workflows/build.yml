@@ -70,7 +70,6 @@ jobs:
       uses: codecov/codecov-action@0565863a31f2c772f9f0395002a31e3f06189574 # v5
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        files: "**/*.cobertura.xml"
 
     - name: Pack
       run: dotnet pack --no-build --configuration Release -p:Version=${{ steps.version.outputs.VERSION }}
