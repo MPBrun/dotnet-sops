@@ -70,14 +70,17 @@ public class DecryptCommandTests_SopsMissing : IDisposable
 
         Environment.SetEnvironmentVariable(PathEnvironmentVariableName, null);
 
-        await File.WriteAllTextAsync("secrets.json", "");
+        await File.WriteAllTextAsync("secrets.json", "", TestContext.Current.CancellationToken);
 
         var inputPath = "secrets.json";
 
         var config = new CliConfiguration(command);
 
         // Act
-        var exitCode = await config.InvokeAsync($"--id {id} --file {inputPath}");
+        var exitCode = await config.InvokeAsync(
+            $"--id {id} --file {inputPath}",
+            TestContext.Current.CancellationToken
+        );
 
         // Assert
         Assert.Equal(1, exitCode);
