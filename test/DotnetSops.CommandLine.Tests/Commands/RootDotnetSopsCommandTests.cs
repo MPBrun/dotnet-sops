@@ -1,4 +1,5 @@
 using System.CommandLine;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using DotnetSops.CommandLine.Commands;
 using DotnetSops.CommandLine.Services;
@@ -48,7 +49,7 @@ public partial class RootDotnetSopsCommandTests
         var config = new CliConfiguration(command) { Output = output };
 
         // Act
-        var exitCode = await config.InvokeAsync("--version");
+        var exitCode = await config.InvokeAsync("--version", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -64,7 +65,7 @@ public partial class RootDotnetSopsCommandTests
         var config = new CliConfiguration(command) { Output = output };
 
         // Act
-        await config.InvokeAsync("init");
+        await config.InvokeAsync("init", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(_logger.Verbose);
@@ -79,7 +80,7 @@ public partial class RootDotnetSopsCommandTests
         var config = new CliConfiguration(command) { Output = output };
 
         // Act
-        await config.InvokeAsync("init --verbose");
+        await config.InvokeAsync("init --verbose", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(_logger.Verbose);
@@ -96,11 +97,14 @@ public partial class RootDotnetSopsCommandTests
         var output = new StringWriter();
         var config = new CliConfiguration(command)
         {
-            Output = new ReplaceUsageHelpTextWriter(output, "testhost"),
+            Output = new ReplaceUsageHelpTextWriter(
+                output,
+                Assembly.GetExecutingAssembly().GetName().Name!
+            ),
         };
 
         // Act
-        var exitCode = await config.InvokeAsync(option);
+        var exitCode = await config.InvokeAsync(option, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
