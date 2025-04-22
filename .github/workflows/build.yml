@@ -48,7 +48,7 @@ jobs:
       run: dotnet format --no-restore --verify-no-changes
 
     - name: Lint - csharpier
-      run: dotnet csharpier . --check
+      run: dotnet csharpier check .
       
     - name: Build
       run: dotnet build --configuration Release -p:Version=${{ steps.version.outputs.VERSION }}
