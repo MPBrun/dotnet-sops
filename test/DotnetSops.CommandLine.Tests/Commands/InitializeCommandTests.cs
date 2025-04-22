@@ -525,6 +525,121 @@ public class InitializeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task InitializeCommand_MultipleAge_CreateFile()
+    {
+        // Arrange
+        var command = new InitializeCommand(_serviceProvider);
+
+        var config = new CliConfiguration(command);
+
+        await File.WriteAllTextAsync(".sops.yaml", "");
+
+        // Owerwrite existing file
+        _logger.Error.Input.PushTextWithEnter("y");
+
+        // No key groups
+        _logger.Error.Input.PushTextWithEnter("n");
+
+        // Select age
+        _logger.Error.Input.PushKey(ConsoleKey.DownArrow);
+        _logger.Error.Input.PushKey(ConsoleKey.DownArrow);
+        _logger.Error.Input.PushKey(ConsoleKey.DownArrow);
+        _logger.Error.Input.PushKey(ConsoleKey.DownArrow);
+        _logger.Error.Input.PushKey(ConsoleKey.Enter);
+
+        // Age public key
+        _logger.Error.Input.PushTextWithEnter(
+            "age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8"
+        );
+
+        // One more keys
+        _logger.Error.Input.PushTextWithEnter("y");
+
+        // Select age
+        _logger.Error.Input.PushKey(ConsoleKey.DownArrow);
+        _logger.Error.Input.PushKey(ConsoleKey.DownArrow);
+        _logger.Error.Input.PushKey(ConsoleKey.DownArrow);
+        _logger.Error.Input.PushKey(ConsoleKey.DownArrow);
+        _logger.Error.Input.PushKey(ConsoleKey.Enter);
+
+        // Age public key
+        _logger.Error.Input.PushTextWithEnter(
+            "age1n2e2v5zyf76sw3wy5m4763fk5hzzn0lg7pe9ncrzxcmzwkfzxvzsekjnch"
+        );
+
+        // No more keys
+        _logger.Error.Input.PushTextWithEnter("n");
+
+        // Act
+        var exitCode = await config.InvokeAsync("");
+
+        // Assert
+        Assert.Equal(0, exitCode);
+
+        Assert.Contains(
+            "? Are you sure you want to overwrite the existing .sops.yaml? [y/n] (n): y",
+            _logger.Error.Output,
+            StringComparison.InvariantCulture
+        );
+        Assert.Contains(
+            "? Use key groups? [y/n] (n): n",
+            _logger.Error.Output,
+            StringComparison.InvariantCulture
+        );
+        Assert.Contains(
+            "? Which key type would you like to use?",
+            _logger.Error.Output,
+            StringComparison.InvariantCulture
+        );
+        Assert.Contains(
+            "? What is the public key of age? age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8",
+            _logger.Error.Output,
+            StringComparison.InvariantCulture
+        );
+        Assert.Contains(
+            "? Add more keys? [y/n] (n): y",
+            _logger.Error.Output,
+            StringComparison.InvariantCulture
+        );
+        Assert.Contains(
+            "? What is the public key of age? age1n2e2v5zyf76sw3wy5m4763fk5hzzn0lg7pe9ncrzxcmzwkfzxvzsekjnch",
+            _logger.Error.Output,
+            StringComparison.InvariantCulture
+        );
+        Assert.Contains(
+            "? Add more keys? [y/n] (n): n",
+            _logger.Error.Output,
+            StringComparison.InvariantCulture
+        );
+        Assert.EndsWith(
+            """
+
+            Generated .sops.yaml with the following content:
+            creation_rules:
+              - path_regex: secrets.json
+                age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8,age1n2e2v5zyf76sw3wy5m4763fk5hzzn0lg7pe9ncrzxcmzwkfzxvzsekjnch
+
+            You can now encrypt your .NET User Secrets by running:
+              dotnet sops encrypt
+
+            """,
+            _logger.Error.Output.ReplaceLineEndings(),
+            StringComparison.InvariantCulture
+        );
+
+        var sopsYaml = await File.ReadAllTextAsync(".sops.yaml");
+        Assert.Equal(
+            """
+            creation_rules:
+              - path_regex: secrets.json
+                age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8,age1n2e2v5zyf76sw3wy5m4763fk5hzzn0lg7pe9ncrzxcmzwkfzxvzsekjnch
+
+            """,
+            sopsYaml
+        );
+    }
+
+    [Fact]
     public async Task InitializeCommand_Pgp_CreateFile()
     {
         // Arrange
