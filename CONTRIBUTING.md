@@ -59,7 +59,7 @@ Lint of code can be checked by the following command:
 
 ```bash
 dotnet format --verify-no-changes
-dotnet csharpier . --check
+dotnet csharpier check .
 ```
 
 All rules are defined by [.editorconfig](.editorconfig) file

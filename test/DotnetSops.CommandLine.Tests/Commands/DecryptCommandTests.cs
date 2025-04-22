@@ -215,7 +215,7 @@ public class DecryptCommandTests : IDisposable
         Assert.Equal(
             $"""
             File '{Path.Join(Directory.GetCurrentDirectory(), inputPath)}' does not exist.
-            
+
             """,
             _logger.Error.Output,
             ignoreLineEndingDifferences: true
@@ -307,7 +307,7 @@ public class DecryptCommandTests : IDisposable
         Assert.Equal(
             $"""
             'secrets.json' successfully decrypted to user secret with ID '{id}'.
-            
+
             """,
             _logger.Out.Output,
             ignoreLineEndingDifferences: true
