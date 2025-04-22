@@ -25,7 +25,8 @@ public class SopsDownloadServiceTests : IDisposable
     }
 
     [Theory]
-    [InlineData(true, false, false, Architecture.X86)]
+    [InlineData(true, false, false, Architecture.X64)]
+    [InlineData(true, false, false, Architecture.Arm64)]
     [InlineData(false, true, false, Architecture.X86)]
     [InlineData(false, true, false, Architecture.Arm64)]
     [InlineData(false, true, false, Architecture.X64)]
@@ -64,6 +65,16 @@ public class SopsDownloadServiceTests : IDisposable
     }
 
     [Theory]
+    [InlineData(true, false, false, Architecture.X86)]
+    [InlineData(true, false, false, Architecture.Arm)]
+    [InlineData(true, false, false, Architecture.Wasm)]
+    [InlineData(true, false, false, Architecture.S390x)]
+    [InlineData(true, false, false, Architecture.LoongArch64)]
+    [InlineData(true, false, false, Architecture.Armv6)]
+    [InlineData(true, false, false, Architecture.Ppc64le)]
+#if NET9_0_OR_GREATER
+    [InlineData(true, false, false, Architecture.RiscV64)]
+#endif
     [InlineData(false, false, false, Architecture.X64)]
     [InlineData(false, true, false, Architecture.Arm)]
     [InlineData(false, true, false, Architecture.Wasm)]
@@ -145,6 +156,7 @@ public class SopsDownloadServiceTests : IDisposable
         // Arrange
         var mockPlatformInformation = Substitute.For<IPlatformInformationService>();
         mockPlatformInformation.IsWindows().Returns(true);
+        mockPlatformInformation.ProcessArchitecture.Returns(Architecture.X64);
 
         var sopsPathService = new SopsPathService();
 
@@ -180,7 +192,7 @@ public class SopsDownloadServiceTests : IDisposable
             """
             SHA256 of SOPS executable did not match.
 
-            Expected: bee270926fc55b5b89ed9ce87fb2569a36c74e99d63e6392090b3d0f0c2775eb
+            Expected: 056d18d9f12966aebd33a8181b54c358bcb312661fadc5a3141bb6f84b9c3502
             Actual:   1cd34f3b9a3a52a0317abf2b2518511d79a18c6ac469d15617c96e18099037b3
             """,
             exception.Message
@@ -193,6 +205,7 @@ public class SopsDownloadServiceTests : IDisposable
         // Arrange
         var mockPlatformInformation = Substitute.For<IPlatformInformationService>();
         mockPlatformInformation.IsWindows().Returns(true);
+        mockPlatformInformation.ProcessArchitecture.Returns(Architecture.X64);
 
         var sopsPathService = new SopsPathService();
 
@@ -228,7 +241,7 @@ public class SopsDownloadServiceTests : IDisposable
             Failed to download SOPS.
 
             HTTP status code: 404
-            URL: https://github.com/getsops/sops/releases/download/v3.9.4/sops-v3.9.4.exe
+            URL: https://github.com/getsops/sops/releases/download/v3.10.2/sops-v3.10.2.amd64.exe
             """,
             exception.Message
         );
