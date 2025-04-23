@@ -231,7 +231,9 @@ internal class InitializeCommand : CliCommand
                         cancellationToken
                     );
 
-                    sopsCreationRule.AzureKeyvault += ("," + keyIdentifier).Trim(' ', ',');
+                    sopsCreationRule.AzureKeyvault = (
+                        sopsCreationRule.AzureKeyvault + "," + keyIdentifier
+                    ).Trim(' ', ',');
                     break;
                 }
                 case SopsKeyType.AwsKms:
@@ -242,7 +244,8 @@ internal class InitializeCommand : CliCommand
                         cancellationToken
                     );
 
-                    sopsCreationRule.Kms += ("," + arn).Trim(' ', ',');
+                    sopsCreationRule.Kms = (sopsCreationRule.Kms + "," + arn).Trim(' ', ',');
+
                     break;
                 }
                 case SopsKeyType.GcpKms:
@@ -253,7 +256,10 @@ internal class InitializeCommand : CliCommand
                         cancellationToken
                     );
 
-                    sopsCreationRule.GcpKms += ("," + resourceId).Trim(' ', ',');
+                    sopsCreationRule.GcpKms = (sopsCreationRule.GcpKms + "," + resourceId).Trim(
+                        ' ',
+                        ','
+                    );
                     break;
                 }
                 case SopsKeyType.HashicorpVault:
@@ -263,7 +269,9 @@ internal class InitializeCommand : CliCommand
                         cancellationToken
                     );
 
-                    sopsCreationRule.HcVaultTransitUri += ("," + url).Trim(' ', ',');
+                    sopsCreationRule.HcVaultTransitUri = (
+                        sopsCreationRule.HcVaultTransitUri + "," + url
+                    ).Trim(' ', ',');
                     break;
                 }
                 case SopsKeyType.Age:
@@ -273,7 +281,7 @@ internal class InitializeCommand : CliCommand
                         cancellationToken
                     );
 
-                    sopsCreationRule.Age += ("," + publicKey).Trim(' ', ',');
+                    sopsCreationRule.Age = (sopsCreationRule.Age + "," + publicKey).Trim(' ', ',');
                     break;
                 }
 
@@ -284,7 +292,7 @@ internal class InitializeCommand : CliCommand
                         cancellationToken
                     );
 
-                    sopsCreationRule.Pgp += ("," + publicKey).Trim(' ', ',');
+                    sopsCreationRule.Pgp = (sopsCreationRule.Pgp + "," + publicKey).Trim(' ', ',');
                     break;
                 }
                 default:

@@ -47,13 +47,12 @@ public class SopsServiceTests_SopsMissing : IDisposable
         var encrypedFile = new FileInfo("encrypted.json");
 
         // Act / Assert
-        var exception = await Assert.ThrowsAsync<SopsMissingException>(
-            () =>
-                sopsService.EncryptAsync(
-                    fileName,
-                    encrypedFile,
-                    TestContext.Current.CancellationToken
-                )
+        var exception = await Assert.ThrowsAsync<SopsMissingException>(() =>
+            sopsService.EncryptAsync(
+                fileName,
+                encrypedFile,
+                TestContext.Current.CancellationToken
+            )
         );
         Assert.Equal("SOPS executable could not be found on the PATH.", exception.Message);
     }

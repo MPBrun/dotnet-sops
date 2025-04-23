@@ -5,11 +5,9 @@
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)' != 'DEBUG'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
-
   <!-- Workaround for https://github.com/dotnet/roslyn/issues/41640 -->
   <PropertyGroup>
     <!--
@@ -22,7 +20,6 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <NoWarn>$(NoWarn),1573,1591,1712</NoWarn>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.13.61">
       <PrivateAssets>all</PrivateAssets>
@@ -32,10 +29,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="CSharpier.MsBuild" Version="0.30.6">
+    <PackageReference Include="CSharpier.MsBuild" Version="1.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
 </Project>

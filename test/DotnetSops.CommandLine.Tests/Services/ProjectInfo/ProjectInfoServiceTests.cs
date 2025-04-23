@@ -126,8 +126,8 @@ public class ProjectInfoServiceTests : IDisposable
         );
 
         // Act / Assert
-        var exception = Assert.Throws<ProjectInfoSearchException>(
-            () => projectInfoService.FindUserSecretId(null)
+        var exception = Assert.Throws<ProjectInfoSearchException>(() =>
+            projectInfoService.FindUserSecretId(null)
         );
         Assert.Equal(
             $"Multiple MSBuild project files found in '{Directory.GetCurrentDirectory()}'.",
@@ -190,8 +190,8 @@ public class ProjectInfoServiceTests : IDisposable
         var projectInfoService = new ProjectInfoService();
 
         // Act / Assert
-        var exception = Assert.Throws<ProjectInfoSearchException>(
-            () => projectInfoService.FindUserSecretId(null)
+        var exception = Assert.Throws<ProjectInfoSearchException>(() =>
+            projectInfoService.FindUserSecretId(null)
         );
         Assert.Equal(
             $"Could not find a MSBuild project file in '{Directory.GetCurrentDirectory()}'.",
@@ -229,8 +229,8 @@ public class ProjectInfoServiceTests : IDisposable
         );
 
         // Act / Assert
-        var exception = Assert.Throws<ProjectInfoSearchException>(
-            () => projectInfoService.FindUserSecretId(file)
+        var exception = Assert.Throws<ProjectInfoSearchException>(() =>
+            projectInfoService.FindUserSecretId(file)
         );
         Assert.Equal(
             $"Could not find the global property 'UserSecretsId' in MSBuild project '{file.FullName}'.",
@@ -273,8 +273,8 @@ public class ProjectInfoServiceTests : IDisposable
         );
 
         // Act / Assert
-        var exception = Assert.Throws<ProjectInfoSearchException>(
-            () => projectInfoService.FindUserSecretId(file)
+        var exception = Assert.Throws<ProjectInfoSearchException>(() =>
+            projectInfoService.FindUserSecretId(file)
         );
         Assert.Equal($"Could not load the MSBuild project '{file.FullName}'.", exception.Message);
         Assert.Null(exception.Suggestion);
@@ -289,8 +289,8 @@ public class ProjectInfoServiceTests : IDisposable
         var file = new FileInfo("Project.csproj");
 
         // Act / Assert
-        var exception = Assert.Throws<ProjectInfoSearchException>(
-            () => projectInfoService.FindUserSecretId(file)
+        var exception = Assert.Throws<ProjectInfoSearchException>(() =>
+            projectInfoService.FindUserSecretId(file)
         );
         Assert.Equal($"File '{file.FullName}' does not exist.", exception.Message);
         Assert.Null(exception.Suggestion);

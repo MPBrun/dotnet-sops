@@ -135,8 +135,8 @@ public class SopsDownloadServiceTests : IDisposable
         );
 
         // Act / Assert
-        var exception = await Assert.ThrowsAsync<NotSupportedException>(
-            () => service.DownloadAsync(TestContext.Current.CancellationToken)
+        var exception = await Assert.ThrowsAsync<NotSupportedException>(() =>
+            service.DownloadAsync(TestContext.Current.CancellationToken)
         );
         Assert.Equal("This operating system is not supported.", exception.Message);
     }
@@ -175,8 +175,8 @@ public class SopsDownloadServiceTests : IDisposable
         );
 
         // Act / Assert
-        var exception = await Assert.ThrowsAsync<SopsDownloadException>(
-            () => service.DownloadAsync(TestContext.Current.CancellationToken)
+        var exception = await Assert.ThrowsAsync<SopsDownloadException>(() =>
+            service.DownloadAsync(TestContext.Current.CancellationToken)
         );
         Assert.Equal(
             """
@@ -222,8 +222,8 @@ public class SopsDownloadServiceTests : IDisposable
         );
 
         // Act / Assert
-        var exception = await Assert.ThrowsAsync<SopsDownloadException>(
-            () => service.DownloadAsync(TestContext.Current.CancellationToken)
+        var exception = await Assert.ThrowsAsync<SopsDownloadException>(() =>
+            service.DownloadAsync(TestContext.Current.CancellationToken)
         );
         Assert.Equal(
             """
