@@ -126,8 +126,8 @@ public class SopsDownloadServiceTests : IDisposable
         );
 
         // Act / Assert
-        await Assert.ThrowsAsync<NotSupportedException>(
-            () => service.DownloadAsync(TestContext.Current.CancellationToken)
+        await Assert.ThrowsAsync<NotSupportedException>(() =>
+            service.DownloadAsync(TestContext.Current.CancellationToken)
         );
     }
 

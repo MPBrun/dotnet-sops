@@ -548,7 +548,7 @@ public class InitializeCommandTests : IDisposable
 
         var config = new CliConfiguration(command);
 
-        await File.WriteAllTextAsync(".sops.yaml", "");
+        await File.WriteAllTextAsync(".sops.yaml", "", TestContext.Current.CancellationToken);
 
         // Owerwrite existing file
         _logger.Error.Input.PushTextWithEnter("y");
@@ -587,7 +587,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("");
+        var exitCode = await config.InvokeAsync("", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -643,7 +643,10 @@ public class InitializeCommandTests : IDisposable
             StringComparison.InvariantCulture
         );
 
-        var sopsYaml = await File.ReadAllTextAsync(".sops.yaml");
+        var sopsYaml = await File.ReadAllTextAsync(
+            ".sops.yaml",
+            TestContext.Current.CancellationToken
+        );
         Assert.Equal(
             """
             creation_rules:
