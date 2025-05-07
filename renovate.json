@@ -18,8 +18,8 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": [
-        "SopsDownloadService.cs$"
+      "managerFilePatterns": [
+        "/SopsDownloadService.cs$/"
       ],
       "matchStrings": [
         "private const string Version = \"(?<currentValue>.*?)\";\\n"
