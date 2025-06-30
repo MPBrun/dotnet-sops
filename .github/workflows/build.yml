@@ -67,7 +67,7 @@ jobs:
         fail-on-error: false
 
     - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@ad3126e916f78f00edff4ed0317cf185271ccc2d # v5
+      uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v5
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
@@ -94,12 +94,12 @@ jobs:
       contents: write
     steps:
     - name: Download NuGet artifact
-      uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
       with:
         name: nuget
 
     - name: Create release
-      uses: softprops/action-gh-release@da05d552573ad5aba039eaac05058a918a7bf631 # v2
+      uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2
       if: startsWith(github.ref, 'refs/tags/')
       with:
         draft: true
