@@ -48,7 +48,7 @@ public class DownloadSopsCommandTests : IDisposable
         // Arrange
         var command = new DownloadSopsCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // Act
         var exitCode = await config.InvokeAsync("");
@@ -69,7 +69,7 @@ public class DownloadSopsCommandTests : IDisposable
         // Arrange
         var command = new DownloadSopsCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         _mockSopsDownloadService
             .DownloadAsync()
@@ -103,7 +103,7 @@ public class DownloadSopsCommandTests : IDisposable
         // Arrange
         var command = new RootDotnetSopsCommand(_serviceProvider);
         var output = new StringWriter();
-        var config = new CliConfiguration(command)
+        var config = new CommandLineConfiguration(command)
         {
             Output = new ReplaceUsageHelpTextWriter(output, "testhost"),
         };

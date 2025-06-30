@@ -4,9 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DotnetSops.CommandLine.Commands;
 
-internal class RootDotnetSopsCommand : CliRootCommand
+internal class RootDotnetSopsCommand : RootCommand
 {
-    private readonly CliOption<bool> _verboseOption = new("--verbose")
+    private readonly Option<bool> _verboseOption = new("--verbose")
     {
         Recursive = true,
         Description = Properties.Resources.RootDotnetSopsCommandVerboseOptionDescription,

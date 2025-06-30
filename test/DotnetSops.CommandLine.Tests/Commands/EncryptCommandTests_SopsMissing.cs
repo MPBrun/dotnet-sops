@@ -87,7 +87,7 @@ public class EncryptCommandTests_SopsMissing : IDisposable
 
         var outputPath = "secrets.json";
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // Act
         var exitCode = await config.InvokeAsync($"--id {id} --file {outputPath}");

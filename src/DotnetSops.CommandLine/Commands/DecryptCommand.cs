@@ -7,23 +7,23 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DotnetSops.CommandLine.Commands;
 
-internal class DecryptCommand : CliCommand
+internal class DecryptCommand : Command
 {
     public const string CommandName = "decrypt";
 
     private readonly IServiceProvider _serviceProvider;
 
-    private readonly CliOption<FileInfo?> _projectFileOption = new("--project", "-p")
+    private readonly Option<FileInfo?> _projectFileOption = new("--project", "-p")
     {
         Description = Properties.Resources.DecryptCommandProjectOptionDescription,
     };
 
-    private readonly CliOption<string?> _userSecretsIdOption = new("--id")
+    private readonly Option<string?> _userSecretsIdOption = new("--id")
     {
         Description = Properties.Resources.DecryptCommandSecretsIdOptionDescription,
     };
 
-    private readonly CliOption<FileInfo> _inputFileOption = new("--file")
+    private readonly Option<FileInfo> _inputFileOption = new("--file")
     {
         Description = Properties.Resources.DecryptCommandFileOptionDescription,
         DefaultValueFactory = _ => new FileInfo("secrets.json"),

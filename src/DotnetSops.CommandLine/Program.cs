@@ -45,7 +45,7 @@ var serviceProvider = new ServiceCollection()
 
 var rootCommand = new RootDotnetSopsCommand(serviceProvider);
 
-var config = new CliConfiguration(rootCommand)
+var config = new CommandLineConfiguration(rootCommand)
 {
     Output = new ReplaceUsageHelpTextWriter(Console.Out),
 };

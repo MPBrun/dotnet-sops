@@ -74,7 +74,7 @@ public class DecryptCommandTests_SopsMissing : IDisposable
 
         var inputPath = "secrets.json";
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // Act
         var exitCode = await config.InvokeAsync($"--id {id} --file {inputPath}");

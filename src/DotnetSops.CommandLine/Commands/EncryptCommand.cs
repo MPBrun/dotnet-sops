@@ -8,23 +8,23 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DotnetSops.CommandLine.Commands;
 
-internal class EncryptCommand : CliCommand
+internal class EncryptCommand : Command
 {
     public const string CommandName = "encrypt";
 
     private readonly IServiceProvider _serviceProvider;
 
-    private readonly CliOption<FileInfo?> _projectFileOption = new("--project", "-p")
+    private readonly Option<FileInfo?> _projectFileOption = new("--project", "-p")
     {
         Description = Properties.Resources.EncryptCommandProjectOptionDescription,
     };
 
-    private readonly CliOption<string> _userSecretsIdOption = new("--id")
+    private readonly Option<string> _userSecretsIdOption = new("--id")
     {
         Description = Properties.Resources.EncryptCommandSecretsIdOptionDescription,
     };
 
-    private readonly CliOption<FileInfo> _outputFileOption = new("--file")
+    private readonly Option<FileInfo> _outputFileOption = new("--file")
     {
         Description = Properties.Resources.EncryptCommandFileOptionDescription,
         DefaultValueFactory = (_) => new FileInfo("secrets.json"),

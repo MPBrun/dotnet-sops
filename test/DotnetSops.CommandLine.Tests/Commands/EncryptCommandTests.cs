@@ -86,7 +86,7 @@ public class EncryptCommandTests : IDisposable
 
         var outputPath = "secrets.json";
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // Act
         var exitCode = await config.InvokeAsync($"--id {id} --file {outputPath}");
@@ -146,7 +146,7 @@ public class EncryptCommandTests : IDisposable
 
         var outputPath = "secrets.json";
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // Act
         var exitCode = await config.InvokeAsync($"--id {id} --file {outputPath}");
@@ -203,7 +203,7 @@ public class EncryptCommandTests : IDisposable
 
         var outputPath = "secrets.json";
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // Act
         var exitCode = await config.InvokeAsync($"--id {id} --file {outputPath}");
@@ -256,7 +256,7 @@ public class EncryptCommandTests : IDisposable
 
         var outputPath = "secrets.json";
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // Act
         var exitCode = await config.InvokeAsync($"--id {id} --file {outputPath}");
@@ -319,7 +319,7 @@ public class EncryptCommandTests : IDisposable
 
         var outputPath = "secrets.json";
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // Act
         var exitCode = await config.InvokeAsync($"");
@@ -348,7 +348,7 @@ public class EncryptCommandTests : IDisposable
 
         var outputPath = "secrets.json";
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // Act
         var exitCode = await config.InvokeAsync($"--id {id} --file {outputPath}");
@@ -393,7 +393,7 @@ public class EncryptCommandTests : IDisposable
             """
         );
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // Act
         var exitCode = await config.InvokeAsync($"");
@@ -449,7 +449,7 @@ public class EncryptCommandTests : IDisposable
         // Arrange
         var command = new RootDotnetSopsCommand(_serviceProvider);
         var output = new StringWriter();
-        var config = new CliConfiguration(command)
+        var config = new CommandLineConfiguration(command)
         {
             Output = new ReplaceUsageHelpTextWriter(output, "testhost"),
         };

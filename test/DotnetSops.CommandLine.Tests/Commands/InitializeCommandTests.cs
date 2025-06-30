@@ -40,7 +40,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         await File.WriteAllTextAsync(".sops.yaml", "");
 
@@ -86,7 +86,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // No key groups
         _logger.Error.Input.PushTextWithEnter("n");
@@ -170,7 +170,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // No key groups
         _logger.Error.Input.PushTextWithEnter("n");
@@ -260,7 +260,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // No key groups
         _logger.Error.Input.PushTextWithEnter("n");
@@ -351,7 +351,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // No key groups
         _logger.Error.Input.PushTextWithEnter("n");
@@ -440,7 +440,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         await File.WriteAllTextAsync(".sops.yaml", "");
 
@@ -530,7 +530,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         await File.WriteAllTextAsync(".sops.yaml", "");
 
@@ -645,7 +645,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         await File.WriteAllTextAsync(".sops.yaml", "");
 
@@ -734,7 +734,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // key groups
         _logger.Error.Input.PushTextWithEnter("y");
@@ -844,7 +844,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // Key groups
         _logger.Error.Input.PushTextWithEnter("y");
@@ -946,7 +946,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // Key groups
         _logger.Error.Input.PushTextWithEnter("y");
@@ -1049,7 +1049,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // Key groups
         _logger.Error.Input.PushTextWithEnter("y");
@@ -1150,7 +1150,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // Key groups
         _logger.Error.Input.PushTextWithEnter("y");
@@ -1242,7 +1242,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // Key groups
         _logger.Error.Input.PushTextWithEnter("y");
@@ -1336,7 +1336,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new RootDotnetSopsCommand(_serviceProvider);
         var output = new StringWriter();
-        var config = new CliConfiguration(command)
+        var config = new CommandLineConfiguration(command)
         {
             Output = new ReplaceUsageHelpTextWriter(output, "testhost"),
         };
