@@ -5,19 +5,19 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DotnetSops.CommandLine.Commands;
 
-internal class RunCommand : CliCommand
+internal class RunCommand : Command
 {
     public const string CommandName = "run";
 
     private readonly IServiceProvider _serviceProvider;
 
-    private readonly CliOption<FileInfo> _inputFileOption = new("--file")
+    private readonly Option<FileInfo> _inputFileOption = new("--file")
     {
         Description = Properties.Resources.RunCommandFileOptionDescription,
         DefaultValueFactory = _ => new FileInfo("secrets.json"),
     };
 
-    private readonly CliArgument<string[]> _runArguments = new("dotnetArguments")
+    private readonly Argument<string[]> _runArguments = new("dotnetArguments")
     {
         Description = Properties.Resources.RunCommandArgumentsDescription,
     };

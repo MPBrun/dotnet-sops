@@ -45,7 +45,7 @@ public partial class RootDotnetSopsCommandTests
         // Arrange
         var command = new RootDotnetSopsCommand(_serviceProvider);
         var output = new StringWriter();
-        var config = new CliConfiguration(command) { Output = output };
+        var config = new CommandLineConfiguration(command) { Output = output };
 
         // Act
         var exitCode = await config.InvokeAsync("--version");
@@ -61,7 +61,7 @@ public partial class RootDotnetSopsCommandTests
         // Arrange
         var command = new RootDotnetSopsCommand(_serviceProvider);
         var output = new StringWriter();
-        var config = new CliConfiguration(command) { Output = output };
+        var config = new CommandLineConfiguration(command) { Output = output };
 
         // Act
         await config.InvokeAsync("init");
@@ -76,7 +76,7 @@ public partial class RootDotnetSopsCommandTests
         // Arrange
         var command = new RootDotnetSopsCommand(_serviceProvider);
         var output = new StringWriter();
-        var config = new CliConfiguration(command) { Output = output };
+        var config = new CommandLineConfiguration(command) { Output = output };
 
         // Act
         await config.InvokeAsync("init --verbose");
@@ -94,7 +94,7 @@ public partial class RootDotnetSopsCommandTests
         // Arrange
         var command = new RootDotnetSopsCommand(_serviceProvider);
         var output = new StringWriter();
-        var config = new CliConfiguration(command)
+        var config = new CommandLineConfiguration(command)
         {
             Output = new ReplaceUsageHelpTextWriter(output, "testhost"),
         };

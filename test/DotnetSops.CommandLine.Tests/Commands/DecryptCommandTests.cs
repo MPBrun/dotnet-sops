@@ -111,7 +111,7 @@ public class DecryptCommandTests : IDisposable
 
         var inputPath = "secrets.json";
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // Act
         var exitCode = await config.InvokeAsync($"--id {id} --file {inputPath}");
@@ -179,7 +179,7 @@ public class DecryptCommandTests : IDisposable
 
         var inputPath = "secrets.json";
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // Act
         var exitCode = await config.InvokeAsync($"--id {id} --file {inputPath}");
@@ -205,7 +205,7 @@ public class DecryptCommandTests : IDisposable
 
         var inputPath = "secrets.json";
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // Act
         var exitCode = await config.InvokeAsync($"--id {id} --file {inputPath}");
@@ -291,7 +291,7 @@ public class DecryptCommandTests : IDisposable
             """
         );
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // Act
         var exitCode = await config.InvokeAsync($"");
@@ -338,7 +338,7 @@ public class DecryptCommandTests : IDisposable
             """
         );
 
-        var config = new CliConfiguration(command);
+        var config = new CommandLineConfiguration(command);
 
         // Act
         var exitCode = await config.InvokeAsync($"");
@@ -394,7 +394,7 @@ public class DecryptCommandTests : IDisposable
         // Arrange
         var command = new RootDotnetSopsCommand(_serviceProvider);
         var output = new StringWriter();
-        var config = new CliConfiguration(command)
+        var config = new CommandLineConfiguration(command)
         {
             Output = new ReplaceUsageHelpTextWriter(output, "testhost"),
         };

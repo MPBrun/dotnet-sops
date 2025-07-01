@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DotnetSops.CommandLine.Commands;
 
-internal class DownloadSopsCommand : CliCommand
+internal class DownloadSopsCommand : Command
 {
     public const string CommandName = "download-sops";
 
