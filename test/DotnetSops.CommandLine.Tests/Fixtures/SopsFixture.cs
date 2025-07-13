@@ -9,13 +9,14 @@ public class SopsFixture : IAsyncLifetime
 {
     internal ISopsPathService SopsPathService { get; private set; } = default!;
 
-    public Task DisposeAsync()
+    public ValueTask DisposeAsync()
     {
         Directory.Delete(SopsPathService.GetDotnetSopsUserDirectory(), true);
-        return Task.CompletedTask;
+        GC.SuppressFinalize(this);
+        return ValueTask.CompletedTask;
     }
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         var fixtureDir = Path.Join(Directory.GetCurrentDirectory(), "sops-executables");
 

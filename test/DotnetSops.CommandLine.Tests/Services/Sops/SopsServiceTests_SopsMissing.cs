@@ -48,7 +48,7 @@ public class SopsServiceTests_SopsMissing : IDisposable
 
         // Act / Assert
         var exception = await Assert.ThrowsAsync<SopsMissingException>(() =>
-            sopsService.EncryptAsync(fileName, encrypedFile)
+            sopsService.EncryptAsync(fileName, encrypedFile, TestContext.Current.CancellationToken)
         );
         Assert.Equal("SOPS executable could not be found on the PATH.", exception.Message);
     }
