@@ -1,4 +1,3 @@
-using System.CommandLine;
 using DotnetSops.CommandLine.Commands;
 using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.FileBom;
@@ -74,10 +73,8 @@ public class DecryptCommandTests_SopsMissing : IDisposable
 
         var inputPath = "secrets.json";
 
-        var config = new CommandLineConfiguration(command);
-
         // Act
-        var exitCode = await config.InvokeAsync($"--id {id} --file {inputPath}");
+        var exitCode = await command.Parse($"--id {id} --file {inputPath}").InvokeAsync();
 
         // Assert
         Assert.Equal(1, exitCode);

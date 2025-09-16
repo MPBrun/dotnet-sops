@@ -45,10 +45,10 @@ public partial class RootDotnetSopsCommandTests
         // Arrange
         var command = new RootDotnetSopsCommand(_serviceProvider);
         var output = new StringWriter();
-        var config = new CommandLineConfiguration(command) { Output = output };
+        var config = new InvocationConfiguration() { Output = output };
 
         // Act
-        var exitCode = await config.InvokeAsync("--version");
+        var exitCode = await command.Parse("--version").InvokeAsync(config);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -61,10 +61,10 @@ public partial class RootDotnetSopsCommandTests
         // Arrange
         var command = new RootDotnetSopsCommand(_serviceProvider);
         var output = new StringWriter();
-        var config = new CommandLineConfiguration(command) { Output = output };
+        var config = new InvocationConfiguration() { Output = output };
 
         // Act
-        await config.InvokeAsync("init");
+        await command.Parse("init").InvokeAsync(config);
 
         // Assert
         Assert.False(_logger.Verbose);
@@ -76,10 +76,10 @@ public partial class RootDotnetSopsCommandTests
         // Arrange
         var command = new RootDotnetSopsCommand(_serviceProvider);
         var output = new StringWriter();
-        var config = new CommandLineConfiguration(command) { Output = output };
+        var config = new InvocationConfiguration() { Output = output };
 
         // Act
-        await config.InvokeAsync("init --verbose");
+        await command.Parse("init --verbose").InvokeAsync(config);
 
         // Assert
         Assert.True(_logger.Verbose);
@@ -94,13 +94,13 @@ public partial class RootDotnetSopsCommandTests
         // Arrange
         var command = new RootDotnetSopsCommand(_serviceProvider);
         var output = new StringWriter();
-        var config = new CommandLineConfiguration(command)
+        var config = new InvocationConfiguration()
         {
             Output = new ReplaceUsageHelpTextWriter(output, "testhost"),
         };
 
         // Act
-        var exitCode = await config.InvokeAsync(option);
+        var exitCode = await command.Parse(option).InvokeAsync(config);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -115,9 +115,9 @@ public partial class RootDotnetSopsCommandTests
               dotnet sops [command] [options]
 
             Options:
+              --verbose       Enable verbose logging output
               -?, -h, --help  Show help and usage information
               --version       Show version information
-              --verbose       Enable verbose logging output
 
             Commands:
               init                   Create a .sops.yaml configuration file.
