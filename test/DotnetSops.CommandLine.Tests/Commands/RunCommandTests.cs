@@ -135,12 +135,10 @@ public class RunCommandTests : IDisposable
 
         var inputPath = "secrets.json";
 
-        var config = new CommandLineConfiguration(command);
-
         // Act
-        var exitCode = await config.InvokeAsync(
-            $"arg1 arg2 arg3 --configuration Release --file {inputPath}"
-        );
+        var exitCode = await command
+            .Parse($"arg1 arg2 arg3 --configuration Release --file {inputPath}")
+            .InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -198,10 +196,8 @@ public class RunCommandTests : IDisposable
 
         var inputPath = "secrets.json";
 
-        var config = new CommandLineConfiguration(command);
-
         // Act
-        var exitCode = await config.InvokeAsync($"--file {inputPath}");
+        var exitCode = await command.Parse($"--file {inputPath}").InvokeAsync();
 
         // Assert
         Assert.Equal(128, exitCode);
@@ -224,13 +220,13 @@ public class RunCommandTests : IDisposable
         // Arrange
         var command = new RootDotnetSopsCommand(_serviceProvider);
         var output = new StringWriter();
-        var config = new CommandLineConfiguration(command)
+        var config = new InvocationConfiguration()
         {
             Output = new ReplaceUsageHelpTextWriter(output, "testhost"),
         };
 
         // Act
-        var exitCode = await config.InvokeAsync($"run {option}");
+        var exitCode = await command.Parse($"run {option}").InvokeAsync(config);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -246,7 +242,7 @@ public class RunCommandTests : IDisposable
               <dotnetArguments>  Arguments passed to the 'dotnet run' command.
 
             Options:
-              --file          Encrypted secrets file [default: secrets.json]
+              --file <file>   Encrypted secrets file [default: secrets.json]
               -?, -h, --help  Show help and usage information
               --verbose       Enable verbose logging output
 

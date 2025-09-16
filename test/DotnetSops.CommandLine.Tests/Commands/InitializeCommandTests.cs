@@ -40,15 +40,13 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CommandLineConfiguration(command);
-
         await File.WriteAllTextAsync(".sops.yaml", "");
 
         // Don't overwrite existing file
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("");
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -86,8 +84,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CommandLineConfiguration(command);
-
         // No key groups
         _logger.Error.Input.PushTextWithEnter("n");
 
@@ -103,7 +99,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("");
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -170,8 +166,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CommandLineConfiguration(command);
-
         // No key groups
         _logger.Error.Input.PushTextWithEnter("n");
 
@@ -188,7 +182,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("");
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -260,8 +254,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CommandLineConfiguration(command);
-
         // No key groups
         _logger.Error.Input.PushTextWithEnter("n");
 
@@ -279,7 +271,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("");
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -351,8 +343,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CommandLineConfiguration(command);
-
         // No key groups
         _logger.Error.Input.PushTextWithEnter("n");
 
@@ -369,7 +359,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("");
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -440,8 +430,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CommandLineConfiguration(command);
-
         await File.WriteAllTextAsync(".sops.yaml", "");
 
         // Owerwrite existing file
@@ -466,7 +454,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("");
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -530,8 +518,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CommandLineConfiguration(command);
-
         await File.WriteAllTextAsync(".sops.yaml", "");
 
         // Owerwrite existing file
@@ -571,7 +557,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("");
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -645,8 +631,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CommandLineConfiguration(command);
-
         await File.WriteAllTextAsync(".sops.yaml", "");
 
         // Owerwrite existing file
@@ -670,7 +654,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("");
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -734,8 +718,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CommandLineConfiguration(command);
-
         // key groups
         _logger.Error.Input.PushTextWithEnter("y");
 
@@ -754,7 +736,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("");
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -844,8 +826,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CommandLineConfiguration(command);
-
         // Key groups
         _logger.Error.Input.PushTextWithEnter("y");
 
@@ -865,7 +845,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("");
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -946,8 +926,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CommandLineConfiguration(command);
-
         // Key groups
         _logger.Error.Input.PushTextWithEnter("y");
 
@@ -968,7 +946,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("");
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -1049,8 +1027,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CommandLineConfiguration(command);
-
         // Key groups
         _logger.Error.Input.PushTextWithEnter("y");
 
@@ -1070,7 +1046,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("");
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -1150,8 +1126,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CommandLineConfiguration(command);
-
         // Key groups
         _logger.Error.Input.PushTextWithEnter("y");
 
@@ -1174,7 +1148,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("");
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -1242,8 +1216,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CommandLineConfiguration(command);
-
         // Key groups
         _logger.Error.Input.PushTextWithEnter("y");
 
@@ -1265,7 +1237,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("");
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -1336,13 +1308,13 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new RootDotnetSopsCommand(_serviceProvider);
         var output = new StringWriter();
-        var config = new CommandLineConfiguration(command)
+        var config = new InvocationConfiguration()
         {
             Output = new ReplaceUsageHelpTextWriter(output, "testhost"),
         };
 
         // Act
-        var exitCode = await config.InvokeAsync($"init {option}");
+        var exitCode = await command.Parse($"init {option}").InvokeAsync(config);
 
         // Assert
         Assert.Equal(0, exitCode);

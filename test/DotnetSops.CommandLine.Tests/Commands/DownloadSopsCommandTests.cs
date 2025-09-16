@@ -48,10 +48,8 @@ public class DownloadSopsCommandTests : IDisposable
         // Arrange
         var command = new DownloadSopsCommand(_serviceProvider);
 
-        var config = new CommandLineConfiguration(command);
-
         // Act
-        var exitCode = await config.InvokeAsync("");
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -69,8 +67,6 @@ public class DownloadSopsCommandTests : IDisposable
         // Arrange
         var command = new DownloadSopsCommand(_serviceProvider);
 
-        var config = new CommandLineConfiguration(command);
-
         _mockSopsDownloadService
             .DownloadAsync()
             .ThrowsAsyncForAnyArgs(
@@ -78,7 +74,7 @@ public class DownloadSopsCommandTests : IDisposable
             );
 
         // Act
-        var exitCode = await config.InvokeAsync("");
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(1, exitCode);
@@ -103,13 +99,13 @@ public class DownloadSopsCommandTests : IDisposable
         // Arrange
         var command = new RootDotnetSopsCommand(_serviceProvider);
         var output = new StringWriter();
-        var config = new CommandLineConfiguration(command)
+        var config = new InvocationConfiguration()
         {
             Output = new ReplaceUsageHelpTextWriter(output, "testhost"),
         };
 
         // Act
-        var exitCode = await config.InvokeAsync($"download-sops {option}");
+        var exitCode = await command.Parse($"download-sops {option}").InvokeAsync(config);
 
         // Assert
         Assert.Equal(0, exitCode);

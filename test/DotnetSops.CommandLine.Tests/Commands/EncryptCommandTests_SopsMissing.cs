@@ -1,4 +1,3 @@
-using System.CommandLine;
 using System.Text;
 using System.Text.Json;
 using DotnetSops.CommandLine.Commands;
@@ -87,10 +86,8 @@ public class EncryptCommandTests_SopsMissing : IDisposable
 
         var outputPath = "secrets.json";
 
-        var config = new CommandLineConfiguration(command);
-
         // Act
-        var exitCode = await config.InvokeAsync($"--id {id} --file {outputPath}");
+        var exitCode = await command.Parse($"--id {id} --file {outputPath}").InvokeAsync();
 
         // Assert
         Assert.Equal(1, exitCode);
