@@ -49,7 +49,9 @@ public partial class RootDotnetSopsCommandTests
         var config = new InvocationConfiguration() { Output = output };
 
         // Act
-        var exitCode = await command.Parse("--version").InvokeAsync(config);
+        var exitCode = await command
+            .Parse("--version")
+            .InvokeAsync(config, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -65,7 +67,7 @@ public partial class RootDotnetSopsCommandTests
         var config = new InvocationConfiguration() { Output = output };
 
         // Act
-        await command.Parse("init").InvokeAsync(config);
+        await command.Parse("init").InvokeAsync(config, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(_logger.Verbose);
@@ -80,7 +82,9 @@ public partial class RootDotnetSopsCommandTests
         var config = new InvocationConfiguration() { Output = output };
 
         // Act
-        await command.Parse("init --verbose").InvokeAsync(config);
+        await command
+            .Parse("init --verbose")
+            .InvokeAsync(config, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(_logger.Verbose);
@@ -104,7 +108,9 @@ public partial class RootDotnetSopsCommandTests
         };
 
         // Act
-        var exitCode = await command.Parse(option).InvokeAsync(config);
+        var exitCode = await command
+            .Parse(option)
+            .InvokeAsync(config, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);

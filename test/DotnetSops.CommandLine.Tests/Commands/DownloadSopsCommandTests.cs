@@ -50,7 +50,9 @@ public class DownloadSopsCommandTests : IDisposable
         var command = new DownloadSopsCommand(_serviceProvider);
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -75,7 +77,9 @@ public class DownloadSopsCommandTests : IDisposable
             );
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(1, exitCode);
@@ -109,7 +113,9 @@ public class DownloadSopsCommandTests : IDisposable
         };
 
         // Act
-        var exitCode = await command.Parse($"download-sops {option}").InvokeAsync(config);
+        var exitCode = await command
+            .Parse($"download-sops {option}")
+            .InvokeAsync(config, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);

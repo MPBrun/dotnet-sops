@@ -88,7 +88,9 @@ public class EncryptCommandTests_SopsMissing : IDisposable
         var outputPath = "secrets.json";
 
         // Act
-        var exitCode = await command.Parse($"--id {id} --file {outputPath}").InvokeAsync();
+        var exitCode = await command
+            .Parse($"--id {id} --file {outputPath}")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(1, exitCode);

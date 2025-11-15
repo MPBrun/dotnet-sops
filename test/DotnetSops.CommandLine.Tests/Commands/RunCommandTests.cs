@@ -144,7 +144,7 @@ public class RunCommandTests : IDisposable
         // Act
         var exitCode = await command
             .Parse($"arg1 arg2 arg3 --configuration Release --file {inputPath}")
-            .InvokeAsync();
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -206,7 +206,9 @@ public class RunCommandTests : IDisposable
         var inputPath = "secrets.json";
 
         // Act
-        var exitCode = await command.Parse($"--file {inputPath}").InvokeAsync();
+        var exitCode = await command
+            .Parse($"--file {inputPath}")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(128, exitCode);
@@ -238,7 +240,9 @@ public class RunCommandTests : IDisposable
         };
 
         // Act
-        var exitCode = await command.Parse($"run {option}").InvokeAsync(config);
+        var exitCode = await command
+            .Parse($"run {option}")
+            .InvokeAsync(config, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);

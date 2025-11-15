@@ -116,7 +116,9 @@ public class DecryptCommandTests : IDisposable
         var inputPath = "secrets.json";
 
         // Act
-        var exitCode = await command.Parse($"--id {id} --file {inputPath}").InvokeAsync();
+        var exitCode = await command
+            .Parse($"--id {id} --file {inputPath}")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -185,7 +187,9 @@ public class DecryptCommandTests : IDisposable
         var inputPath = "secrets.json";
 
         // Act
-        var exitCode = await command.Parse($"--id {id} --file {inputPath}").InvokeAsync();
+        var exitCode = await command
+            .Parse($"--id {id} --file {inputPath}")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(128, exitCode);
@@ -209,7 +213,9 @@ public class DecryptCommandTests : IDisposable
         var inputPath = "secrets.json";
 
         // Act
-        var exitCode = await command.Parse($"--id {id} --file {inputPath}").InvokeAsync();
+        var exitCode = await command
+            .Parse($"--id {id} --file {inputPath}")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(1, exitCode);
@@ -297,7 +303,9 @@ public class DecryptCommandTests : IDisposable
         );
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -343,7 +351,9 @@ public class DecryptCommandTests : IDisposable
         );
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(1, exitCode);
@@ -405,7 +415,9 @@ public class DecryptCommandTests : IDisposable
         };
 
         // Act
-        var exitCode = await command.Parse($"decrypt {option}").InvokeAsync(config);
+        var exitCode = await command
+            .Parse($"decrypt {option}")
+            .InvokeAsync(config, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
