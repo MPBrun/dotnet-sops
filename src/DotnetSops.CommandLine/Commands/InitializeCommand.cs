@@ -44,7 +44,7 @@ internal class InitializeCommand : Command
 
         var sopsConfiguration = await PromptSopsConfigurationAsync(logger, cancellationToken);
 
-        var serializer = new SerializerBuilder()
+        var serializer = new StaticSerializerBuilder(new SopsConfigurationStaticContext())
             .WithNamingConvention(UnderscoredNamingConvention.Instance)
             .WithIndentedSequences()
             .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitNull)
