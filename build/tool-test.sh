@@ -7,6 +7,7 @@ folderName="ToolInstallTest"
 
 rm -rf $folderName && mkdir $folderName && cd $folderName
 
+dotnet --version
 dotnet new nugetconfig
 sed -i.bak '/<add/d' nuget.config && rm nuget.config.bak
 
