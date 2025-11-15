@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-26, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
@@ -73,8 +73,32 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-    - name: Pack
-      run: dotnet pack --no-build --configuration Release -p:Version=${{ steps.version.outputs.VERSION }}
+    - name: Pack for any
+      run: |
+        dotnet pack --configuration Release --runtime any -p:Version=${{ steps.version.outputs.VERSION }}
+        dotnet pack --configuration Release -p:Version=${{ steps.version.outputs.VERSION }}
+
+    - name: Pack for ubuntu
+      if: matrix.os == 'ubuntu-24.04'
+      run: |
+        dotnet pack --configuration Release --runtime linux-x64 -p:Version=${{ steps.version.outputs.VERSION }}
+      
+    - name: Pack for ubuntu arm
+      if: matrix.os == 'ubuntu-24.04-arm'
+      run: |
+        dotnet pack --configuration Release --runtime linux-arm64 -p:Version=${{ steps.version.outputs.VERSION }}
+
+    - name: Pack for macos
+      if: matrix.os == 'macos-26'
+      run: |
+        dotnet pack --configuration Release --runtime osx-x64 -p:Version=${{ steps.version.outputs.VERSION }}
+        dotnet pack --configuration Release --runtime osx-arm64 -p:Version=${{ steps.version.outputs.VERSION }}
+
+    - name: Pack for windows
+      if: matrix.os == 'windows-latest'
+      run: |
+        dotnet pack --configuration Release --runtime win-x64 -p:Version=${{ steps.version.outputs.VERSION }}
+        dotnet pack --configuration Release --runtime win-arm64 -p:Version=${{ steps.version.outputs.VERSION }}
 
     - name: Test - Package
       shell: bash
@@ -82,7 +106,6 @@ jobs:
 
     - name: Upload NuGet artifact
       uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
-      if: matrix.os == 'ubuntu-latest'
       with:
         name: nuget
         path: src/DotnetSops.CommandLine/bin/nupkg/*.*
