@@ -6,6 +6,10 @@ on:
 
 jobs:
   release:
+    permissions:
+      id-token: write
+      contents: read
+
     runs-on: ubuntu-latest
     steps:
     - name: Download release artifact
@@ -13,5 +17,11 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: gh release download ${{ github.ref_name }} --repo MPBrun/dotnet-sops
 
+    - name: NuGet login
+      uses: NuGet/login@v1
+      id: login
+      with:
+        user: ${{ secrets.NUGET_USER }}
+
     - name: Publish NuGet package on nuget.org
-      run: dotnet nuget push "*.nupkg" --source https://api.nuget.org/v3/index.json --api-key "${{ secrets.NUGET_API_KEY }}"
+      run: dotnet nuget push "*.nupkg" --source https://api.nuget.org/v3/index.json --api-key "${{ steps.login.outputs.NUGET_API_KEY }}"
