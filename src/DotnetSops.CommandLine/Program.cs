@@ -45,9 +45,6 @@ var serviceProvider = new ServiceCollection()
 
 var rootCommand = new RootDotnetSopsCommand(serviceProvider);
 
-var config = new CliConfiguration(rootCommand)
-{
-    Output = new ReplaceUsageHelpTextWriter(Console.Out),
-};
+var config = new InvocationConfiguration() { Output = new ReplaceUsageHelpTextWriter(Console.Out) };
 
-return await config.InvokeAsync(args);
+return await rootCommand.Parse(args).InvokeAsync(config);

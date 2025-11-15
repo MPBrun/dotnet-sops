@@ -41,15 +41,13 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
-
-        await File.WriteAllTextAsync(".sops.yaml", "", TestContext.Current.CancellationToken);
+        await File.WriteAllTextAsync(".sops.yaml", "");
 
         // Don't overwrite existing file
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("", TestContext.Current.CancellationToken);
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -87,8 +85,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
-
         // No key groups
         _logger.Error.Input.PushTextWithEnter("n");
 
@@ -104,7 +100,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("", TestContext.Current.CancellationToken);
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -174,8 +170,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
-
         // No key groups
         _logger.Error.Input.PushTextWithEnter("n");
 
@@ -192,7 +186,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("", TestContext.Current.CancellationToken);
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -267,8 +261,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
-
         // No key groups
         _logger.Error.Input.PushTextWithEnter("n");
 
@@ -286,7 +278,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("", TestContext.Current.CancellationToken);
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -361,8 +353,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
-
         // No key groups
         _logger.Error.Input.PushTextWithEnter("n");
 
@@ -379,7 +369,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("", TestContext.Current.CancellationToken);
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -453,9 +443,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
-
-        await File.WriteAllTextAsync(".sops.yaml", "", TestContext.Current.CancellationToken);
+        await File.WriteAllTextAsync(".sops.yaml", "");
 
         // Owerwrite existing file
         _logger.Error.Input.PushTextWithEnter("y");
@@ -479,7 +467,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("", TestContext.Current.CancellationToken);
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -546,9 +534,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
-
-        await File.WriteAllTextAsync(".sops.yaml", "", TestContext.Current.CancellationToken);
+        await File.WriteAllTextAsync(".sops.yaml", "");
 
         // Owerwrite existing file
         _logger.Error.Input.PushTextWithEnter("y");
@@ -587,7 +573,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("", TestContext.Current.CancellationToken);
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -664,9 +650,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
-
-        await File.WriteAllTextAsync(".sops.yaml", "", TestContext.Current.CancellationToken);
+        await File.WriteAllTextAsync(".sops.yaml", "");
 
         // Owerwrite existing file
         _logger.Error.Input.PushTextWithEnter("y");
@@ -689,7 +673,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("", TestContext.Current.CancellationToken);
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -756,8 +740,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
-
         // key groups
         _logger.Error.Input.PushTextWithEnter("y");
 
@@ -776,7 +758,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("", TestContext.Current.CancellationToken);
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -869,8 +851,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
-
         // Key groups
         _logger.Error.Input.PushTextWithEnter("y");
 
@@ -890,7 +870,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("", TestContext.Current.CancellationToken);
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -974,8 +954,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
-
         // Key groups
         _logger.Error.Input.PushTextWithEnter("y");
 
@@ -996,7 +974,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("", TestContext.Current.CancellationToken);
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -1080,8 +1058,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
-
         // Key groups
         _logger.Error.Input.PushTextWithEnter("y");
 
@@ -1101,7 +1077,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("", TestContext.Current.CancellationToken);
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -1184,8 +1160,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
-
         // Key groups
         _logger.Error.Input.PushTextWithEnter("y");
 
@@ -1208,7 +1182,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("", TestContext.Current.CancellationToken);
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -1279,8 +1253,6 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
-
         // Key groups
         _logger.Error.Input.PushTextWithEnter("y");
 
@@ -1302,7 +1274,7 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await config.InvokeAsync("", TestContext.Current.CancellationToken);
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -1376,7 +1348,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new RootDotnetSopsCommand(_serviceProvider);
         var output = new StringWriter();
-        var config = new CliConfiguration(command)
+        var config = new InvocationConfiguration()
         {
             Output = new ReplaceUsageHelpTextWriter(
                 output,
@@ -1385,10 +1357,7 @@ public class InitializeCommandTests : IDisposable
         };
 
         // Act
-        var exitCode = await config.InvokeAsync(
-            $"init {option}",
-            TestContext.Current.CancellationToken
-        );
+        var exitCode = await command.Parse($"init {option}").InvokeAsync(config);
 
         // Assert
         Assert.Equal(0, exitCode);

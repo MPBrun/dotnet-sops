@@ -7,7 +7,7 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace DotnetSops.CommandLine.Commands;
 
-internal class InitializeCommand : CliCommand
+internal class InitializeCommand : Command
 {
     public const string CommandName = "init";
 

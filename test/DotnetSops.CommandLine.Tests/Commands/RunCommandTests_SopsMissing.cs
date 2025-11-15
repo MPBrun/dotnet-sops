@@ -1,4 +1,3 @@
-using System.CommandLine;
 using DotnetSops.CommandLine.Commands;
 using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.Sops;
@@ -60,13 +59,10 @@ public class RunCommandTests_SopsMissing : IDisposable
 
         var inputPath = "secrets.json";
 
-        var config = new CliConfiguration(command);
-
         // Act
-        var exitCode = await config.InvokeAsync(
-            $"arg1 arg2 arg3 --configuration Release --file {inputPath}",
-            TestContext.Current.CancellationToken
-        );
+        var exitCode = await command
+            .Parse($"arg1 arg2 arg3 --configuration Release --file {inputPath}")
+            .InvokeAsync();
 
         // Assert
         Assert.Equal(1, exitCode);

@@ -115,13 +115,8 @@ public class DecryptCommandTests : IDisposable
 
         var inputPath = "secrets.json";
 
-        var config = new CliConfiguration(command);
-
         // Act
-        var exitCode = await config.InvokeAsync(
-            $"--id {id} --file {inputPath}",
-            TestContext.Current.CancellationToken
-        );
+        var exitCode = await command.Parse($"--id {id} --file {inputPath}").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -189,13 +184,8 @@ public class DecryptCommandTests : IDisposable
 
         var inputPath = "secrets.json";
 
-        var config = new CliConfiguration(command);
-
         // Act
-        var exitCode = await config.InvokeAsync(
-            $"--id {id} --file {inputPath}",
-            TestContext.Current.CancellationToken
-        );
+        var exitCode = await command.Parse($"--id {id} --file {inputPath}").InvokeAsync();
 
         // Assert
         Assert.Equal(128, exitCode);
@@ -218,13 +208,8 @@ public class DecryptCommandTests : IDisposable
 
         var inputPath = "secrets.json";
 
-        var config = new CliConfiguration(command);
-
         // Act
-        var exitCode = await config.InvokeAsync(
-            $"--id {id} --file {inputPath}",
-            TestContext.Current.CancellationToken
-        );
+        var exitCode = await command.Parse($"--id {id} --file {inputPath}").InvokeAsync();
 
         // Assert
         Assert.Equal(1, exitCode);
@@ -311,10 +296,8 @@ public class DecryptCommandTests : IDisposable
             TestContext.Current.CancellationToken
         );
 
-        var config = new CliConfiguration(command);
-
         // Act
-        var exitCode = await config.InvokeAsync($"", TestContext.Current.CancellationToken);
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -359,10 +342,8 @@ public class DecryptCommandTests : IDisposable
             TestContext.Current.CancellationToken
         );
 
-        var config = new CliConfiguration(command);
-
         // Act
-        var exitCode = await config.InvokeAsync($"", TestContext.Current.CancellationToken);
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(1, exitCode);
@@ -415,7 +396,7 @@ public class DecryptCommandTests : IDisposable
         // Arrange
         var command = new RootDotnetSopsCommand(_serviceProvider);
         var output = new StringWriter();
-        var config = new CliConfiguration(command)
+        var config = new InvocationConfiguration()
         {
             Output = new ReplaceUsageHelpTextWriter(
                 output,
@@ -424,10 +405,7 @@ public class DecryptCommandTests : IDisposable
         };
 
         // Act
-        var exitCode = await config.InvokeAsync(
-            $"decrypt {option}",
-            TestContext.Current.CancellationToken
-        );
+        var exitCode = await command.Parse($"decrypt {option}").InvokeAsync(config);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -440,11 +418,11 @@ public class DecryptCommandTests : IDisposable
               dotnet sops decrypt [options]
 
             Options:
-              -p, --project   Path to the project. Defaults to searching the current directory.
-              --id            The user secret ID to use.
-              --file          Encrypted secrets file [default: secrets.json]
-              -?, -h, --help  Show help and usage information
-              --verbose       Enable verbose logging output
+              -p, --project <project>  Path to the project. Defaults to searching the current directory.
+              --id <id>                The user secret ID to use.
+              --file <file>            Encrypted secrets file [default: secrets.json]
+              -?, -h, --help           Show help and usage information
+              --verbose                Enable verbose logging output
 
 
             """,

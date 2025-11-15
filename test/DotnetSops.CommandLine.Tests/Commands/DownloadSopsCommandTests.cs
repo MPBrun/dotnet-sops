@@ -49,10 +49,8 @@ public class DownloadSopsCommandTests : IDisposable
         // Arrange
         var command = new DownloadSopsCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
-
         // Act
-        var exitCode = await config.InvokeAsync("", TestContext.Current.CancellationToken);
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -70,8 +68,6 @@ public class DownloadSopsCommandTests : IDisposable
         // Arrange
         var command = new DownloadSopsCommand(_serviceProvider);
 
-        var config = new CliConfiguration(command);
-
         _mockSopsDownloadService
             .DownloadAsync(TestContext.Current.CancellationToken)
             .ThrowsAsyncForAnyArgs(
@@ -79,7 +75,7 @@ public class DownloadSopsCommandTests : IDisposable
             );
 
         // Act
-        var exitCode = await config.InvokeAsync("", TestContext.Current.CancellationToken);
+        var exitCode = await command.Parse("").InvokeAsync();
 
         // Assert
         Assert.Equal(1, exitCode);
@@ -104,7 +100,7 @@ public class DownloadSopsCommandTests : IDisposable
         // Arrange
         var command = new RootDotnetSopsCommand(_serviceProvider);
         var output = new StringWriter();
-        var config = new CliConfiguration(command)
+        var config = new InvocationConfiguration()
         {
             Output = new ReplaceUsageHelpTextWriter(
                 output,
@@ -113,10 +109,7 @@ public class DownloadSopsCommandTests : IDisposable
         };
 
         // Act
-        var exitCode = await config.InvokeAsync(
-            $"download-sops {option}",
-            TestContext.Current.CancellationToken
-        );
+        var exitCode = await command.Parse($"download-sops {option}").InvokeAsync(config);
 
         // Assert
         Assert.Equal(0, exitCode);
