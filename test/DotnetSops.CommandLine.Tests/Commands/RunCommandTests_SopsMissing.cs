@@ -62,7 +62,7 @@ public class RunCommandTests_SopsMissing : IDisposable
         // Act
         var exitCode = await command
             .Parse($"arg1 arg2 arg3 --configuration Release --file {inputPath}")
-            .InvokeAsync();
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(1, exitCode);

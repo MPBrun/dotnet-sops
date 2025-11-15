@@ -1,4 +1,5 @@
 using System.CommandLine;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using DotnetSops.CommandLine.Commands;
@@ -70,7 +71,8 @@ public class EncryptCommandTests : IDisposable
         await File.AppendAllTextAsync(
             filePath.FullName,
             JsonSerializer.Serialize(secrets),
-            new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)
+            new UTF8Encoding(encoderShouldEmitUTF8Identifier: true),
+            TestContext.Current.CancellationToken
         ); //dotnet user secrets save files with bom
 
         // Sops config
@@ -81,20 +83,23 @@ public class EncryptCommandTests : IDisposable
             creation_rules:
               - path_regex: secrets.json
                 age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         var outputPath = "secrets.json";
 
         // Act
-        var exitCode = await command.Parse($"--id {id} --file {outputPath}").InvokeAsync();
+        var exitCode = await command
+            .Parse($"--id {id} --file {outputPath}")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(outputPath));
 
         var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(
-            await File.ReadAllTextAsync(outputPath)
+            await File.ReadAllTextAsync(outputPath, TestContext.Current.CancellationToken)
         )!;
         Assert.StartsWith(
             "ENC[",
@@ -128,7 +133,8 @@ public class EncryptCommandTests : IDisposable
         await File.AppendAllTextAsync(
             filePath.FullName,
             JsonSerializer.Serialize(secrets),
-            new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)
+            new UTF8Encoding(encoderShouldEmitUTF8Identifier: true),
+            TestContext.Current.CancellationToken
         ); //dotnet user secrets save files with bom
 
         // Sops config
@@ -139,20 +145,23 @@ public class EncryptCommandTests : IDisposable
             creation_rules:
               - path_regex: secrets.json
                 age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8,age1y8lprkvcf2m0s2pnh866gjj4dtrazqz84kna7y3ndej0pku6ms6s84yf04
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         var outputPath = "secrets.json";
 
         // Act
-        var exitCode = await command.Parse($"--id {id} --file {outputPath}").InvokeAsync();
+        var exitCode = await command
+            .Parse($"--id {id} --file {outputPath}")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(outputPath));
 
         var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(
-            await File.ReadAllTextAsync(outputPath)
+            await File.ReadAllTextAsync(outputPath, TestContext.Current.CancellationToken)
         )!;
         Assert.StartsWith(
             "ENC[",
@@ -175,7 +184,8 @@ public class EncryptCommandTests : IDisposable
         await File.AppendAllTextAsync(
             filePath.FullName,
             JsonSerializer.Serialize(secrets),
-            new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)
+            new UTF8Encoding(encoderShouldEmitUTF8Identifier: true),
+            TestContext.Current.CancellationToken
         ); //dotnet user secrets save files with bom
 
         // Sops config
@@ -194,20 +204,23 @@ public class EncryptCommandTests : IDisposable
                     - age10l04egantyrujnu4ll0unhxkd6m4krardf4kqnfg4uqcczyawcts9pgtlm
                 - age:
                     - age1kg6yjfq8ce9k7u4yjnd3jsp5hkkghxmc65raafrkxlcrtlmz8u7qv57ehh
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         var outputPath = "secrets.json";
 
         // Act
-        var exitCode = await command.Parse($"--id {id} --file {outputPath}").InvokeAsync();
+        var exitCode = await command
+            .Parse($"--id {id} --file {outputPath}")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(outputPath));
 
         var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(
-            await File.ReadAllTextAsync(outputPath)
+            await File.ReadAllTextAsync(outputPath, TestContext.Current.CancellationToken)
         )!;
         Assert.StartsWith(
             "ENC[",
@@ -234,7 +247,8 @@ public class EncryptCommandTests : IDisposable
         await File.AppendAllTextAsync(
             filePath.FullName,
             JsonSerializer.Serialize(secrets),
-            new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)
+            new UTF8Encoding(encoderShouldEmitUTF8Identifier: true),
+            TestContext.Current.CancellationToken
         ); //dotnet user secrets save files with bom
 
         // Sops config
@@ -245,13 +259,16 @@ public class EncryptCommandTests : IDisposable
             creation_rules:
               - path_regex: secrets.json
                 age: invalid
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         var outputPath = "secrets.json";
 
         // Act
-        var exitCode = await command.Parse($"--id {id} --file {outputPath}").InvokeAsync();
+        var exitCode = await command
+            .Parse($"--id {id} --file {outputPath}")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(1, exitCode);
@@ -286,7 +303,8 @@ public class EncryptCommandTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         // user secret
@@ -295,7 +313,8 @@ public class EncryptCommandTests : IDisposable
         await File.AppendAllTextAsync(
             filePath.FullName,
             JsonSerializer.Serialize(secrets),
-            new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)
+            new UTF8Encoding(encoderShouldEmitUTF8Identifier: true),
+            TestContext.Current.CancellationToken
         ); //dotnet user secrets save files with bom
 
         // Sops config
@@ -306,20 +325,23 @@ public class EncryptCommandTests : IDisposable
             creation_rules:
               - path_regex: secrets.json
                 age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         var outputPath = "secrets.json";
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(outputPath));
 
         var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(
-            await File.ReadAllTextAsync(outputPath)
+            await File.ReadAllTextAsync(outputPath, TestContext.Current.CancellationToken)
         )!;
         Assert.StartsWith(
             "ENC[",
@@ -339,7 +361,9 @@ public class EncryptCommandTests : IDisposable
         var outputPath = "secrets.json";
 
         // Act
-        var exitCode = await command.Parse($"--id {id} --file {outputPath}").InvokeAsync();
+        var exitCode = await command
+            .Parse($"--id {id} --file {outputPath}")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(1, exitCode);
@@ -378,11 +402,14 @@ public class EncryptCommandTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(1, exitCode);
@@ -437,11 +464,16 @@ public class EncryptCommandTests : IDisposable
         var output = new StringWriter();
         var config = new InvocationConfiguration()
         {
-            Output = new ReplaceUsageHelpTextWriter(output, "testhost"),
+            Output = new ReplaceUsageHelpTextWriter(
+                output,
+                Assembly.GetExecutingAssembly().GetName().Name!
+            ),
         };
 
         // Act
-        var exitCode = await command.Parse($"encrypt {option}").InvokeAsync(config);
+        var exitCode = await command
+            .Parse($"encrypt {option}")
+            .InvokeAsync(config, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);

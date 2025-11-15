@@ -1,4 +1,5 @@
 using System.CommandLine;
+using System.Reflection;
 using DotnetSops.CommandLine.Commands;
 using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.Sops;
@@ -71,11 +72,13 @@ public class RunCommandTests : IDisposable
             creation_rules:
               - path_regex: secrets.json
                 age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         await File.WriteAllTextAsync(
-            "secrets.json", /*lang=json,strict*/
+            "secrets.json",
+            /*lang=json,strict*/
             """
             {
                 "TestKey": "ENC[AES256_GCM,data:L3MRIGiBVhqFcA==,iv:+57aY2xTo6lwwVaUF2ifbvgs5uPT0xsmwPFlWRexFrg=,tag:b3v7JRAhLxZRCgblwGOZvg==,type:str]",
@@ -97,7 +100,8 @@ public class RunCommandTests : IDisposable
                     "version": "3.7.3"
                 }
             }
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         await File.WriteAllTextAsync(
@@ -113,7 +117,8 @@ public class RunCommandTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         await File.WriteAllTextAsync(
@@ -130,7 +135,8 @@ public class RunCommandTests : IDisposable
             valid &= args[2] == "arg3";
             return valid ? 0 : 1;
 
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         var inputPath = "secrets.json";
@@ -138,7 +144,7 @@ public class RunCommandTests : IDisposable
         // Act
         var exitCode = await command
             .Parse($"arg1 arg2 arg3 --configuration Release --file {inputPath}")
-            .InvokeAsync();
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -157,7 +163,8 @@ public class RunCommandTests : IDisposable
             creation_rules:
               - path_regex: secrets.json
                 age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         // Set SOPS_AGE_KEY_FILE to a empty keys file
@@ -169,7 +176,8 @@ public class RunCommandTests : IDisposable
         Environment.SetEnvironmentVariable("SOPS_AGE_KEY_FILE", keysFilePath);
 
         await File.WriteAllTextAsync(
-            "secrets.json", /*lang=json,strict*/
+            "secrets.json",
+            /*lang=json,strict*/
             """
             {
                 "TestKey": "ENC[AES256_GCM,data:L3MRIGiBVhqFcA==,iv:+57aY2xTo6lwwVaUF2ifbvgs5uPT0xsmwPFlWRexFrg=,tag:b3v7JRAhLxZRCgblwGOZvg==,type:str]",
@@ -191,13 +199,16 @@ public class RunCommandTests : IDisposable
                     "version": "3.7.3"
                 }
             }
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         var inputPath = "secrets.json";
 
         // Act
-        var exitCode = await command.Parse($"--file {inputPath}").InvokeAsync();
+        var exitCode = await command
+            .Parse($"--file {inputPath}")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(128, exitCode);
@@ -222,11 +233,16 @@ public class RunCommandTests : IDisposable
         var output = new StringWriter();
         var config = new InvocationConfiguration()
         {
-            Output = new ReplaceUsageHelpTextWriter(output, "testhost"),
+            Output = new ReplaceUsageHelpTextWriter(
+                output,
+                Assembly.GetExecutingAssembly().GetName().Name!
+            ),
         };
 
         // Act
-        var exitCode = await command.Parse($"run {option}").InvokeAsync(config);
+        var exitCode = await command
+            .Parse($"run {option}")
+            .InvokeAsync(config, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);

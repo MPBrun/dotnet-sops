@@ -1,4 +1,5 @@
 using System.CommandLine;
+using System.Reflection;
 using DotnetSops.CommandLine.Commands;
 using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.Sops;
@@ -49,7 +50,9 @@ public class DownloadSopsCommandTests : IDisposable
         var command = new DownloadSopsCommand(_serviceProvider);
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -68,13 +71,15 @@ public class DownloadSopsCommandTests : IDisposable
         var command = new DownloadSopsCommand(_serviceProvider);
 
         _mockSopsDownloadService
-            .DownloadAsync()
+            .DownloadAsync(TestContext.Current.CancellationToken)
             .ThrowsAsyncForAnyArgs(
                 new SopsExecutionException("Expcetion message") { ExitCode = 1 }
             );
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(1, exitCode);
@@ -101,11 +106,16 @@ public class DownloadSopsCommandTests : IDisposable
         var output = new StringWriter();
         var config = new InvocationConfiguration()
         {
-            Output = new ReplaceUsageHelpTextWriter(output, "testhost"),
+            Output = new ReplaceUsageHelpTextWriter(
+                output,
+                Assembly.GetExecutingAssembly().GetName().Name!
+            ),
         };
 
         // Act
-        var exitCode = await command.Parse($"download-sops {option}").InvokeAsync(config);
+        var exitCode = await command
+            .Parse($"download-sops {option}")
+            .InvokeAsync(config, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);

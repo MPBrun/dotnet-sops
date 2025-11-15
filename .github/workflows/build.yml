@@ -56,7 +56,7 @@ jobs:
       run: dotnet build --configuration Release -p:Version=${{ steps.version.outputs.VERSION }}
 
     - name: Test
-      run: dotnet test --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage" --logger "trx;LogFileName=test-results.trx"
+      run: dotnet test --no-build --configuration Release --output Detailed --coverage --coverage-output-format cobertura --coverage-output cobertura.xml --report-trx
 
     - name: Test Report
       uses: phoenix-actions/test-reporting@f957cd93fc2d848d556fa0d03c57bc79127b6b5e # v15
@@ -72,7 +72,6 @@ jobs:
       uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        files: "**/coverage.cobertura.xml"
 
     - name: Pack
       run: dotnet pack --no-build --configuration Release -p:Version=${{ steps.version.outputs.VERSION }}

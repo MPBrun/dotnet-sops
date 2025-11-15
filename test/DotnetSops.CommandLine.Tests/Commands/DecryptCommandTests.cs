@@ -1,4 +1,5 @@
 using System.CommandLine;
+using System.Reflection;
 using System.Text.Json;
 using DotnetSops.CommandLine.Commands;
 using DotnetSops.CommandLine.Services;
@@ -80,11 +81,13 @@ public class DecryptCommandTests : IDisposable
             creation_rules:
               - path_regex: secrets.json
                 age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         await File.WriteAllTextAsync(
-            "secrets.json", /*lang=json,strict*/
+            "secrets.json",
+            /*lang=json,strict*/
             """
             {
                 "TestKey": "ENC[AES256_GCM,data:L3MRIGiBVhqFcA==,iv:+57aY2xTo6lwwVaUF2ifbvgs5uPT0xsmwPFlWRexFrg=,tag:b3v7JRAhLxZRCgblwGOZvg==,type:str]",
@@ -106,20 +109,23 @@ public class DecryptCommandTests : IDisposable
                     "version": "3.7.3"
                 }
             }
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         var inputPath = "secrets.json";
 
         // Act
-        var exitCode = await command.Parse($"--id {id} --file {inputPath}").InvokeAsync();
+        var exitCode = await command
+            .Parse($"--id {id} --file {inputPath}")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(filePath.FullName));
 
         var secretContent = JsonSerializer.Deserialize<TestSecretCotent>(
-            await File.ReadAllTextAsync(filePath.FullName)
+            await File.ReadAllTextAsync(filePath.FullName, TestContext.Current.CancellationToken)
         )!;
         Assert.Equal("test value", secretContent.TestKey);
     }
@@ -138,7 +144,8 @@ public class DecryptCommandTests : IDisposable
             creation_rules:
               - path_regex: secrets.json
                 age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         // Set SOPS_AGE_KEY_FILE to a empty keys file
@@ -150,7 +157,8 @@ public class DecryptCommandTests : IDisposable
         Environment.SetEnvironmentVariable("SOPS_AGE_KEY_FILE", keysFilePath);
 
         await File.WriteAllTextAsync(
-            "secrets.json", /*lang=json,strict*/
+            "secrets.json",
+            /*lang=json,strict*/
             """
             {
                 "TestKey": "ENC[AES256_GCM,data:L3MRIGiBVhqFcA==,iv:+57aY2xTo6lwwVaUF2ifbvgs5uPT0xsmwPFlWRexFrg=,tag:b3v7JRAhLxZRCgblwGOZvg==,type:str]",
@@ -172,13 +180,16 @@ public class DecryptCommandTests : IDisposable
                     "version": "3.7.3"
                 }
             }
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         var inputPath = "secrets.json";
 
         // Act
-        var exitCode = await command.Parse($"--id {id} --file {inputPath}").InvokeAsync();
+        var exitCode = await command
+            .Parse($"--id {id} --file {inputPath}")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(128, exitCode);
@@ -202,7 +213,9 @@ public class DecryptCommandTests : IDisposable
         var inputPath = "secrets.json";
 
         // Act
-        var exitCode = await command.Parse($"--id {id} --file {inputPath}").InvokeAsync();
+        var exitCode = await command
+            .Parse($"--id {id} --file {inputPath}")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(1, exitCode);
@@ -239,7 +252,8 @@ public class DecryptCommandTests : IDisposable
             creation_rules:
               - path_regex: secrets.json
                 age: age196za9tkwypwclcacrjea7jsggl3jwntpx3ms6yj5vc4unkz2d4sqvazcn8
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         await File.WriteAllTextAsync(
@@ -256,11 +270,13 @@ public class DecryptCommandTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         await File.WriteAllTextAsync(
-            "secrets.json", /*lang=json,strict*/
+            "secrets.json",
+            /*lang=json,strict*/
             """
             {
                 "TestKey": "ENC[AES256_GCM,data:L3MRIGiBVhqFcA==,iv:+57aY2xTo6lwwVaUF2ifbvgs5uPT0xsmwPFlWRexFrg=,tag:b3v7JRAhLxZRCgblwGOZvg==,type:str]",
@@ -282,18 +298,21 @@ public class DecryptCommandTests : IDisposable
                     "version": "3.7.3"
                 }
             }
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(filePath.FullName));
 
         var secretContent = JsonSerializer.Deserialize<TestSecretCotent>(
-            await File.ReadAllTextAsync(filePath.FullName)
+            await File.ReadAllTextAsync(filePath.FullName, TestContext.Current.CancellationToken)
         )!;
         Assert.Equal("test value", secretContent.TestKey);
         Assert.Equal(
@@ -327,11 +346,14 @@ public class DecryptCommandTests : IDisposable
               </PropertyGroup>
 
             </Project>
-            """
+            """,
+            TestContext.Current.CancellationToken
         );
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(1, exitCode);
@@ -386,11 +408,16 @@ public class DecryptCommandTests : IDisposable
         var output = new StringWriter();
         var config = new InvocationConfiguration()
         {
-            Output = new ReplaceUsageHelpTextWriter(output, "testhost"),
+            Output = new ReplaceUsageHelpTextWriter(
+                output,
+                Assembly.GetExecutingAssembly().GetName().Name!
+            ),
         };
 
         // Act
-        var exitCode = await command.Parse($"decrypt {option}").InvokeAsync(config);
+        var exitCode = await command
+            .Parse($"decrypt {option}")
+            .InvokeAsync(config, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);

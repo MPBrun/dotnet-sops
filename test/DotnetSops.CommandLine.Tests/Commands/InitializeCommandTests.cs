@@ -1,4 +1,5 @@
 using System.CommandLine;
+using System.Reflection;
 using DotnetSops.CommandLine.Commands;
 using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Tests.Extensions;
@@ -40,13 +41,15 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        await File.WriteAllTextAsync(".sops.yaml", "");
+        await File.WriteAllTextAsync(".sops.yaml", "", TestContext.Current.CancellationToken);
 
         // Don't overwrite existing file
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -99,7 +102,9 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -148,7 +153,10 @@ public class InitializeCommandTests : IDisposable
             StringComparison.InvariantCulture
         );
 
-        var sopsYaml = await File.ReadAllTextAsync(".sops.yaml");
+        var sopsYaml = await File.ReadAllTextAsync(
+            ".sops.yaml",
+            TestContext.Current.CancellationToken
+        );
         Assert.Equal(
             """
             creation_rules:
@@ -182,7 +190,9 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -236,7 +246,10 @@ public class InitializeCommandTests : IDisposable
             StringComparison.InvariantCulture
         );
 
-        var sopsYaml = await File.ReadAllTextAsync(".sops.yaml");
+        var sopsYaml = await File.ReadAllTextAsync(
+            ".sops.yaml",
+            TestContext.Current.CancellationToken
+        );
         Assert.Equal(
             """
             creation_rules:
@@ -271,7 +284,9 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -325,7 +340,10 @@ public class InitializeCommandTests : IDisposable
             StringComparison.InvariantCulture
         );
 
-        var sopsYaml = await File.ReadAllTextAsync(".sops.yaml");
+        var sopsYaml = await File.ReadAllTextAsync(
+            ".sops.yaml",
+            TestContext.Current.CancellationToken
+        );
         Assert.Equal(
             """
             creation_rules:
@@ -359,7 +377,9 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -412,7 +432,10 @@ public class InitializeCommandTests : IDisposable
             StringComparison.InvariantCulture
         );
 
-        var sopsYaml = await File.ReadAllTextAsync(".sops.yaml");
+        var sopsYaml = await File.ReadAllTextAsync(
+            ".sops.yaml",
+            TestContext.Current.CancellationToken
+        );
         Assert.Equal(
             """
             creation_rules:
@@ -430,7 +453,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        await File.WriteAllTextAsync(".sops.yaml", "");
+        await File.WriteAllTextAsync(".sops.yaml", "", TestContext.Current.CancellationToken);
 
         // Owerwrite existing file
         _logger.Error.Input.PushTextWithEnter("y");
@@ -454,7 +477,9 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -500,7 +525,10 @@ public class InitializeCommandTests : IDisposable
             StringComparison.InvariantCulture
         );
 
-        var sopsYaml = await File.ReadAllTextAsync(".sops.yaml");
+        var sopsYaml = await File.ReadAllTextAsync(
+            ".sops.yaml",
+            TestContext.Current.CancellationToken
+        );
         Assert.Equal(
             """
             creation_rules:
@@ -518,7 +546,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        await File.WriteAllTextAsync(".sops.yaml", "");
+        await File.WriteAllTextAsync(".sops.yaml", "", TestContext.Current.CancellationToken);
 
         // Owerwrite existing file
         _logger.Error.Input.PushTextWithEnter("y");
@@ -557,7 +585,9 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -613,7 +643,10 @@ public class InitializeCommandTests : IDisposable
             StringComparison.InvariantCulture
         );
 
-        var sopsYaml = await File.ReadAllTextAsync(".sops.yaml");
+        var sopsYaml = await File.ReadAllTextAsync(
+            ".sops.yaml",
+            TestContext.Current.CancellationToken
+        );
         Assert.Equal(
             """
             creation_rules:
@@ -631,7 +664,7 @@ public class InitializeCommandTests : IDisposable
         // Arrange
         var command = new InitializeCommand(_serviceProvider);
 
-        await File.WriteAllTextAsync(".sops.yaml", "");
+        await File.WriteAllTextAsync(".sops.yaml", "", TestContext.Current.CancellationToken);
 
         // Owerwrite existing file
         _logger.Error.Input.PushTextWithEnter("y");
@@ -654,7 +687,9 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -700,7 +735,10 @@ public class InitializeCommandTests : IDisposable
             StringComparison.InvariantCulture
         );
 
-        var sopsYaml = await File.ReadAllTextAsync(".sops.yaml");
+        var sopsYaml = await File.ReadAllTextAsync(
+            ".sops.yaml",
+            TestContext.Current.CancellationToken
+        );
         Assert.Equal(
             """
             creation_rules:
@@ -736,7 +774,9 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -804,7 +844,10 @@ public class InitializeCommandTests : IDisposable
             StringComparison.InvariantCulture
         );
 
-        var sopsYaml = await File.ReadAllTextAsync(".sops.yaml");
+        var sopsYaml = await File.ReadAllTextAsync(
+            ".sops.yaml",
+            TestContext.Current.CancellationToken
+        );
         Assert.Equal(
             """
             creation_rules:
@@ -845,7 +888,9 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -906,7 +951,10 @@ public class InitializeCommandTests : IDisposable
             StringComparison.InvariantCulture
         );
 
-        var sopsYaml = await File.ReadAllTextAsync(".sops.yaml");
+        var sopsYaml = await File.ReadAllTextAsync(
+            ".sops.yaml",
+            TestContext.Current.CancellationToken
+        );
         Assert.Equal(
             """
             creation_rules:
@@ -946,7 +994,9 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -1007,7 +1057,10 @@ public class InitializeCommandTests : IDisposable
             StringComparison.InvariantCulture
         );
 
-        var sopsYaml = await File.ReadAllTextAsync(".sops.yaml");
+        var sopsYaml = await File.ReadAllTextAsync(
+            ".sops.yaml",
+            TestContext.Current.CancellationToken
+        );
         Assert.Equal(
             """
             creation_rules:
@@ -1046,7 +1099,9 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -1106,7 +1161,10 @@ public class InitializeCommandTests : IDisposable
             StringComparison.InvariantCulture
         );
 
-        var sopsYaml = await File.ReadAllTextAsync(".sops.yaml");
+        var sopsYaml = await File.ReadAllTextAsync(
+            ".sops.yaml",
+            TestContext.Current.CancellationToken
+        );
         Assert.Equal(
             """
             creation_rules:
@@ -1148,7 +1206,9 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -1196,7 +1256,10 @@ public class InitializeCommandTests : IDisposable
             StringComparison.InvariantCulture
         );
 
-        var sopsYaml = await File.ReadAllTextAsync(".sops.yaml");
+        var sopsYaml = await File.ReadAllTextAsync(
+            ".sops.yaml",
+            TestContext.Current.CancellationToken
+        );
         Assert.Equal(
             """
             creation_rules:
@@ -1237,7 +1300,9 @@ public class InitializeCommandTests : IDisposable
         _logger.Error.Input.PushTextWithEnter("n");
 
         // Act
-        var exitCode = await command.Parse("").InvokeAsync();
+        var exitCode = await command
+            .Parse("")
+            .InvokeAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
@@ -1285,7 +1350,10 @@ public class InitializeCommandTests : IDisposable
             StringComparison.InvariantCulture
         );
 
-        var sopsYaml = await File.ReadAllTextAsync(".sops.yaml");
+        var sopsYaml = await File.ReadAllTextAsync(
+            ".sops.yaml",
+            TestContext.Current.CancellationToken
+        );
         Assert.Equal(
             """
             creation_rules:
@@ -1310,11 +1378,16 @@ public class InitializeCommandTests : IDisposable
         var output = new StringWriter();
         var config = new InvocationConfiguration()
         {
-            Output = new ReplaceUsageHelpTextWriter(output, "testhost"),
+            Output = new ReplaceUsageHelpTextWriter(
+                output,
+                Assembly.GetExecutingAssembly().GetName().Name!
+            ),
         };
 
         // Act
-        var exitCode = await command.Parse($"init {option}").InvokeAsync(config);
+        var exitCode = await command
+            .Parse($"init {option}")
+            .InvokeAsync(config, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, exitCode);
