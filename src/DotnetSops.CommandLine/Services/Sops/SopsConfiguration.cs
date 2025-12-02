@@ -2,7 +2,7 @@ namespace DotnetSops.CommandLine.Services.Sops;
 
 internal class SopsConfiguration
 {
-    public required List<SopsCreationRule> CreationRules { get; init; }
+    public List<SopsCreationRule>? CreationRules { get; set; }
 }
 
 /// <summary>
@@ -10,7 +10,7 @@ internal class SopsConfiguration
 /// </summary>
 internal class SopsCreationRule
 {
-    public required string PathRegex { get; init; }
+    public string? PathRegex { get; set; }
 
     public string? AzureKeyvault { get; set; }
 
@@ -45,19 +45,19 @@ internal class SopsKeyGroup
 internal class SopsAzureKeyVaultKeyGroup
 {
     [YamlDotNet.Serialization.YamlMember(Alias = "vaultUrl", ApplyNamingConventions = false)]
-    public required string VaultUrl { get; set; }
+    public string? VaultUrl { get; set; }
 
-    public required string Key { get; set; }
+    public string? Key { get; set; }
 
-    public required string Version { get; set; }
+    public string? Version { get; set; }
 }
 
 internal class SopsKmsKeyGroup
 {
-    public required string Arn { get; set; }
+    public string? Arn { get; set; }
 }
 
 internal class SopsGcpKmsKeyGroup
 {
-    public required string ResourceId { get; set; }
+    public string? ResourceId { get; set; }
 }
