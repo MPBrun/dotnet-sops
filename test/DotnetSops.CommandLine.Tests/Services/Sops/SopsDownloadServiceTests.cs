@@ -2,8 +2,8 @@ using System.Runtime.InteropServices;
 using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.PlatformInformation;
 using DotnetSops.CommandLine.Services.Sops;
-using DotnetSops.CommandLine.Tests.Extensions;
 using DotnetSops.CommandLine.Tests.Fixtures;
+using DotnetSops.CommandLine.Tests.Mocks;
 using NSubstitute;
 
 namespace DotnetSops.CommandLine.Tests.Services.Sops;
@@ -167,19 +167,12 @@ public class SopsDownloadServiceTests : IDisposable
 
         var mockLogger = Substitute.For<ILogger>();
 
-        var mockHttpClientHandler = Substitute.For<HttpMessageHandler>();
         using var result = new HttpResponseMessage()
         {
             StatusCode = System.Net.HttpStatusCode.OK,
             Content = new StringContent("Invalid content"),
         };
-        mockHttpClientHandler
-            .ProtectedMethod<Task<HttpResponseMessage>>(
-                "SendAsync",
-                Arg.Any<HttpRequestMessage>(),
-                Arg.Any<CancellationToken>()
-            )
-            .Returns(result);
+        using var mockHttpClientHandler = new MockHttpMessageHandler(result);
         using var httpClient = new HttpClient(mockHttpClientHandler);
 
         var service = new SopsDownloadService(
@@ -216,18 +209,11 @@ public class SopsDownloadServiceTests : IDisposable
 
         var mockLogger = Substitute.For<ILogger>();
 
-        var mockHttpClientHandler = Substitute.For<HttpMessageHandler>();
         using var result = new HttpResponseMessage()
         {
             StatusCode = System.Net.HttpStatusCode.NotFound,
         };
-        mockHttpClientHandler
-            .ProtectedMethod<Task<HttpResponseMessage>>(
-                "SendAsync",
-                Arg.Any<HttpRequestMessage>(),
-                Arg.Any<CancellationToken>()
-            )
-            .Returns(result);
+        using var mockHttpClientHandler = new MockHttpMessageHandler(result);
         using var httpClient = new HttpClient(mockHttpClientHandler);
 
         var service = new SopsDownloadService(

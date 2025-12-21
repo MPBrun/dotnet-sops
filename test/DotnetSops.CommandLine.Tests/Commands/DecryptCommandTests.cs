@@ -124,8 +124,9 @@ public class DecryptCommandTests : IDisposable
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(filePath.FullName));
 
-        var secretContent = JsonSerializer.Deserialize<TestSecretCotent>(
-            await File.ReadAllTextAsync(filePath.FullName, TestContext.Current.CancellationToken)
+        var secretContent = JsonSerializer.Deserialize(
+            await File.ReadAllTextAsync(filePath.FullName, TestContext.Current.CancellationToken),
+            SourceGenerationContext.Default.TestSecretCotent
         )!;
         Assert.Equal("test value", secretContent.TestKey);
     }
@@ -311,8 +312,9 @@ public class DecryptCommandTests : IDisposable
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(filePath.FullName));
 
-        var secretContent = JsonSerializer.Deserialize<TestSecretCotent>(
-            await File.ReadAllTextAsync(filePath.FullName, TestContext.Current.CancellationToken)
+        var secretContent = JsonSerializer.Deserialize(
+            await File.ReadAllTextAsync(filePath.FullName, TestContext.Current.CancellationToken),
+            SourceGenerationContext.Default.TestSecretCotent
         )!;
         Assert.Equal("test value", secretContent.TestKey);
         Assert.Equal(

@@ -80,7 +80,7 @@ public class EncryptCommandTests_SopsMissing : IDisposable
         var secrets = new TestSecretCotent { TestKey = "test value" };
         await File.AppendAllTextAsync(
             filePath.FullName,
-            JsonSerializer.Serialize(secrets),
+            JsonSerializer.Serialize(secrets, SourceGenerationContext.Default.TestSecretCotent),
             new UTF8Encoding(encoderShouldEmitUTF8Identifier: true),
             TestContext.Current.CancellationToken
         ); //dotnet user secrets save files with bom

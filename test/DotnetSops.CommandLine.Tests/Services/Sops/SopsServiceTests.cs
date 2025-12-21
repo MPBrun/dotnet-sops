@@ -2,6 +2,7 @@ using System.Text.Json;
 using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.Sops;
 using DotnetSops.CommandLine.Tests.Fixtures;
+using DotnetSops.CommandLine.Tests.Models;
 using NSubstitute;
 
 namespace DotnetSops.CommandLine.Tests.Services.Sops;
@@ -39,8 +40,11 @@ public class SopsServiceTests : IDisposable
         var logger = Substitute.For<ILogger>();
         var sopsService = new SopsService(logger, _sopsPathService);
         var fileName = new FileInfo("secrets.json");
-        var jsonContent = new { add = "Add", foo = "Rem" };
-        var content = JsonSerializer.Serialize(jsonContent);
+        var jsonContent = new FooTestContent { Add = "Add", Foo = "Rem" };
+        var content = JsonSerializer.Serialize(
+            jsonContent,
+            SourceGenerationContext.Default.FooTestContent
+        );
         await File.WriteAllTextAsync(
             fileName.FullName,
             content,
@@ -74,20 +78,15 @@ public class SopsServiceTests : IDisposable
         );
         Assert.NotNull(result);
 
-        var jsonResult = JsonSerializer.Deserialize<Dictionary<string, object>>(result);
+        var jsonResult = JsonSerializer.Deserialize(
+            result,
+            SourceGenerationContext.Default.EncryptedFooTestContent
+        );
         Assert.NotNull(jsonResult);
 
-        Assert.StartsWith(
-            "ENC",
-            (jsonResult["add"] as JsonElement?)?.GetString(),
-            StringComparison.Ordinal
-        );
-        Assert.StartsWith(
-            "ENC",
-            (jsonResult["foo"] as JsonElement?)?.GetString(),
-            StringComparison.Ordinal
-        );
-        Assert.NotNull(jsonResult["sops"]);
+        Assert.StartsWith("ENC", jsonResult.Add, StringComparison.Ordinal);
+        Assert.StartsWith("ENC", jsonResult.Foo, StringComparison.Ordinal);
+        Assert.NotNull(jsonResult.Sops);
     }
 
     [Fact]
@@ -97,8 +96,11 @@ public class SopsServiceTests : IDisposable
         var logger = Substitute.For<ILogger>();
         var sopsService = new SopsService(logger, _sopsPathService);
         var fileName = new FileInfo("secrets.json");
-        var jsonContent = new { add = "Add", foo = "Rem" };
-        var content = JsonSerializer.Serialize(jsonContent);
+        var jsonContent = new FooTestContent { Add = "Add", Foo = "Rem" };
+        var content = JsonSerializer.Serialize(
+            jsonContent,
+            SourceGenerationContext.Default.FooTestContent
+        );
         await File.WriteAllTextAsync(
             fileName.FullName,
             content,
@@ -145,11 +147,14 @@ public class SopsServiceTests : IDisposable
         );
         Assert.NotNull(result);
 
-        var jsonResult = JsonSerializer.Deserialize<Dictionary<string, string>>(result);
+        var jsonResult = JsonSerializer.Deserialize(
+            result,
+            SourceGenerationContext.Default.FooTestContent
+        );
         Assert.NotNull(jsonResult);
 
-        Assert.StartsWith("Add", jsonResult["add"], StringComparison.Ordinal);
-        Assert.StartsWith("Rem", jsonResult["foo"], StringComparison.Ordinal);
+        Assert.StartsWith("Add", jsonResult.Add, StringComparison.Ordinal);
+        Assert.StartsWith("Rem", jsonResult.Foo, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -159,8 +164,11 @@ public class SopsServiceTests : IDisposable
         var logger = Substitute.For<ILogger>();
         var sopsService = new SopsService(logger, _sopsPathService);
         var fileName = new FileInfo("secrets.json");
-        var jsonContent = new { add = "Add", foo = "Rem" };
-        var content = JsonSerializer.Serialize(jsonContent);
+        var jsonContent = new FooTestContent { Add = "Add", Foo = "Rem" };
+        var content = JsonSerializer.Serialize(
+            jsonContent,
+            SourceGenerationContext.Default.FooTestContent
+        );
         await File.WriteAllTextAsync(
             fileName.FullName,
             content,
@@ -243,8 +251,11 @@ public class SopsServiceTests : IDisposable
         var logger = Substitute.For<ILogger>();
         var sopsService = new SopsService(logger, _sopsPathService);
         var fileName = new FileInfo("secrets.json");
-        var jsonContent = new { add = "Add", foo = "Rem" };
-        var content = JsonSerializer.Serialize(jsonContent);
+        var jsonContent = new FooTestContent { Add = "Add", Foo = "Rem" };
+        var content = JsonSerializer.Serialize(
+            jsonContent,
+            SourceGenerationContext.Default.FooTestContent
+        );
         await File.WriteAllTextAsync(
             fileName.FullName,
             content,
