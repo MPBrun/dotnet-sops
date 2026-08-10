@@ -69,7 +69,7 @@ jobs:
         fail-on-error: false
 
     - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5
+      uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
