@@ -12,7 +12,7 @@
     <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" Version="2.4.0" />
     <PackageReference Include="NSubstitute" Version="6.2.0" />
     <PackageReference Include="Spectre.Console.Testing" Version="0.57.2" />
-    <PackageReference Include="xunit.v3.mtp-v2" Version="4.0.0" />
+    <PackageReference Include="xunit.v3.mtp-v2" Version="4.0.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
