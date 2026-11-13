@@ -1,5 +1,4 @@
 using System.CommandLine;
-using System.Reflection;
 using System.Text.Json;
 using DotnetSops.CommandLine.Commands;
 using DotnetSops.CommandLine.Services;
@@ -408,10 +407,7 @@ public class DecryptCommandTests : IDisposable
         var output = new StringWriter();
         var config = new InvocationConfiguration()
         {
-            Output = new ReplaceUsageHelpTextWriter(
-                output,
-                [Assembly.GetExecutingAssembly().GetName().Name!]
-            ),
+            Output = new ReplaceUsageHelpTextWriter(output, RootCommand.ExecutableName),
         };
 
         // Act
