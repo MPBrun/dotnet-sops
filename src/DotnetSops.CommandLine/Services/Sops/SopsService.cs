@@ -80,8 +80,7 @@ internal class SopsService : ISopsService
                 $"Executing sops with arguments: {string.Join(" ", processStartInfo.ArgumentList)}"
             );
 
-            using var process =
-                Process.Start(processStartInfo)
+            using var process = Process.Start(processStartInfo)
                 ?? throw new SopsMissingException(Properties.Resources.SopsRunFailed);
             await process.WaitForExitAsync(cancellationToken);
             if (process.ExitCode != 0)
