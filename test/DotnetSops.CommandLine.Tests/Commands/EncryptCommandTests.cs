@@ -466,7 +466,7 @@ public class EncryptCommandTests : IDisposable
         {
             Output = new ReplaceUsageHelpTextWriter(
                 output,
-                Assembly.GetExecutingAssembly().GetName().Name!
+                [Assembly.GetExecutingAssembly().GetName().Name!]
             ),
         };
 

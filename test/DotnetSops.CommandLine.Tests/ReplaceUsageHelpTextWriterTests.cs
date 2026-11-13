@@ -71,7 +71,7 @@ public class ReplaceUsageHelpTextWriterTests
         var textWriter = Substitute.For<TextWriter>();
         using var replaceUsageHelpTextWriter = new ReplaceUsageHelpTextWriter(
             textWriter,
-            "search-value"
+            ["search-value"]
         );
 
         // Act

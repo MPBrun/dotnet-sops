@@ -103,7 +103,7 @@ public partial class RootDotnetSopsCommandTests
         {
             Output = new ReplaceUsageHelpTextWriter(
                 output,
-                Assembly.GetExecutingAssembly().GetName().Name!
+                [Assembly.GetExecutingAssembly().GetName().Name!]
             ),
         };
 

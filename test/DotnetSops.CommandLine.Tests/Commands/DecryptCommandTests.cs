@@ -410,7 +410,7 @@ public class DecryptCommandTests : IDisposable
         {
             Output = new ReplaceUsageHelpTextWriter(
                 output,
-                Assembly.GetExecutingAssembly().GetName().Name!
+                [Assembly.GetExecutingAssembly().GetName().Name!]
             ),
         };
 
