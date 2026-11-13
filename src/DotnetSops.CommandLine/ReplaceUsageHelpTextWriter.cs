@@ -10,14 +10,17 @@ internal class ReplaceUsageHelpTextWriter : TextWriter
     private const string Replacement = "dotnet sops";
 
     private readonly TextWriter _textWriter;
-    private readonly string _searchValue;
+    private readonly string[] _searchValues;
 
     public override Encoding Encoding => _textWriter.Encoding;
 
-    public ReplaceUsageHelpTextWriter(TextWriter textWriter, string searchValue = "dotnet-sops")
+    public ReplaceUsageHelpTextWriter(TextWriter textWriter)
+        : this(textWriter, ["dotnet-sops", "DotnetSops.CommandLine"]) { }
+
+    public ReplaceUsageHelpTextWriter(TextWriter textWriter, string[] searchValues)
     {
         _textWriter = textWriter;
-        _searchValue = searchValue;
+        _searchValues = searchValues;
     }
 
     public override void Write(char[] buffer, int index, int count)
@@ -27,9 +30,8 @@ internal class ReplaceUsageHelpTextWriter : TextWriter
 
     public override void Write(string? value)
     {
-        _textWriter.Write(
-            value?.Replace(_searchValue, Replacement, StringComparison.InvariantCulture)
-        );
+        var valueToWrite = ReplaceSearchValuesWithReplacement(value);
+        _textWriter.Write(valueToWrite);
     }
 
     public override void Write(char value)
@@ -44,9 +46,8 @@ internal class ReplaceUsageHelpTextWriter : TextWriter
 
     public override void WriteLine(string? value)
     {
-        _textWriter.WriteLine(
-            value?.Replace(_searchValue, Replacement, StringComparison.InvariantCulture)
-        );
+        var valueToWrite = ReplaceSearchValuesWithReplacement(value);
+        _textWriter.WriteLine(valueToWrite);
     }
 
     public override void WriteLine(object? value)
@@ -64,5 +65,20 @@ internal class ReplaceUsageHelpTextWriter : TextWriter
     {
         await _textWriter.DisposeAsync();
         await base.DisposeAsync();
+    }
+
+    private string? ReplaceSearchValuesWithReplacement(string? value)
+    {
+        var valueToWrite = value;
+        foreach (var searchValue in _searchValues)
+        {
+            valueToWrite = valueToWrite?.Replace(
+                searchValue,
+                Replacement,
+                StringComparison.InvariantCulture
+            );
+        }
+
+        return valueToWrite;
     }
 }
