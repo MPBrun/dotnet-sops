@@ -98,7 +98,7 @@ If you don't have SOPS in your PATH, you can download SOPS from https://github.c
 dotnet sops download-sops
 ```
 
-The downloaded SOPS executable has its SHA-512 checksum verified. This version of SOPS will be used by the `encrypt` and `decrypt` commands.
+The downloaded SOPS executable has its SHA-256 checksum verified. For SOPS operations, `dotnet-sops` searches absolute directories in `PATH` first, then its download directory.
 
 ### encrypt
 

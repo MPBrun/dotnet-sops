@@ -56,18 +56,11 @@ internal class SopsService : ISopsService
         var processStartInfo = new ProcessStartInfo()
         {
             WorkingDirectory = Directory.GetCurrentDirectory(),
-            FileName = "sops",
+            FileName = ResolveSopsPath(
+                Environment.GetEnvironmentVariable(PathEnvironmentVariableName),
+                _sopsPathService.GetDotnetSopsUserDirectory()
+            ),
         };
-
-        // Add SOPS user directory to path for the process
-        var originalPath = Environment.GetEnvironmentVariable(PathEnvironmentVariableName);
-        var newPath =
-            $"{originalPath}{Path.PathSeparator}{_sopsPathService.GetDotnetSopsUserDirectory()}";
-        Environment.SetEnvironmentVariable(
-            PathEnvironmentVariableName,
-            newPath,
-            EnvironmentVariableTarget.Process
-        );
 
         foreach (var argument in arguments)
         {
@@ -95,17 +88,29 @@ internal class SopsService : ISopsService
         {
             throw new SopsMissingException(Properties.Resources.SopsIsMissing);
         }
-        finally
+    }
+
+    internal static string ResolveSopsPath(string? path, string? userDirectory)
+    {
+        var executableName = OperatingSystem.IsWindows() ? "sops.exe" : "sops";
+        var directories = (path ?? string.Empty)
+            .Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries)
+            .Append(userDirectory);
+
+        foreach (var directory in directories)
         {
-            if (originalPath != null)
+            if (string.IsNullOrEmpty(directory) || !Path.IsPathFullyQualified(directory))
             {
-                // Reset path for the process
-                Environment.SetEnvironmentVariable(
-                    PathEnvironmentVariableName,
-                    originalPath,
-                    EnvironmentVariableTarget.Process
-                );
+                continue;
+            }
+
+            var candidate = Path.GetFullPath(Path.Combine(directory, executableName));
+            if (File.Exists(candidate))
+            {
+                return candidate;
             }
         }
+
+        throw new SopsMissingException(Properties.Resources.SopsIsMissing);
     }
 }
