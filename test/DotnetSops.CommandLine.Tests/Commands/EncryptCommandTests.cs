@@ -229,8 +229,8 @@ public class EncryptCommandTests : IDisposable
         );
         Assert.Equal(3, encryptedSecretContent.Sops.KeyGroups?.Count);
         Assert.Single(encryptedSecretContent.Sops.KeyGroups![0].Age!);
-        Assert.Equal(2, encryptedSecretContent.Sops.KeyGroups![1].Age!.Count);
-        Assert.Single(encryptedSecretContent.Sops.KeyGroups![2].Age!);
+        Assert.Equal(2, encryptedSecretContent.Sops.KeyGroups[1].Age!.Count);
+        Assert.Single(encryptedSecretContent.Sops.KeyGroups[2].Age!);
         Assert.Equal(2, encryptedSecretContent.Sops.ShamirThreshold);
     }
 
