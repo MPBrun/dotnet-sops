@@ -263,7 +263,7 @@ public class DecryptCommandTests : IDisposable
 
               <PropertyGroup>
                 <OutputType>Exe</OutputType>
-                <TargetFramework>net8.0</TargetFramework>
+                <TargetFramework>net10.0</TargetFramework>
                 <ImplicitUsings>enable</ImplicitUsings>
                 <UserSecretsId>{id}</UserSecretsId>
                 <Nullable>enable</Nullable>
@@ -340,7 +340,7 @@ public class DecryptCommandTests : IDisposable
 
               <PropertyGroup>
                 <OutputType>Exe</OutputType>
-                <TargetFramework>net8.0</TargetFramework>
+                <TargetFramework>net10.0</TargetFramework>
                 <ImplicitUsings>enable</ImplicitUsings>
                 <Nullable>enable</Nullable>
               </PropertyGroup>
