@@ -1,5 +1,4 @@
 using System.CommandLine;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using DotnetSops.CommandLine.Commands;
@@ -296,7 +295,7 @@ public class EncryptCommandTests : IDisposable
 
               <PropertyGroup>
                 <OutputType>Exe</OutputType>
-                <TargetFramework>net8.0</TargetFramework>
+                <TargetFramework>net10.0</TargetFramework>
                 <ImplicitUsings>enable</ImplicitUsings>
                 <UserSecretsId>{id}</UserSecretsId>
                 <Nullable>enable</Nullable>
@@ -396,7 +395,7 @@ public class EncryptCommandTests : IDisposable
 
               <PropertyGroup>
                 <OutputType>Exe</OutputType>
-                <TargetFramework>net8.0</TargetFramework>
+                <TargetFramework>net10.0</TargetFramework>
                 <ImplicitUsings>enable</ImplicitUsings>
                 <Nullable>enable</Nullable>
               </PropertyGroup>
@@ -464,10 +463,7 @@ public class EncryptCommandTests : IDisposable
         var output = new StringWriter();
         var config = new InvocationConfiguration()
         {
-            Output = new ReplaceUsageHelpTextWriter(
-                output,
-                Assembly.GetExecutingAssembly().GetName().Name!
-            ),
+            Output = new ReplaceUsageHelpTextWriter(output, RootCommand.ExecutableName),
         };
 
         // Act

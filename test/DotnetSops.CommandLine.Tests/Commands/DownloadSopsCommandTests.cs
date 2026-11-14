@@ -1,5 +1,4 @@
 using System.CommandLine;
-using System.Reflection;
 using DotnetSops.CommandLine.Commands;
 using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Services.Sops;
@@ -106,10 +105,7 @@ public class DownloadSopsCommandTests : IDisposable
         var output = new StringWriter();
         var config = new InvocationConfiguration()
         {
-            Output = new ReplaceUsageHelpTextWriter(
-                output,
-                Assembly.GetExecutingAssembly().GetName().Name!
-            ),
+            Output = new ReplaceUsageHelpTextWriter(output, RootCommand.ExecutableName),
         };
 
         // Act

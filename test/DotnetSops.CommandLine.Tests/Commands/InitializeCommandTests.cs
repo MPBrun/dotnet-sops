@@ -1,5 +1,4 @@
 using System.CommandLine;
-using System.Reflection;
 using DotnetSops.CommandLine.Commands;
 using DotnetSops.CommandLine.Services;
 using DotnetSops.CommandLine.Tests.Extensions;
@@ -1378,10 +1377,7 @@ public class InitializeCommandTests : IDisposable
         var output = new StringWriter();
         var config = new InvocationConfiguration()
         {
-            Output = new ReplaceUsageHelpTextWriter(
-                output,
-                Assembly.GetExecutingAssembly().GetName().Name!
-            ),
+            Output = new ReplaceUsageHelpTextWriter(output, RootCommand.ExecutableName),
         };
 
         // Act
