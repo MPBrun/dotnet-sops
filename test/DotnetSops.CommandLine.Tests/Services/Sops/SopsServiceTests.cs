@@ -220,8 +220,8 @@ public class SopsServiceTests : IDisposable
         await File.WriteAllTextAsync(
             "Program.cs",
             """
-            await File.AppendAllTextAsync("decrypted.txt", Environment.GetEnvironmentVariable("foo"));
-            await File.AppendAllTextAsync("decrypted.txt", Environment.GetEnvironmentVariable("add"));
+            await File.AppendAllTextAsync("decrypted.txt", Environment.GetEnvironmentVariable("Foo") ?? "Missing");
+            await File.AppendAllTextAsync("decrypted.txt", Environment.GetEnvironmentVariable("Add") ?? "Missing");
             """,
             TestContext.Current.CancellationToken
         );
