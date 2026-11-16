@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-26.04, ubuntu-26.04-arm, macos-26, windows-latest]
+        os: [ubuntu-26.04, ubuntu-26.04-arm, macos-27, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
@@ -79,17 +79,17 @@ jobs:
         dotnet pack --configuration Release -p:Version=${{ steps.version.outputs.VERSION }}
 
     - name: Pack for ubuntu
-      if: matrix.os == 'ubuntu-24.04'
+      if: matrix.os == 'ubuntu-26.04'
       run: |
         dotnet pack --configuration Release --runtime linux-x64 -p:Version=${{ steps.version.outputs.VERSION }}
       
     - name: Pack for ubuntu arm
-      if: matrix.os == 'ubuntu-24.04-arm'
+      if: matrix.os == 'ubuntu-26.04-arm'
       run: |
         dotnet pack --configuration Release --runtime linux-arm64 -p:Version=${{ steps.version.outputs.VERSION }}
 
     - name: Pack for macos
-      if: matrix.os == 'macos-26'
+      if: matrix.os == 'macos-27'
       run: |
         dotnet pack --configuration Release --runtime osx-x64 -p:Version=${{ steps.version.outputs.VERSION }}
         dotnet pack --configuration Release --runtime osx-arm64 -p:Version=${{ steps.version.outputs.VERSION }}
