@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageOutputPath>./bin/nupkg</PackageOutputPath>
@@ -33,6 +32,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="$(RuntimeIdentifier) != ''">
     <TargetFrameworks>net11.0</TargetFrameworks>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(RuntimeIdentifier) == ''">
+    <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition="$(RuntimeIdentifier.StartsWith('linux')) OR $(RuntimeIdentifier.StartsWith('osx')) OR $(RuntimeIdentifier) == ''">
     <IncludeSymbols>false</IncludeSymbols>
