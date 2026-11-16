@@ -30,10 +30,10 @@
     <PublishTrimmed>true</PublishTrimmed>
     <StripSymbols>true</StripSymbols>
   </PropertyGroup>
-  <PropertyGroup Condition="$(RuntimeIdentifier) != ''">
+  <PropertyGroup Condition="$(RuntimeIdentifier) != '' AND $(RuntimeIdentifier) != 'any'">
     <TargetFrameworks>net11.0</TargetFrameworks>
   </PropertyGroup>
-  <PropertyGroup Condition="$(RuntimeIdentifier) == ''">
+  <PropertyGroup Condition="$(RuntimeIdentifier) == '' OR $(RuntimeIdentifier) == 'any'">
     <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition="$(RuntimeIdentifier.StartsWith('linux')) OR $(RuntimeIdentifier.StartsWith('osx')) OR $(RuntimeIdentifier) == ''">
