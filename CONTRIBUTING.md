@@ -23,7 +23,7 @@ Please take a moment to review this Contributing Guide before you get started. I
 
 Make sure you have the following prerequisites installed before you start contributing:
 
-- [.NET SDK 8.x](https://dotnet.microsoft.com/download) that are defined in [global.json](global.json)
+- [.NET SDK](https://dotnet.microsoft.com/download) that are defined in [global.json](global.json)
 
 ### Development
 
