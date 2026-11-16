@@ -69,7 +69,7 @@ public class EncryptCommandTests : IDisposable
         var secrets = new TestSecretCotent { TestKey = "test value" };
         await File.AppendAllTextAsync(
             filePath.FullName,
-            JsonSerializer.Serialize(secrets),
+            JsonSerializer.Serialize(secrets, SourceGenerationContext.Default.TestSecretCotent),
             new UTF8Encoding(encoderShouldEmitUTF8Identifier: true),
             TestContext.Current.CancellationToken
         ); //dotnet user secrets save files with bom
@@ -97,8 +97,9 @@ public class EncryptCommandTests : IDisposable
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(outputPath));
 
-        var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(
-            await File.ReadAllTextAsync(outputPath, TestContext.Current.CancellationToken)
+        var encryptedSecretContent = JsonSerializer.Deserialize(
+            await File.ReadAllTextAsync(outputPath, TestContext.Current.CancellationToken),
+            SourceGenerationContext.Default.TestEncryptedSecretCotent
         )!;
         Assert.StartsWith(
             "ENC[",
@@ -131,7 +132,7 @@ public class EncryptCommandTests : IDisposable
         var secrets = new TestSecretCotent { TestKey = "test value" };
         await File.AppendAllTextAsync(
             filePath.FullName,
-            JsonSerializer.Serialize(secrets),
+            JsonSerializer.Serialize(secrets, SourceGenerationContext.Default.TestSecretCotent),
             new UTF8Encoding(encoderShouldEmitUTF8Identifier: true),
             TestContext.Current.CancellationToken
         ); //dotnet user secrets save files with bom
@@ -159,8 +160,9 @@ public class EncryptCommandTests : IDisposable
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(outputPath));
 
-        var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(
-            await File.ReadAllTextAsync(outputPath, TestContext.Current.CancellationToken)
+        var encryptedSecretContent = JsonSerializer.Deserialize(
+            await File.ReadAllTextAsync(outputPath, TestContext.Current.CancellationToken),
+            SourceGenerationContext.Default.TestEncryptedSecretCotent
         )!;
         Assert.StartsWith(
             "ENC[",
@@ -182,7 +184,7 @@ public class EncryptCommandTests : IDisposable
         var secrets = new TestSecretCotent { TestKey = "test value" };
         await File.AppendAllTextAsync(
             filePath.FullName,
-            JsonSerializer.Serialize(secrets),
+            JsonSerializer.Serialize(secrets, SourceGenerationContext.Default.TestSecretCotent),
             new UTF8Encoding(encoderShouldEmitUTF8Identifier: true),
             TestContext.Current.CancellationToken
         ); //dotnet user secrets save files with bom
@@ -218,8 +220,9 @@ public class EncryptCommandTests : IDisposable
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(outputPath));
 
-        var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(
-            await File.ReadAllTextAsync(outputPath, TestContext.Current.CancellationToken)
+        var encryptedSecretContent = JsonSerializer.Deserialize(
+            await File.ReadAllTextAsync(outputPath, TestContext.Current.CancellationToken),
+            SourceGenerationContext.Default.TestEncryptedSecretCotent
         )!;
         Assert.StartsWith(
             "ENC[",
@@ -245,7 +248,7 @@ public class EncryptCommandTests : IDisposable
         var secrets = new TestSecretCotent { TestKey = "test value" };
         await File.AppendAllTextAsync(
             filePath.FullName,
-            JsonSerializer.Serialize(secrets),
+            JsonSerializer.Serialize(secrets, SourceGenerationContext.Default.TestSecretCotent),
             new UTF8Encoding(encoderShouldEmitUTF8Identifier: true),
             TestContext.Current.CancellationToken
         ); //dotnet user secrets save files with bom
@@ -311,7 +314,7 @@ public class EncryptCommandTests : IDisposable
         var secrets = new TestSecretCotent { TestKey = "test value" };
         await File.AppendAllTextAsync(
             filePath.FullName,
-            JsonSerializer.Serialize(secrets),
+            JsonSerializer.Serialize(secrets, SourceGenerationContext.Default.TestSecretCotent),
             new UTF8Encoding(encoderShouldEmitUTF8Identifier: true),
             TestContext.Current.CancellationToken
         ); //dotnet user secrets save files with bom
@@ -339,8 +342,9 @@ public class EncryptCommandTests : IDisposable
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(outputPath));
 
-        var encryptedSecretContent = JsonSerializer.Deserialize<TestEncryptedSecretCotent>(
-            await File.ReadAllTextAsync(outputPath, TestContext.Current.CancellationToken)
+        var encryptedSecretContent = JsonSerializer.Deserialize(
+            await File.ReadAllTextAsync(outputPath, TestContext.Current.CancellationToken),
+            SourceGenerationContext.Default.TestEncryptedSecretCotent
         )!;
         Assert.StartsWith(
             "ENC[",
