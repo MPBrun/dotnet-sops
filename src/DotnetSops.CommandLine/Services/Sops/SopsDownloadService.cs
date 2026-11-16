@@ -6,7 +6,7 @@ namespace DotnetSops.CommandLine.Services.Sops;
 
 internal class SopsDownloadService : ISopsDownloadService
 {
-    private const string Version = "v3.10.2";
+    private const string Version = "v3.13.3";
     private readonly IPlatformInformationService _platformInformation;
     private readonly HttpClient _httpClient;
     private readonly ISopsPathService _sopsPathService;
@@ -48,17 +48,7 @@ internal class SopsDownloadService : ISopsDownloadService
         // Get content
         var content = await response.Content.ReadAsByteArrayAsync(cancellationToken);
 
-#if NET9_0_OR_GREATER
         var hash = Convert.ToHexStringLower(SHA256.HashData(content));
-#else
-        // Calculate file hash
-        var hash = Convert.ToHexString(SHA256.HashData(content));
-
-#pragma warning disable CA1308 // Normalize strings to uppercase
-        // Lowercase to follow same format as defined by *.checksums.txt
-        hash = hash.ToLowerInvariant();
-#pragma warning restore CA1308 // Normalize strings to uppercase
-#endif
 
         // Verify content hash
         if (!hash.Equals(release.Sha256Checksum, StringComparison.OrdinalIgnoreCase))
@@ -82,7 +72,7 @@ internal class SopsDownloadService : ISopsDownloadService
         }
     }
 
-    // Checksums from https://github.com/getsops/sops/releases/download/v3.10.2/sops-v3.10.2.checksums.txt
+    // Checksums from https://github.com/getsops/sops/releases/download/v3.13.3/sops-v3.13.3.checksums.txt
     private SopsReleaseFileInfo PlatformSopsReleaseFile()
     {
         if (_platformInformation.IsWindows())
@@ -94,14 +84,14 @@ internal class SopsDownloadService : ISopsDownloadService
                     ReleaseFileName = $"sops-{Version}.arm64.exe",
                     ExecutableFileName = "sops.exe",
                     Sha256Checksum =
-                        "9e08c708147634f485f8574a22add98b6a092511e84ff69c6d2849834aec865d",
+                        "7f936a0d08edbeba3eb8f50bad1fe71eba83a140a80dfd17051f3bdb4facb08a",
                 },
                 Architecture.X64 => new SopsReleaseFileInfo()
                 {
                     ReleaseFileName = $"sops-{Version}.amd64.exe",
                     ExecutableFileName = "sops.exe",
                     Sha256Checksum =
-                        "056d18d9f12966aebd33a8181b54c358bcb312661fadc5a3141bb6f84b9c3502",
+                        "a4a9a398858fe8b2ef72d9686d930bf7c5cece9be74ad83ac3b53cfdd70e6b1c",
                 },
                 Architecture.X86 => throw new NotSupportedException(),
                 Architecture.Arm => throw new NotSupportedException(),
@@ -110,9 +100,7 @@ internal class SopsDownloadService : ISopsDownloadService
                 Architecture.LoongArch64 => throw new NotSupportedException(),
                 Architecture.Armv6 => throw new NotSupportedException(),
                 Architecture.Ppc64le => throw new NotSupportedException(),
-#if NET9_0_OR_GREATER
                 Architecture.RiscV64 => throw new NotSupportedException(),
-#endif
                 _ => throw new NotSupportedException(),
             };
         }
@@ -125,21 +113,21 @@ internal class SopsDownloadService : ISopsDownloadService
                     ReleaseFileName = $"sops-{Version}.darwin.arm64",
                     ExecutableFileName = "sops",
                     Sha256Checksum =
-                        "99702df79737162b986641afb8d98251acb16a52e6cab556a6b6f57c608c059a",
+                        "b97c0d434aab577dc40310e8d22ff9e45eef4c80638ab978daae9b4681c59286",
                 },
                 Architecture.X64 => new SopsReleaseFileInfo()
                 {
                     ReleaseFileName = $"sops-{Version}.darwin.amd64",
                     ExecutableFileName = "sops",
                     Sha256Checksum =
-                        "dece9b0131af5ced0f8c278a53c0cf06a4f0d1d70a177c0979f6d111654397ce",
+                        "42162d5cef10b74fcf80a045a70e658d7ce6e63d6ea1be6f347e44015714468d",
                 },
                 Architecture.X86 => new SopsReleaseFileInfo()
                 {
                     ReleaseFileName = $"sops-{Version}.darwin",
                     ExecutableFileName = "sops",
                     Sha256Checksum =
-                        "c2a97277390760595265a7401e36e9989debf62420551d98debc1b054ef51d82",
+                        "ada49efb072e8d02434b15cdd4746561b7b37e82813ce11efe5cb311439f288b",
                 },
                 Architecture.Arm => throw new NotSupportedException(),
                 Architecture.Wasm => throw new NotSupportedException(),
@@ -147,9 +135,7 @@ internal class SopsDownloadService : ISopsDownloadService
                 Architecture.LoongArch64 => throw new NotSupportedException(),
                 Architecture.Armv6 => throw new NotSupportedException(),
                 Architecture.Ppc64le => throw new NotSupportedException(),
-#if NET9_0_OR_GREATER
                 Architecture.RiscV64 => throw new NotSupportedException(),
-#endif
                 _ => throw new NotSupportedException(),
             };
         }
@@ -162,14 +148,14 @@ internal class SopsDownloadService : ISopsDownloadService
                     ReleaseFileName = $"sops-{Version}.linux.arm64",
                     ExecutableFileName = "sops",
                     Sha256Checksum =
-                        "e91ddc04e6a78f5aed9e4fc347a279b539c43b74d99e6b8078e2f2f6f5b309f5",
+                        "53b0abacd38ef1b12a66d6c100956691b9cefce018d91f81e73ddf7438b94d77",
                 },
                 Architecture.X64 => new SopsReleaseFileInfo()
                 {
                     ReleaseFileName = $"sops-{Version}.linux.amd64",
                     ExecutableFileName = "sops",
                     Sha256Checksum =
-                        "79b0f844237bd4b0446e4dc884dbc1765fc7dedc3968f743d5949c6f2e701739",
+                        "e5bec3346a873ae91d871550f3e698c1aad962aff462a080e40f25fde17fef6b",
                 },
                 Architecture.X86 => throw new NotSupportedException(),
                 Architecture.Arm => throw new NotSupportedException(),
@@ -178,9 +164,7 @@ internal class SopsDownloadService : ISopsDownloadService
                 Architecture.LoongArch64 => throw new NotSupportedException(),
                 Architecture.Armv6 => throw new NotSupportedException(),
                 Architecture.Ppc64le => throw new NotSupportedException(),
-#if NET9_0_OR_GREATER
                 Architecture.RiscV64 => throw new NotSupportedException(),
-#endif
                 _ => throw new NotSupportedException(),
             };
         }

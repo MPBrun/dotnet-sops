@@ -38,9 +38,8 @@ internal class DownloadSopsCommand : Command
 
             await logger
                 .Status()
-                .StartAsync(
-                    Properties.Resources.DownloadSopsLoader,
-                    async (ctx) => await sopsDownloadService.DownloadAsync(cancellationToken)
+                .StartAsync(Properties.Resources.DownloadSopsLoader, async (ctx) =>
+                    await sopsDownloadService.DownloadAsync(cancellationToken)
                 );
 
             logger.LogSuccess(Properties.Resources.DownloadSopsCommandSuccess);

@@ -20,12 +20,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
-      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       with:
         fetch-depth: 0
 
     - name: Install .NET SDK
-      uses: actions/setup-dotnet@d4c94342e560b34958eacfc5d055d21461ed1c5d # v5
+      uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6
       with:
         global-json-file: global.json
 
@@ -59,7 +59,7 @@ jobs:
       run: dotnet test --no-build --configuration Release --output Detailed --coverage --coverage-output-format cobertura --coverage-output cobertura.xml --report-trx
 
     - name: Test Report
-      uses: phoenix-actions/test-reporting@f957cd93fc2d848d556fa0d03c57bc79127b6b5e # v15
+      uses: phoenix-actions/test-reporting@7317eea6e13c47348dd0bb318669485157c518d6 # v16
       if: always()
       with:
         name: Test results (${{ matrix.os }})
@@ -69,7 +69,7 @@ jobs:
         fail-on-error: false
 
     - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5
+      uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
@@ -142,6 +142,14 @@ jobs:
       shell: bash
       run: ./build/tool-test.sh
 
+    - name: Upload NuGet artifact
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+      if: matrix.os == 'ubuntu-latest'
+      with:
+        name: nuget
+        path: src/DotnetSops.CommandLine/bin/nupkg/*.*
+        if-no-files-found: error
+
   release:
     if: startsWith(github.ref, 'refs/tags/')
     needs: test
@@ -150,12 +158,12 @@ jobs:
       contents: write
     steps:
     - name: Download NuGet artifact
-      uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
       with:
         name: nuget
 
     - name: Create release
-      uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2
+      uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3
       if: startsWith(github.ref, 'refs/tags/')
       with:
         draft: true

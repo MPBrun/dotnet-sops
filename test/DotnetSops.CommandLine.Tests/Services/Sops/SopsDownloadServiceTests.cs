@@ -72,9 +72,7 @@ public class SopsDownloadServiceTests : IDisposable
     [InlineData(true, false, false, Architecture.LoongArch64)]
     [InlineData(true, false, false, Architecture.Armv6)]
     [InlineData(true, false, false, Architecture.Ppc64le)]
-#if NET9_0_OR_GREATER
     [InlineData(true, false, false, Architecture.RiscV64)]
-#endif
     [InlineData(true, false, false, (Architecture)1337)]
     [InlineData(false, false, false, Architecture.X64)]
     [InlineData(false, true, false, Architecture.Arm)]
@@ -83,9 +81,7 @@ public class SopsDownloadServiceTests : IDisposable
     [InlineData(false, true, false, Architecture.LoongArch64)]
     [InlineData(false, true, false, Architecture.Armv6)]
     [InlineData(false, true, false, Architecture.Ppc64le)]
-#if NET9_0_OR_GREATER
     [InlineData(false, true, false, Architecture.RiscV64)]
-#endif
     [InlineData(false, true, false, (Architecture)1337)]
     [InlineData(false, false, true, Architecture.X86)]
     [InlineData(false, false, true, Architecture.Arm)]
@@ -94,9 +90,7 @@ public class SopsDownloadServiceTests : IDisposable
     [InlineData(false, false, true, Architecture.LoongArch64)]
     [InlineData(false, false, true, Architecture.Armv6)]
     [InlineData(false, false, true, Architecture.Ppc64le)]
-#if NET9_0_OR_GREATER
     [InlineData(false, false, true, Architecture.RiscV64)]
-#endif
     [InlineData(false, false, true, (Architecture)1337)]
     public async Task DownloadAsync_InvalidOperatingSystemAndArchitecture_Throws(
         bool windows,
@@ -190,7 +184,7 @@ public class SopsDownloadServiceTests : IDisposable
             """
             SHA256 of SOPS executable did not match.
 
-            Expected: 056d18d9f12966aebd33a8181b54c358bcb312661fadc5a3141bb6f84b9c3502
+            Expected: a4a9a398858fe8b2ef72d9686d930bf7c5cece9be74ad83ac3b53cfdd70e6b1c
             Actual:   1cd34f3b9a3a52a0317abf2b2518511d79a18c6ac469d15617c96e18099037b3
             """,
             exception.Message
@@ -232,7 +226,7 @@ public class SopsDownloadServiceTests : IDisposable
             Failed to download SOPS.
 
             HTTP status code: 404
-            URL: https://github.com/getsops/sops/releases/download/v3.10.2/sops-v3.10.2.amd64.exe
+            URL: https://github.com/getsops/sops/releases/download/v3.13.3/sops-v3.13.3.amd64.exe
             """,
             exception.Message
         );

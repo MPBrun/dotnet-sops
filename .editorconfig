@@ -199,6 +199,9 @@ dotnet_analyzer_diagnostic.category-CodeQuality.severity = warning
 # VSTHRD111: Use .ConfigureAwait(bool)
 dotnet_diagnostic.VSTHRD111.severity = none
 
+# VSTHRD202: Remove unnecessary async state machine
+dotnet_diagnostic.VSTHRD202.severity = none
+
 # IDE0058: Remove unnecessary expression value
 dotnet_diagnostic.IDE0058.severity = none
 

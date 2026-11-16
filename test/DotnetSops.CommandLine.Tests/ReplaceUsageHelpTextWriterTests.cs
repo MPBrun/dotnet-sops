@@ -104,7 +104,11 @@ public class ReplaceUsageHelpTextWriterTests
         var textWriter = Substitute.For<TextWriter>();
         await using (var replaceUsageHelpTextWriter = new ReplaceUsageHelpTextWriter(textWriter))
         {
+#if NET11_0_OR_GREATER
+            await replaceUsageHelpTextWriter.WriteLineAsync(TestContext.Current.CancellationToken);
+#else
             await replaceUsageHelpTextWriter.WriteLineAsync();
+#endif
         }
 
         // Assert
